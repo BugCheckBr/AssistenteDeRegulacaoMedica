@@ -7,7 +7,16 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased]
 
+### 🐞 Fixed
+
+- **🔧 exames**: normalização e visualização de resultado funcionando
+- **🔧 exames**: normalização e visualização de resultado funcionando
+- **🔧 exames**: normalização e visualização de resultado funcionando
+- **🔧 exames**: normalização e visualização de resultado funcionando
+- Exames: normalização e visualização de resultado funcionando
+
 ## [4.0.4] - 2025-08-07
+
 ### 🛠️ Changed
 
 - **⚠️ JEST Tests Temporarily Disabled**: Removida obrigatoriedade de testes JEST nos fluxos de release e CI/CD devido a problemas técnicos
@@ -22,6 +31,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ### 🐞 Fixed
 
 - **Content Script ES6 Compatibility**: Removido uso de módulos ES6 do content script para compatibilidade com Manifest V3
+
   - **Problema**: Content scripts não podem usar `import`/`export` ES6 modules em extensões
   - **Solução**: Implementação inline das funções de logging necessárias do ErrorHandler
   - **Compatibilidade**: Mantida funcionalidade de logging médico com sanitização automática
@@ -31,17 +41,17 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - **🔒 CRÍTICO: Carregamento Automático Indevido das Seções**: Corrigido comportamento crítico onde as seções carregavam automaticamente mesmo com todas as opções de autoload desligadas
 
   - **Problema Raiz Identificado**: O método `clearFilters()` do `SectionManager` estava chamando `handleFetchTypeChange()` durante a inicialização dos filtros, que por sua vez sempre executava `fetchData()`, ignorando completamente as configurações do usuário
-  - **Localizações do Bug**: 
+  - **Localizações do Bug**:
     - `SectionManager.js` linha 374: `this.handleFetchTypeChange(radioToCheck);`
     - `SectionManager.js` linha 390: `this.handleFetchTypeChange(el);`
     - `SectionManager.js` linha 418: `handleFetchTypeChange()` sempre chama `this.fetchData()`
-  - **Correção Implementada**: 
+  - **Correção Implementada**:
     - Adicionada verificação `shouldAvoidAutoFetch` no método `clearFilters()`
     - Quando no modo manual, apenas atualiza `fetchType` sem executar `fetchData()`
     - Preserva funcionalidade completa no modo automático
   - **Validação Rigorosa**: Implementada verificação explícita de `globalSettings.userPreferences[autoLoadKey] === true` antes de permitir carregamento automático
   - **Logs de Diagnóstico**: Sistema de logging detalhado que mostra claramente o modo ativo (AUTO/MANUAL) e o valor da configuração para cada seção
-  - **Comportamento Correto Restaurado**: 
+  - **Comportamento Correto Restaurado**:
     - **Modo AUTO** (`autoLoadExams: true`): Executa `fetchData()` automaticamente ao selecionar paciente
     - **Modo MANUAL** (`autoLoadExams: false`): Aguarda ação manual do usuário (botão "Buscar")
   - **Compatibilidade Preservada**: Funcionalidades de regras de automação e sistema de gatilhos mantidas intactas

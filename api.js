@@ -1,3 +1,52 @@
+/**
+ * Busca exames realizados (entregues) para um paciente.
+ * @param {object} params
+ * @param {string} params.idp - IDP do paciente
+ * @param {string} params.ids - IDS do paciente
+ * @param {string} params.dataInicial - Data inicial (dd/mm/yyyy)
+ * @param {string} params.dataFinal - Data final (dd/mm/yyyy)
+ * @returns {Promise<Array<object>>} Lista de exames realizados
+ */
+export async function fetchExamesEntregues({ idp, ids, dataInicial, dataFinal }) {
+  const baseUrl = await getBaseUrl();
+  const url = new URL(`${baseUrl}/sigss/entregaResultado/atcoImprResultado`);
+  const params = {
+    'filters[0]': `reexResualtadoDtInicial:${dataInicial}`,
+    'filters[1]': `reexResualtadoDtFinal:${dataFinal}`,
+    'filters[2]': 'prciIsLab:false',
+    'isenPK.idp': idp,
+    'isenPK.ids': ids,
+    _search: 'false',
+    nd: Date.now(),
+    rows: '1000',
+    page: '1',
+    sidx: 'prci.prciNome',
+    sord: 'asc',
+  };
+  url.search = new URLSearchParams(params).toString();
+  const response = await fetch(url, {
+    headers: {
+      Accept: 'application/json, text/javascript, */*; q=0.01',
+      'Content-Type': 'application/json; charset=iso-8859-1',
+      'X-Requested-With': 'XMLHttpRequest',
+    },
+  });
+  if (!response.ok) handleFetchError(response);
+  const data = await response.json();
+  return (data?.rows || []).map((row) => {
+    const cell = row.cell || [];
+    return {
+      id: row.id || '',
+      examName: (cell[4] || '').replace(/<br>/g, '\n').trim(),
+      status: cell[5] || '',
+      provider: cell[6] || '',
+      hasResult: cell[5]?.toLowerCase().includes('liberado'),
+      resultIdp: cell[7] || '', // Corrigido: pega o campo correto do JSON
+      resultIds: cell[8] || '', // Corrigido: pega o campo correto do JSON
+      date: cell[5]?.match(/\d{2}\/\d{2}\/\d{4}/)?.[0] || '',
+    };
+  });
+}
 import './browser-polyfill.js';
 import {
   ERROR_CATEGORIES,
@@ -32,8 +81,9 @@ export async function getBaseUrl() {
   }
 
   if (data && data.baseUrl) {
+    const cleanBase = data.baseUrl.replace(/\/sigss\/?$/, '');
     logInfo('URL base obtida com sucesso', null, ERROR_CATEGORIES.STORAGE);
-    return data.baseUrl;
+    return cleanBase;
   }
 
   logError('URL base não configurada', null, ERROR_CATEGORIES.STORAGE);
@@ -112,10 +162,17 @@ export async function fetchRegulationPriorities() {
     );
   }
 
-  const url = new URL(`${baseUrl}/sigss/configuracaoGravidade/loadConfiguracaoRegra`);
+  const url = new URL(`${baseUrl}/sigss/configuracaoGravidade/loadConfiguracaoRegra?ativo=t`);
 
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        accept: 'application/json, text/javascript, */*; q=0.01',
+        'x-requested-with': 'XMLHttpRequest',
+      },
+      credentials: 'include',
+    });
     if (!response.ok) {
       logWarning('SIGSS_API', 'Não foi possível buscar as prioridades de regulação', {
         status: response.status,
@@ -647,7 +704,7 @@ export async function fetchResultadoExame({ idp, ids }) {
   });
   if (!response.ok) handleFetchError(response);
   const data = await response.json();
-  return data?.path || null;
+  return data?.path ? `${baseUrl}${data.path}` : null;
 }
 
 export async function fetchCadsusData({ cpf, cns }) {
@@ -1183,6 +1240,7 @@ export async function fetchRegulationAttachmentUrl({ idp, ids }) {
  */
 export async function fetchAllTimelineData({ isenPK, isenFullPKCrypto, dataInicial, dataFinal }) {
   // Usando um objeto de promessas para tornar a extração de resultados mais robusta.
+  const [idp, ids] = (isenPK || '').split('-');
   const dataPromises = {
     consultations: fetchAllConsultations({
       isenFullPKCrypto,
@@ -1195,6 +1253,12 @@ export async function fetchAllTimelineData({ isenPK, isenFullPKCrypto, dataInici
       dataFinal,
       comResultado: true,
       semResultado: true,
+    }),
+    examsCompleted: fetchExamesEntregues({
+      idp,
+      ids,
+      dataInicial,
+      dataFinal,
     }),
     appointments: fetchAppointments({ isenPK, dataInicial, dataFinal }),
     regulations: fetchAllRegulations({

@@ -355,6 +355,17 @@ async function restoreOptions() {
  * Salva as configurações GERAIS (não as regras de automação).
  */
 async function saveOptions() {
+  // Validação da URL base
+  const baseUrlInput = document.getElementById('baseUrlInput');
+  const baseUrlValid = baseUrlInput.value.trim();
+  try {
+    if (!baseUrlValid) throw new Error('A URL base não pode estar vazia.');
+    new URL(baseUrlValid); // Valida sintaxe
+  } catch (err) {
+    Utils.showMessage('URL base inválida! Informe uma URL válida do SIGSS.', 'error');
+    baseUrlInput.focus();
+    return;
+  }
   const baseUrl = document.getElementById('baseUrlInput').value;
   const enableAutomaticDetection = document.getElementById('enableAutomaticDetection').checked;
   const keepSessionAliveInterval =
@@ -710,8 +721,8 @@ function renderAutomationRules() {
                 <div>
                   <p class="font-semibold text-slate-800">${rule.name}</p>
                   <p class="text-xs text-slate-500" title="${keywords}">Gatilhos: ${
-                    keywords.length > 50 ? keywords.substring(0, 50) + '...' : keywords
-                  }</p>
+      keywords.length > 50 ? keywords.substring(0, 50) + '...' : keywords
+    }</p>
                 </div>
               </div>
               <div class="flex items-center gap-4">

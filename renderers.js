@@ -100,8 +100,14 @@ export function renderExams(exams, sortState) {
       .map((exam) => {
         const idp = exam.resultIdp;
         const ids = exam.resultIds;
-        const idpStr = idp !== null && idp !== undefined ? String(idp) : '';
-        const idsStr = ids !== null && ids !== undefined ? String(ids) : '';
+        const idpStr = idp !== null && idp !== undefined ? String(idp).split('-')[0] : '';
+        let idsStr = ids !== null && ids !== undefined ? String(ids) : '';
+        // Se ids for igual ao idp, mas idp tem hífen, extrai sufixo do idp
+        if (idsStr === idpStr && String(idp).includes('-')) {
+          idsStr = String(idp).split('-')[1] || '1';
+        } else if (idsStr.includes('-')) {
+          idsStr = idsStr.split('-')[1] || idsStr.split('-')[0];
+        }
         const showBtn =
           exam.hasResult &&
           idp !== null &&
@@ -117,8 +123,8 @@ export function renderExams(exams, sortState) {
             } <span class="copy-icon" title="Copiar" data-copy-text="${exam.examName}">📄</span></p>
             <div class="text-sm text-slate-500 mt-1">
                 <p>Solicitado por: ${exam.professional || 'Não informado'} (${
-                  exam.specialty || 'N/A'
-                })</p>
+          exam.specialty || 'N/A'
+        })</p>
                 <p>Data: ${exam.date || 'Não informada'}</p>
             </div>
             ${
@@ -191,8 +197,8 @@ export function renderAppointments(appointments, sortState) {
                     }</p>
                 </div>
                 <span class="text-xs font-bold px-2 py-1 rounded-full ${style}">${
-                  item.status
-                }</span>
+          item.status
+        }</span>
             </div>
             <div class="text-sm text-slate-500 mt-2 border-t pt-2">
                 <p><strong>Data:</strong> ${item.date} às ${item.time}</p>
@@ -288,8 +294,8 @@ export function renderRegulations(regulations, sortState, globalSettings) {
                                 <span class="truncate" title="${
                                   att.description
                                 } (${att.fileType.toUpperCase()})">${
-                                  att.description
-                                } (${att.fileType.toUpperCase()})</span>
+                          att.description
+                        } (${att.fileType.toUpperCase()})</span>
                             </div>
                             <span class="text-xs text-slate-400 flex-shrink-0 ml-2">${
                               att.date
@@ -313,17 +319,17 @@ export function renderRegulations(regulations, sortState, globalSettings) {
                         <p class="text-sm text-slate-800 font-medium">${
                           item.procedure
                         } <span class="copy-icon" title="Copiar" data-copy-text="${
-                          item.procedure
-                        }">📄</span></p>
+          item.procedure
+        }">📄</span></p>
                         <p class="text-xs text-slate-500">${
                           item.cid
                         } <span class="copy-icon" title="Copiar" data-copy-text="${
-                          item.cid
-                        }">📄</span></p>
+          item.cid
+        }">📄</span></p>
                     </div>
                     <span class="text-xs font-bold px-2 py-1 rounded-full ${style}">${
-                      item.status
-                    }</span>
+          item.status
+        }</span>
                 </div>
                 <div class="text-sm text-slate-500 mt-2 border-t pt-2 space-y-1">
                     <p><strong>Data:</strong> ${item.date}</p>
@@ -495,12 +501,14 @@ export function renderTimeline(events, status) {
             const detailsButtonHtml = `<button class="view-appointment-details-btn mt-2 text-xs bg-gray-100 text-gray-800 py-1 px-3 rounded hover:bg-gray-200 flex items-center gap-1" data-idp="${idp}" data-ids="${ids}" data-type="${a.type}">${icon}<span>Detalhes</span></button>`;
 
             topRightDetailsHtml = timeHtml + statusHtml + detailsButtonHtml;
-          } else if (event.type === 'exam') {
+          } else if (event.type === 'exam' || event.type === 'examCompleted') {
             const statusText = event.details.hasResult ? 'Com Resultado' : 'Sem Resultado';
             const statusClass = event.details.hasResult ? 'text-green-600' : 'text-yellow-600';
             topRightDetailsHtml = `<div class="mt-1 text-xs font-semibold ${statusClass}">${statusText}</div>`;
             if (event.details.hasResult && event.details.resultIdp && event.details.resultIds) {
-              topRightDetailsHtml += `<button class="view-exam-result-btn mt-2 text-xs bg-green-100 text-green-800 py-1 px-3 rounded hover:bg-green-200" data-idp="${event.details.resultIdp}" data-ids="${event.details.resultIds}">Visualizar Resultado</button>`;
+              const idpSanitized = String(event.details.resultIdp).split('-')[0];
+              const idsSanitized = String(event.details.resultIds).split('-')[0];
+              topRightDetailsHtml += `<button class="view-exam-result-btn mt-2 text-xs bg-green-100 text-green-800 py-1 px-3 rounded hover:bg-green-200" data-idp="${idpSanitized}" data-ids="${idsSanitized}">Visualizar Resultado</button>`;
             }
           } else if (event.type === 'regulation') {
             const r = event.details;
@@ -556,8 +564,8 @@ export function renderTimeline(events, status) {
                                     <span class="truncate" title="${
                                       att.description
                                     } (${att.fileType.toUpperCase()})">${
-                                      att.description
-                                    } (${att.fileType.toUpperCase()})</span>
+                              att.description
+                            } (${att.fileType.toUpperCase()})</span>
                                 </div>
                                 <span class="text-xs text-slate-400 flex-shrink-0 ml-2">${
                                   att.date

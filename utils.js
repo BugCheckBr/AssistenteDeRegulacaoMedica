@@ -228,6 +228,41 @@ export function setupTabs(container) {
  */
 export function normalizeTimelineData(apiData) {
   const events = [];
+  // Normalize Exams Completed
+  try {
+    (apiData.examsCompleted || []).forEach((e) => {
+      const eventDate = parseDate(e.date);
+      if (!e || !eventDate) return;
+      const searchText = normalizeString(
+        [e.examName, e.provider, e.status].filter(Boolean).join(' ')
+      );
+      events.push({
+        type: 'examCompleted',
+        date: eventDate,
+        sortableDate: eventDate,
+        title: `Exame Realizado: ${e.examName || 'Nome não informado'}`,
+        summary: `Realizado por ${e.provider || 'Não informado'}`,
+        details: e,
+        hasResult: !!e.hasResult,
+        resultIdp: e.resultIdp,
+        resultIds: e.resultIds,
+        subDetails: [
+          { label: 'Status', value: e.status || 'N/A' },
+          { label: 'Resultado', value: e.hasResult ? 'Disponível' : 'Pendente' },
+        ],
+        searchText,
+      });
+    });
+  } catch (e) {
+    logError(
+      'Failed to normalize completed exam data for timeline',
+      {
+        errorMessage: e.message,
+        error: e,
+      },
+      ERROR_CATEGORIES.TIMELINE_NORMALIZATION
+    );
+  }
 
   // Normalize Consultations
   try {
@@ -273,6 +308,9 @@ export function normalizeTimelineData(apiData) {
         title: `Exame Solicitado: ${e.examName || 'Nome não informado'}`,
         summary: `Solicitado por ${e.professional || 'Não informado'}`,
         details: e,
+        hasResult: !!e.hasResult,
+        resultIdp: e.resultIdp,
+        resultIds: e.resultIds,
         subDetails: [
           {
             label: 'Resultado',

@@ -289,26 +289,38 @@ function applyCustomHeaderStyles(styles) {
   // O CSS base com as variáveis e fallbacks já está definido em sidebar.html.
   // Esta função apenas define os valores das variáveis para cada seção.
 
-  const defaultStyles = {
-    backgroundColor: '#ffffff',
-    color: '#1e293b',
-    iconColor: '#1e293b',
-    fontSize: '16px',
-  };
+  // Cores arco-íris para cada seção
+  const rainbowColors = [
+    '#FF595E', // vermelho
+    '#FFCA3A', // amarelo
+    '#8AC926', // verde
+    '#1982C4', // azul
+    '#6A4C93', // roxo
+    '#FF9671', // laranja
+    '#43AA8B', // turquesa
+    '#F9F871', // amarelo claro
+  ];
 
-  for (const sectionKey in sectionIcons) {
+  const sectionKeys = Object.keys(sectionIcons);
+
+  const defaultStyles = {};
+  sectionKeys.forEach((key, idx) => {
+    defaultStyles[key] = {
+      backgroundColor: rainbowColors[idx % rainbowColors.length],
+      color: '#fff',
+      iconColor: '#fff',
+      fontSize: '16px',
+    };
+  });
+
+  for (const sectionKey of sectionKeys) {
     const sectionId =
       sectionKey === 'patient-details' ? 'patient-details-section' : `${sectionKey}-section`;
-
     const sectionElement = document.getElementById(sectionId);
     if (!sectionElement) continue;
-
-    // Pega o estilo salvo para a seção ou usa um objeto vazio.
+    // Pega o estilo salvo para a seção ou usa o padrão arco-íris.
     const savedStyle = styles[sectionKey] || {};
-    // Combina com os padrões para garantir que todas as propriedades existam.
-    const finalStyle = { ...defaultStyles, ...savedStyle };
-
-    // Define as variáveis CSS no elemento da seção.
+    const finalStyle = { ...defaultStyles[sectionKey], ...savedStyle };
     sectionElement.style.setProperty('--section-bg-color', finalStyle.backgroundColor);
     sectionElement.style.setProperty('--section-font-color', finalStyle.color);
     sectionElement.style.setProperty('--section-icon-color', finalStyle.iconColor);
@@ -426,6 +438,13 @@ async function init() {
   ]);
 
   globalSettings.regulationPriorities = regulationPriorities;
+
+  // Aplica estilos de cabeçalho arco-íris se não houver configuração salva
+  if (!globalSettings.headerStyles || Object.keys(globalSettings.headerStyles).length === 0) {
+    applyCustomHeaderStyles({});
+  } else {
+    applyCustomHeaderStyles(globalSettings.headerStyles);
+  }
 
   applySectionIcons();
   applyCustomHeaderStyles(globalSettings.sectionHeaderStyles);
@@ -873,7 +892,16 @@ async function handleViewExamResult(button) {
   if (filePath) {
     url = filePath.startsWith('http') ? filePath : `${baseUrl}${filePath}`;
   }
-  api.tabs.create({ url });
+  // Tenta abrir via API da extensão, se falhar usa window.open
+  try {
+    if (api && api.tabs && typeof api.tabs.create === 'function') {
+      await api.tabs.create({ url });
+    } else {
+      window.open(url, '_blank');
+    }
+  } catch (e) {
+    window.open(url, '_blank');
+  }
 }
 
 async function handleViewDocument(button) {
