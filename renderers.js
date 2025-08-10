@@ -123,8 +123,8 @@ export function renderExams(exams, sortState) {
             } <span class="copy-icon" title="Copiar" data-copy-text="${exam.examName}">📄</span></p>
             <div class="text-sm text-slate-500 mt-1">
                 <p>Solicitado por: ${exam.professional || 'Não informado'} (${
-          exam.specialty || 'N/A'
-        })</p>
+                  exam.specialty || 'N/A'
+                })</p>
                 <p>Data: ${exam.date || 'Não informada'}</p>
             </div>
             ${
@@ -197,8 +197,8 @@ export function renderAppointments(appointments, sortState) {
                     }</p>
                 </div>
                 <span class="text-xs font-bold px-2 py-1 rounded-full ${style}">${
-          item.status
-        }</span>
+                  item.status
+                }</span>
             </div>
             <div class="text-sm text-slate-500 mt-2 border-t pt-2">
                 <p><strong>Data:</strong> ${item.date} às ${item.time}</p>
@@ -294,8 +294,8 @@ export function renderRegulations(regulations, sortState, globalSettings) {
                                 <span class="truncate" title="${
                                   att.description
                                 } (${att.fileType.toUpperCase()})">${
-                          att.description
-                        } (${att.fileType.toUpperCase()})</span>
+                                  att.description
+                                } (${att.fileType.toUpperCase()})</span>
                             </div>
                             <span class="text-xs text-slate-400 flex-shrink-0 ml-2">${
                               att.date
@@ -319,17 +319,17 @@ export function renderRegulations(regulations, sortState, globalSettings) {
                         <p class="text-sm text-slate-800 font-medium">${
                           item.procedure
                         } <span class="copy-icon" title="Copiar" data-copy-text="${
-          item.procedure
-        }">📄</span></p>
+                          item.procedure
+                        }">📄</span></p>
                         <p class="text-xs text-slate-500">${
                           item.cid
                         } <span class="copy-icon" title="Copiar" data-copy-text="${
-          item.cid
-        }">📄</span></p>
+                          item.cid
+                        }">📄</span></p>
                     </div>
                     <span class="text-xs font-bold px-2 py-1 rounded-full ${style}">${
-          item.status
-        }</span>
+                      item.status
+                    }</span>
                 </div>
                 <div class="text-sm text-slate-500 mt-2 border-t pt-2 space-y-1">
                     <p><strong>Data:</strong> ${item.date}</p>
@@ -564,8 +564,8 @@ export function renderTimeline(events, status) {
                                     <span class="truncate" title="${
                                       att.description
                                     } (${att.fileType.toUpperCase()})">${
-                              att.description
-                            } (${att.fileType.toUpperCase()})</span>
+                                      att.description
+                                    } (${att.fileType.toUpperCase()})</span>
                                 </div>
                                 <span class="text-xs text-slate-400 flex-shrink-0 ml-2">${
                                   att.date

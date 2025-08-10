@@ -893,14 +893,8 @@ async function handleViewExamResult(button) {
     url = filePath.startsWith('http') ? filePath : `${baseUrl}${filePath}`;
   }
   // Tenta abrir via API da extensão, se falhar usa window.open
-  try {
-    if (api && api.tabs && typeof api.tabs.create === 'function') {
-      await api.tabs.create({ url });
-    } else {
-      window.open(url, '_blank');
-    }
-  } catch (e) {
-    window.open(url, '_blank');
+  if (api && api.tabs && typeof api.tabs.create === 'function') {
+    await api.tabs.create({ url });
   }
 }
 
