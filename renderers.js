@@ -206,11 +206,7 @@ export function renderAppointments(appointments, sortState) {
                 <p><strong>Profissional:</strong> ${item.professional}</p>
             </div>
             <div class="flex items-center justify-between mt-2 pt-2 border-t">
-                 <button class="view-appointment-details-btn text-sm bg-gray-100 text-gray-800 py-1 px-3 rounded hover:bg-gray-200" data-idp="${
-                   idp || ''
-                 }" data-ids="${ids || ''}" data-type="${item.type}">
-                    Ver Detalhes
-                </button>
+                   ${idp && ids ? `<button class="view-appointment-details-btn text-sm bg-gray-100 text-gray-800 py-1 px-3 rounded hover:bg-gray-200" data-idp="${idp}" data-ids="${ids}" data-type="${item.type}">Ver Detalhes</button>` : '<span class="text-xs text-slate-400">ID de agendamento não disponível</span>'}
             </div>
         </div>
       `;
