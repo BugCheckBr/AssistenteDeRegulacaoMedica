@@ -1053,6 +1053,20 @@ async function handleShowRegulationDetailsModal(button) {
 
 async function handleShowAppointmentDetailsModal(button) {
   const { idp, ids, type } = button.dataset;
+  // Log seguro para debug (NUNCA logar dados sensíveis)
+  console.log('[Assistente de Regulação] handleShowAppointmentDetailsModal', {
+    idp,
+    ids,
+    type,
+    btn: button,
+  });
+  if (!idp || !ids || !type) {
+    showModal(
+      'Erro',
+      '<p>Parâmetros do agendamento ausentes. Não é possível buscar os detalhes.</p>'
+    );
+    return;
+  }
   const isExam = type.toUpperCase().includes('EXAME');
   const title = isExam ? 'Detalhes do Agendamento de Exame' : 'Detalhes da Consulta Agendada';
 
@@ -1062,6 +1076,7 @@ async function handleShowAppointmentDetailsModal(button) {
     let data;
     let content;
     if (isExam) {
+      // Backend espera examPK.idp/ids, mas API já faz o mapeamento
       data = await API.fetchExamAppointmentDetails({ idp, ids });
       content = formatExamAppointmentDetailsForModal(data);
     } else {

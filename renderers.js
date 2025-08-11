@@ -139,6 +139,8 @@ export function renderExams(exams, sortState) {
 }
 
 export function renderAppointments(appointments, sortState) {
+  // Log seguro para debug dos dados recebidos
+  console.log('[Assistente de Regulação] Dados recebidos em renderAppointments:', appointments);
   const contentDiv = document.getElementById('appointments-content');
   if (!contentDiv) return;
 
@@ -185,7 +187,22 @@ export function renderAppointments(appointments, sortState) {
           typeText = 'EXAME';
         }
 
-        const [idp, ids] = item.id.split('-');
+        // Corrige mapeamento para exames ("exam-590065-1") e consultas ("2926231-1")
+        let idp = '';
+        let ids = '';
+        if (item.type === 'EXAME' && item.id && item.id.startsWith('exam-')) {
+          const parts = item.id.split('-');
+          idp = parts[1];
+          ids = parts[2];
+        } else if (item.id && item.id.includes('-')) {
+          [idp, ids] = item.id.split('-');
+        } else if (item.examPK && item.examPK.idp && item.examPK.ids) {
+          idp = item.examPK.idp;
+          ids = item.examPK.ids;
+        } else if (item.idp && item.ids) {
+          idp = item.idp;
+          ids = item.ids;
+        }
 
         return `
         <div class="p-3 mb-3 border rounded-lg bg-white">
@@ -467,8 +484,97 @@ export function renderTimeline(events, status) {
           const style = eventTypeStyles[event.type] || {
             label: 'Evento',
             color: 'gray',
+            bgColorClass: 'bg-gray-100',
+            iconColorClass: 'text-gray-600',
             icon: '',
           };
+
+          // Personalização de cor por status
+          if (event.type === 'appointment' && event.details?.status) {
+            switch (event.details.status) {
+              case 'AGENDADO':
+                style.bgColorClass = 'bg-blue-100';
+                style.iconColorClass = 'text-blue-600';
+                break;
+              case 'PRESENTE':
+                style.bgColorClass = 'bg-green-100';
+                style.iconColorClass = 'text-green-600';
+                break;
+              case 'FALTOU':
+                style.bgColorClass = 'bg-red-100';
+                style.iconColorClass = 'text-red-600';
+                break;
+              case 'CANCELADO':
+                style.bgColorClass = 'bg-yellow-100';
+                style.iconColorClass = 'text-yellow-600';
+                break;
+              case 'ATENDIDO':
+                style.bgColorClass = 'bg-purple-100';
+                style.iconColorClass = 'text-purple-600';
+                break;
+              default:
+                style.bgColorClass = 'bg-gray-100';
+                style.iconColorClass = 'text-gray-600';
+            }
+          }
+          if ((event.type === 'exam' || event.type === 'examCompleted') && event.details) {
+            if (event.details.hasResult) {
+              style.bgColorClass = 'bg-green-100';
+              style.iconColorClass = 'text-green-700';
+            } else {
+              style.bgColorClass = 'bg-yellow-100';
+              style.iconColorClass = 'text-yellow-600';
+            }
+          }
+          if (event.type === 'consultation' && event.details) {
+            if (event.details.isSpecialized) {
+              style.bgColorClass = 'bg-purple-100';
+              style.iconColorClass = 'text-purple-600';
+            } else if (event.details.isOdonto) {
+              style.bgColorClass = 'bg-orange-100';
+              style.iconColorClass = 'text-orange-600';
+            } else {
+              style.bgColorClass = 'bg-blue-100';
+              style.iconColorClass = 'text-blue-600';
+            }
+          }
+          if (event.type === 'regulation' && event.details) {
+            if (event.details.status === 'URGENTE') {
+              style.bgColorClass = 'bg-red-100';
+              style.iconColorClass = 'text-red-600';
+            } else if (event.details.status === 'FINALIZADA') {
+              style.bgColorClass = 'bg-green-100';
+              style.iconColorClass = 'text-green-600';
+            } else {
+              style.bgColorClass = 'bg-yellow-100';
+              style.iconColorClass = 'text-yellow-600';
+            }
+          }
+          // Padroniza ícone SVG para cada tipo de evento
+          switch (event.type) {
+            case 'appointment':
+              style.icon = 'M8 2v4M16 2v4M3 10h18M3 4h18v16H3zM9 16l2 2 4-4'; // calendário/check
+              break;
+            case 'examCompleted':
+            case 'exam':
+              // Ícone microscópio
+              style.icon =
+                'M6 18h8M3 22h18M14 22a7 7 0 1 0 0-14h-1M9 14h2M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2ZM12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3';
+              break;
+            case 'consultation':
+              style.icon =
+                'M11 2v2M5 2v2M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1M8 15a6 6 0 0 0 12 0v-3m-6-5a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z'; // usuário/consulta
+              break;
+            case 'regulation':
+              style.icon =
+                'M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1zM9 12l2 2 4-4'; // regulação/alerta
+              break;
+            case 'document':
+              style.icon = 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z M14 2v6h6'; // documento
+              break;
+            default:
+              style.icon = '';
+          }
           const dateString =
             event.date instanceof Date && !isNaN(event.date)
               ? event.date.toLocaleDateString('pt-BR')
@@ -479,7 +585,21 @@ export function renderTimeline(events, status) {
 
           if (event.type === 'appointment') {
             const a = event.details;
-            const [idp, ids] = a.id.split('-');
+            let idp = '';
+            let ids = '';
+            if (a.id && a.id.startsWith('exam-')) {
+              const parts = a.id.split('-');
+              idp = parts[1];
+              ids = parts[2];
+            } else if (a.id && a.id.includes('-')) {
+              [idp, ids] = a.id.split('-');
+            } else if (a.examPK && a.examPK.idp && a.examPK.ids) {
+              idp = a.examPK.idp;
+              ids = a.examPK.ids;
+            } else if (a.idp && a.ids) {
+              idp = a.idp;
+              ids = a.ids;
+            }
 
             const statusStyles = {
               AGENDADO: 'text-blue-600',
@@ -500,11 +620,15 @@ export function renderTimeline(events, status) {
           } else if (event.type === 'exam' || event.type === 'examCompleted') {
             const statusText = event.details.hasResult ? 'Com Resultado' : 'Sem Resultado';
             const statusClass = event.details.hasResult ? 'text-green-600' : 'text-yellow-600';
-            topRightDetailsHtml = `<div class="mt-1 text-xs font-semibold ${statusClass}">${statusText}</div>`;
+            // Ícone microscópio para ambos os status
+            const microscopeIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="inline-block align-middle mr-1"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg>`;
+            // Ícone documento com check para laudo/resultado
+            const resultIcon = event.details.hasResult
+              ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block align-middle mr-1"><rect x="3" y="2" width="14" height="20" rx="2"/><polyline points="9 17 12 20 17 15"/><line x1="9" y1="13" x2="15" y2="13"/></svg>`
+              : '';
+            topRightDetailsHtml = `<div class="mt-1 text-xs font-semibold ${statusClass}">${microscopeIcon}${resultIcon}${statusText}</div>`;
             if (event.details.hasResult && event.details.resultIdp && event.details.resultIds) {
-              const idpSanitized = String(event.details.resultIdp).split('-')[0];
-              const idsSanitized = String(event.details.resultIds).split('-')[0];
-              topRightDetailsHtml += `<button class="view-exam-result-btn mt-2 text-xs bg-green-100 text-green-800 py-1 px-3 rounded hover:bg-green-200" data-idp="${idpSanitized}" data-ids="${idsSanitized}">Visualizar Resultado</button>`;
+              topRightDetailsHtml += `<button class="view-exam-result-btn mt-2 text-xs bg-green-100 text-green-800 py-1 px-3 rounded hover:bg-green-200 flex items-center gap-1" data-idp="${event.details.resultIdp}" data-ids="${event.details.resultIds}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block align-middle mr-1"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Visualizar Resultado</button>`;
             }
           } else if (event.type === 'regulation') {
             const r = event.details;
@@ -601,7 +725,7 @@ export function renderTimeline(events, status) {
                     <div class="relative pl-10 timeline-item" data-event-type="${event.type}">
                         <div class="absolute left-4 top-2 -ml-[15px] h-[30px] w-[30px] rounded-full ${style.bgColorClass} border-2 border-white flex items-center justify-center ${style.iconColorClass}" title="${style.label}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="${style.icon}" />
+                              <path d="${style.icon}" />
                             </svg>
                         </div>
                         <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
