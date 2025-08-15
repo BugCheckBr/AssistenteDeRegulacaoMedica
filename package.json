@@ -12,5 +12,8 @@
   "devDependencies": {
     "archiver": "^7.0.1",
     "tailwindcss": "^3.4.1"
+  },
+  "dependencies": {
+    "fs-extra": "^11.3.1"
   }
 }
