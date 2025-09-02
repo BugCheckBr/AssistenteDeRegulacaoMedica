@@ -1,0 +1,25 @@
+# INSTRUÇÕES OBRIGATÓRIAS PARA GITHUB COPILOT
+
+🚨 **ATENÇÃO**: Este projeto possui diretrizes específicas para agentes IA.
+
+## 📋 ANTES DE QUALQUER MODIFICAÇÃO:
+
+1. **LEIA OBRIGATORIAMENTE**: `agents.md` na raiz do projeto
+2. **SIGA**: Todas as convenções de código listadas
+3. **VALIDE**: Segurança de dados médicos
+4. **TESTE**: Cross-browser compatibility
+
+## 🏥 PROJETO MÉDICO - CUIDADOS ESPECIAIS:
+
+- ❌ NUNCA logar dados pessoais/médicos
+- ✅ SEMPRE usar ES6 modules
+- ✅ SEMPRE validar Manifest V3 compliance
+- ✅ SEMPRE testar em Chrome/Firefox/Edge
+
+## 📍 ARQUIVOS CRÍTICOS:
+- `manifest.json` - Permissions e CSP
+- `api.js` - Fluxos SIGSS/CADSUS
+- `store.js` - State management
+- `agents.md` - **LEIA PRIMEIRO**
+
+🔗 **Instruções completas**: `.github/instructions/agents.md.instructions.md`

@@ -1,0 +1,1157 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assistente de Regulação</title>
+    <script src="browser-polyfill.js"></script>
+    <link href="dist/output.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      /* Força a classe hidden a funcionar em ambientes de pré-visualização */
+      .hidden {
+        display: none !important;
+      }
+      .btn-active {
+        background-color: #2563eb;
+        color: white;
+      }
+      .drop-zone {
+        background-color: #f8fafc;
+        border: 2px dashed #e2e8f0;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        min-height: 200px;
+      }
+      .draggable {
+        background-color: white;
+        border: 1px solid #cbd5e1;
+        border-radius: 0.375rem;
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        cursor: grab;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      }
+      .draggable.dragging {
+        opacity: 0.5;
+        background-color: #e0f2fe;
+      }
+      .drag-handle {
+        cursor: grab;
+        color: #94a3b8;
+      }
+      .field-label-input {
+        flex-grow: 1;
+        border: 1px solid #d1d5db;
+        border-radius: 0.25rem;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+      }
+      .filter-default-value-input {
+        flex-grow: 1;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.25rem;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        background-color: #f9fafb;
+      }
+      .filter-default-value-input:focus {
+        outline: 1px solid #3b82f6;
+        background-color: white;
+      }
+      .tabs {
+        display: flex;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 1rem;
+      }
+      .tab-button {
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        border: none;
+        background-color: transparent;
+        border-bottom: 2px solid transparent;
+        font-weight: 500;
+        color: #64748b;
+      }
+      .tab-button.active {
+        color: #2563eb;
+        border-bottom-color: #2563eb;
+      }
+      /* Estilos para arrastar e soltar abas */
+      .tab-button[draggable='true'] {
+        cursor: grab;
+      }
+      .tab-button.dragging {
+        opacity: 0.4;
+        background: #e0f2fe;
+      }
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+      .rule-item {
+        transition: background-color 0.2s;
+      }
+      .rule-item.dragging {
+        opacity: 0.5;
+        background-color: #e0f2fe;
+      }
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+      .modal-container {
+        background-color: white;
+        border-radius: 0.5rem;
+        box-shadow:
+          0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        width: 90%;
+        max-width: 800px;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+      }
+      .modal-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+        font-size: 1.125rem;
+        font-weight: 600;
+      }
+      .modal-body {
+        padding: 1.5rem;
+        overflow-y: auto;
+        flex-grow: 1;
+      }
+      .modal-footer {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+      }
+      input[type='color'] {
+        -webkit-appearance: none;
+        appearance: none;
+        border: none;
+        width: 100%;
+        height: 36px;
+        padding: 0;
+        border-radius: 0.375rem;
+        border: 1px solid #d1d5db;
+        cursor: pointer;
+      }
+      input[type='color']::-webkit-color-swatch-wrapper {
+        padding: 0;
+      }
+      input[type='color']::-webkit-color-swatch {
+        border: none;
+        border-radius: 0.375rem;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-800 antialiased">
+    <header
+      class="p-4 flex-shrink-0 flex items-center space-x-2 pb-2 border-b border-slate-200 justify-between"
+    >
+      <div class="flex items-center space-x-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="text-blue-600"
+        >
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        </svg>
+        <h1 class="text-lg font-bold text-slate-900">Assistente de Regulação</h1>
+      </div>
+      <div class="flex items-center gap-4">
+        <a
+          href="help.html"
+          target="_blank"
+          class="text-sm font-medium text-blue-600 hover:underline flex items-center gap-1"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+            <circle cx="10" cy="10" r="10" fill="#2563eb" />
+            <text
+              x="10"
+              y="15"
+              text-anchor="middle"
+              font-size="13"
+              fill="white"
+              font-family="Arial"
+              font-weight="bold"
+            >
+              ?
+            </text>
+          </svg>
+          Ajuda
+        </a>
+        <button
+          id="closeButton"
+          title="Fechar"
+          class="text-sm font-medium text-slate-600 hover:text-slate-900"
+        >
+          Fechar
+        </button>
+      </div>
+    </header>
+
+    <main class="p-6 space-y-6 pb-24">
+      <!-- Seção de Configurações Gerais (Existente) -->
+      <section class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+        <h2 class="text-md font-semibold text-slate-700 mb-3">Configurações Gerais</h2>
+        <div class="space-y-4">
+          <div>
+            <label for="baseUrlInput" class="block font-medium mb-1"> URL base do sistema: </label>
+            <input
+              type="text"
+              id="baseUrlInput"
+              class="w-full px-3 py-2 border border-slate-300 rounded-md"
+              placeholder="https://exemplo.com"
+            />
+          </div>
+          <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm mt-4">
+            <h2 class="text-md font-semibold text-slate-700 mb-3">Preferências de Comportamento</h2>
+            <div class="space-y-3">
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  id="enableAutomaticDetection"
+                  class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mr-2"
+                />
+                <span>Ativar deteção automática na página de regulação</span>
+              </label>
+              <div class="mt-4 p-3 bg-slate-50 rounded-md border">
+                <h4 class="font-medium mb-2">Manter Sessão Ativa</h4>
+                <div class="flex items-center gap-4">
+                  <div>
+                    <label
+                      for="keepSessionAliveInterval"
+                      class="block font-medium text-slate-600 mb-1"
+                    >
+                      Renovar sessão a cada (minutos):
+                    </label>
+                    <input
+                      type="number"
+                      id="keepSessionAliveInterval"
+                      class="w-20 p-1 border rounded-md"
+                      value="10"
+                      min="0"
+                      max="60"
+                    />
+                  </div>
+                </div>
+                <p class="text-xs text-slate-400 mt-2">
+                  Use '0' para desativar. Envia uma pequena requisição periodicamente para evitar
+                  que a sessão expire.
+                </p>
+              </div>
+            </div>
+            <div class="mt-4 p-4 bg-blue-50 rounded-md border border-blue-200">
+              <h3 class="text-md font-medium text-blue-800 mb-2 flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="mr-2"
+                >
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  <path d="m9 12 2 2 4-4"></path>
+                </svg>
+                Carregamento Automático por Secção
+              </h3>
+              <p class="text-sm text-blue-700 mb-3">
+                <strong>Independente da detecção automática acima</strong>, você pode configurar
+                quais seções carregam dados automaticamente quando um paciente é selecionado. Seções
+                desmarcadas exigem que o usuário clique no botão "Buscar" manualmente.
+              </p>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <label
+                  class="flex items-center p-2 bg-white rounded border hover:bg-blue-50 transition-colors"
+                >
+                  <input
+                    type="checkbox"
+                    id="autoLoadConsultationsCheckbox"
+                    class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mr-3"
+                  />
+                  <div>
+                    <span class="font-medium">Consultas</span>
+                    <div class="text-xs text-slate-500">Histórico de consultas</div>
+                  </div>
+                </label>
+                <label
+                  class="flex items-center p-2 bg-white rounded border hover:bg-blue-50 transition-colors"
+                >
+                  <input
+                    type="checkbox"
+                    id="autoLoadExamsCheckbox"
+                    class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mr-3"
+                  />
+                  <div>
+                    <span class="font-medium">Exames</span>
+                    <div class="text-xs text-slate-500">Exames solicitados</div>
+                  </div>
+                </label>
+                <label
+                  class="flex items-center p-2 bg-white rounded border hover:bg-blue-50 transition-colors"
+                >
+                  <input
+                    type="checkbox"
+                    id="autoLoadAppointmentsCheckbox"
+                    class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mr-3"
+                  />
+                  <div>
+                    <span class="font-medium">Agendamentos</span>
+                    <div class="text-xs text-slate-500">Consultas e exames agendados</div>
+                  </div>
+                </label>
+                <label
+                  class="flex items-center p-2 bg-white rounded border hover:bg-blue-50 transition-colors"
+                >
+                  <input
+                    type="checkbox"
+                    id="autoLoadRegulationsCheckbox"
+                    class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mr-3"
+                  />
+                  <div>
+                    <span class="font-medium">Regulação</span>
+                    <div class="text-xs text-slate-500">Solicitações de regulação</div>
+                  </div>
+                </label>
+                <label
+                  class="flex items-center p-2 bg-white rounded border hover:bg-blue-50 transition-colors"
+                >
+                  <input
+                    type="checkbox"
+                    id="autoLoadDocumentsCheckbox"
+                    class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mr-3"
+                  />
+                  <div>
+                    <span class="font-medium">Documentos</span>
+                    <div class="text-xs text-slate-500">Documentos anexados</div>
+                  </div>
+                </label>
+              </div>
+              <div
+                class="mt-3 p-2 bg-amber-50 border border-amber-200 rounded text-sm text-amber-800"
+              >
+                <strong>💡 Dica:</strong> Para melhor performance, desmarque seções que você
+                raramente usa ou que contêm muitos dados.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- NOVA SEÇÃO: Gerenciador de Automação -->
+      <section
+        id="automation-manager-section"
+        class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm"
+      >
+        <div class="flex justify-between items-center mb-1">
+          <h2 class="text-md font-semibold text-slate-700">
+            Gerenciador de Automação (Modo Automático)
+          </h2>
+          <div class="flex items-center gap-4">
+            <button
+              id="export-rules-btn"
+              class="text-sm font-medium text-slate-600 hover:underline"
+            >
+              Exportar Regras
+            </button>
+            <button
+              id="import-rules-btn"
+              class="text-sm font-medium text-slate-600 hover:underline"
+            >
+              Importar Regras
+            </button>
+          </div>
+        </div>
+        <p class="text-sm text-slate-500 mb-4">
+          Crie regras para aplicar filtros automaticamente com base no contexto da solicitação.
+          Arraste para reordenar a prioridade.
+        </p>
+        <div id="automation-rules-list" class="space-y-2">
+          <!-- As regras de automação serão inseridas aqui pelo options.js -->
+        </div>
+        <button
+          id="create-new-rule-btn"
+          class="mt-4 w-full bg-blue-100 text-blue-700 font-semibold py-2 rounded-md hover:bg-blue-200 transition text-sm"
+        >
+          + Criar Nova Regra de Automação
+        </button>
+      </section>
+
+      <!-- Seção de Configuração de Layouts (Existente) -->
+      <section
+        id="layout-config-section"
+        class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm"
+      >
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-md font-semibold text-slate-700">Configurar Layouts e Padrões</h2>
+          <button
+            id="restoreDefaultsButton"
+            class="text-sm font-medium text-red-600 hover:underline"
+          >
+            Restaurar Padrões
+          </button>
+        </div>
+        <p class="text-sm text-slate-500 mb-4">
+          Arraste as abas abaixo para reordenar as seções na barra lateral. Arraste os campos e
+          filtros para reordená-los dentro de cada seção.
+        </p>
+        <div id="filter-tabs-container">
+          <div class="tabs">
+            <button class="tab-button active" data-tab="patient-card">Ficha do Paciente</button>
+            <button class="tab-button" data-tab="timeline">Linha do Tempo</button>
+            <button class="tab-button" data-tab="consultations">Consultas</button>
+            <button class="tab-button" data-tab="exams">Exames</button>
+            <button class="tab-button" data-tab="appointments">Agendamentos</button>
+            <button class="tab-button" data-tab="regulations">Regulação</button>
+            <button class="tab-button" data-tab="documents">Documentos</button>
+          </div>
+          <!-- Conteúdo das Abas -->
+
+          <div id="patient-card-tab" class="tab-content active">
+            <!-- Painel de Estilos do Cabeçalho -->
+            <div class="p-4 bg-slate-50 rounded-lg border mb-6">
+              <h4 class="font-semibold text-slate-800 mb-3">Estilo do Cabeçalho da Seção</h4>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                  <label
+                    for="style-patient-details-bg-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor de Fundo</label
+                  >
+                  <input type="color" id="style-patient-details-bg-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-patient-details-font-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor da Fonte</label
+                  >
+                  <input type="color" id="style-patient-details-font-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-patient-details-icon-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor do Ícone</label
+                  >
+                  <input type="color" id="style-patient-details-icon-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-patient-details-font-size"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Tamanho da Fonte</label
+                  >
+                  <select
+                    id="style-patient-details-font-size"
+                    class="w-full p-1.5 border rounded-md bg-white"
+                  >
+                    <option value="14px">Pequeno (14px)</option>
+                    <option value="16px">Normal (16px)</option>
+                    <option value="18px">Grande (18px)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+              <div>
+                <h3 class="font-semibold mb-2">Campos Principais (Sempre Visíveis)</h3>
+                <div id="main-fields-zone" class="drop-zone"></div>
+              </div>
+              <div>
+                <h3 class="font-semibold mb-2">Campos em "Mostrar Mais"</h3>
+                <div id="more-fields-zone" class="drop-zone"></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="timeline-tab" class="tab-content">
+            <div class="p-4 bg-slate-50 rounded-lg border mb-6">
+              <h4 class="font-semibold text-slate-800 mb-3">Estilo do Cabeçalho da Seção</h4>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                  <label
+                    for="style-timeline-bg-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor de Fundo</label
+                  >
+                  <input type="color" id="style-timeline-bg-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-timeline-font-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor da Fonte</label
+                  >
+                  <input type="color" id="style-timeline-font-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-timeline-icon-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor do Ícone</label
+                  >
+                  <input type="color" id="style-timeline-icon-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-timeline-font-size"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Tamanho da Fonte</label
+                  >
+                  <select
+                    id="style-timeline-font-size"
+                    class="w-full p-1.5 border rounded-md bg-white"
+                  >
+                    <option value="14px">Pequeno (14px)</option>
+                    <option value="16px">Normal (16px)</option>
+                    <option value="18px">Grande (18px)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 p-3 bg-slate-50 rounded-md border">
+              <h4 class="font-medium text-sm mb-2">Período de Busca Padrão</h4>
+              <div class="flex items-center gap-4 text-sm">
+                <div>
+                  <label for="timeline-start-offset">Início (meses antes):</label>
+                  <input
+                    type="number"
+                    id="timeline-start-offset"
+                    class="w-20 p-1 border rounded-md"
+                    value="12"
+                    min="0"
+                  />
+                </div>
+                <div>
+                  <label for="timeline-end-offset">Fim (meses depois):</label>
+                  <input
+                    type="number"
+                    id="timeline-end-offset"
+                    class="w-20 p-1 border rounded-md"
+                    value="0"
+                    min="0"
+                  />
+                </div>
+              </div>
+              <p class="text-xs text-slate-400 mt-2">
+                Use '0' para o mês atual. Os valores são relativos a hoje.
+              </p>
+            </div>
+          </div>
+
+          <div id="consultations-tab" class="tab-content">
+            <!-- Painel de Estilos do Cabeçalho -->
+            <div class="p-4 bg-slate-50 rounded-lg border mb-6">
+              <h4 class="font-semibold text-slate-800 mb-3">Estilo do Cabeçalho da Seção</h4>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                  <label
+                    for="style-consultations-bg-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor de Fundo</label
+                  >
+                  <input type="color" id="style-consultations-bg-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-consultations-font-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor da Fonte</label
+                  >
+                  <input type="color" id="style-consultations-font-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-consultations-icon-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor do Ícone</label
+                  >
+                  <input type="color" id="style-consultations-icon-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-consultations-font-size"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Tamanho da Fonte</label
+                  >
+                  <select
+                    id="style-consultations-font-size"
+                    class="w-full p-1.5 border rounded-md bg-white"
+                  >
+                    <option value="14px">Pequeno (14px)</option>
+                    <option value="16px">Normal (16px)</option>
+                    <option value="18px">Grande (18px)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 p-3 bg-slate-50 rounded-md border">
+              <h4 class="font-medium text-sm mb-2">Período de Busca Padrão</h4>
+              <div class="flex items-center gap-4 text-sm">
+                <div>
+                  <label for="consultations-start-offset">Início (meses antes):</label>
+                  <input
+                    type="number"
+                    id="consultations-start-offset"
+                    class="w-20 p-1 border rounded-md"
+                    value="6"
+                    min="0"
+                  />
+                </div>
+                <div>
+                  <label for="consultations-end-offset">Fim (meses depois):</label>
+                  <input
+                    type="number"
+                    id="consultations-end-offset"
+                    class="w-20 p-1 border rounded-md"
+                    value="0"
+                    min="0"
+                  />
+                </div>
+              </div>
+              <p class="text-xs text-slate-400 mt-2">
+                Use '0' para o mês atual. Os valores são relativos a hoje.
+              </p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+              <div>
+                <h3 class="font-semibold mb-2">Filtros Principais</h3>
+                <div
+                  id="consultations-main-filters-zone"
+                  class="drop-zone"
+                  data-section="consultations"
+                ></div>
+              </div>
+              <div>
+                <h3 class="font-semibold mb-2">Demais Filtros</h3>
+                <div
+                  id="consultations-more-filters-zone"
+                  class="drop-zone"
+                  data-section="consultations"
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div id="exams-tab" class="tab-content">
+            <!-- Painel de Estilos do Cabeçalho -->
+            <div class="p-4 bg-slate-50 rounded-lg border mb-6">
+              <h4 class="font-semibold text-slate-800 mb-3">Estilo do Cabeçalho da Seção</h4>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                  <label
+                    for="style-exams-bg-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor de Fundo</label
+                  >
+                  <input type="color" id="style-exams-bg-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-exams-font-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor da Fonte</label
+                  >
+                  <input type="color" id="style-exams-font-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-exams-icon-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor do Ícone</label
+                  >
+                  <input type="color" id="style-exams-icon-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-exams-font-size"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Tamanho da Fonte</label
+                  >
+                  <select
+                    id="style-exams-font-size"
+                    class="w-full p-1.5 border rounded-md bg-white"
+                  >
+                    <option value="14px">Pequeno (14px)</option>
+                    <option value="16px">Normal (16px)</option>
+                    <option value="18px">Grande (18px)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 p-3 bg-slate-50 rounded-md border">
+              <h4 class="font-medium text-sm mb-2">Período de Busca Padrão</h4>
+              <div class="flex items-center gap-4 text-sm">
+                <div>
+                  <label for="exams-start-offset">Início (meses antes):</label>
+                  <input
+                    type="number"
+                    id="exams-start-offset"
+                    class="w-20 p-1 border rounded-md"
+                    value="6"
+                    min="0"
+                  />
+                </div>
+                <div>
+                  <label for="exams-end-offset">Fim (meses depois):</label>
+                  <input
+                    type="number"
+                    id="exams-end-offset"
+                    class="w-20 p-1 border rounded-md"
+                    value="0"
+                    min="0"
+                  />
+                </div>
+              </div>
+              <p class="text-xs text-slate-400 mt-2">Use '0' para o mês atual.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+              <div>
+                <h3 class="font-semibold mb-2">Filtros Principais</h3>
+                <div id="exams-main-filters-zone" class="drop-zone" data-section="exams"></div>
+              </div>
+              <div>
+                <h3 class="font-semibold mb-2">Demais Filtros</h3>
+                <div id="exams-more-filters-zone" class="drop-zone" data-section="exams"></div>
+              </div>
+            </div>
+          </div>
+          <div id="appointments-tab" class="tab-content">
+            <!-- Painel de Estilos do Cabeçalho -->
+            <div class="p-4 bg-slate-50 rounded-lg border mb-6">
+              <h4 class="font-semibold text-slate-800 mb-3">Estilo do Cabeçalho da Seção</h4>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                  <label
+                    for="style-appointments-bg-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor de Fundo</label
+                  >
+                  <input type="color" id="style-appointments-bg-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-appointments-font-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor da Fonte</label
+                  >
+                  <input type="color" id="style-appointments-font-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-appointments-icon-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor do Ícone</label
+                  >
+                  <input type="color" id="style-appointments-icon-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-appointments-font-size"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Tamanho da Fonte</label
+                  >
+                  <select
+                    id="style-appointments-font-size"
+                    class="w-full p-1.5 border rounded-md bg-white"
+                  >
+                    <option value="14px">Pequeno (14px)</option>
+                    <option value="16px">Normal (16px)</option>
+                    <option value="18px">Grande (18px)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 p-3 bg-slate-50 rounded-md border">
+              <h4 class="font-medium text-sm mb-2">Período de Busca Padrão</h4>
+              <div class="flex items-center gap-4 text-sm">
+                <div>
+                  <label for="appointments-start-offset">Início (meses antes):</label>
+                  <input
+                    type="number"
+                    id="appointments-start-offset"
+                    class="w-20 p-1 border rounded-md"
+                    value="1"
+                    min="0"
+                  />
+                </div>
+                <div>
+                  <label for="appointments-end-offset">Fim (meses depois):</label>
+                  <input
+                    type="number"
+                    id="appointments-end-offset"
+                    class="w-20 p-1 border rounded-md"
+                    value="3"
+                    min="0"
+                  />
+                </div>
+              </div>
+              <p class="text-xs text-slate-400 mt-2">Use '0' para o mês atual.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+              <div>
+                <h3 class="font-semibold mb-2">Filtros Principais</h3>
+                <div
+                  id="appointments-main-filters-zone"
+                  class="drop-zone"
+                  data-section="appointments"
+                ></div>
+              </div>
+              <div>
+                <h3 class="font-semibold mb-2">Demais Filtros</h3>
+                <div
+                  id="appointments-more-filters-zone"
+                  class="drop-zone"
+                  data-section="appointments"
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div id="regulations-tab" class="tab-content">
+            <!-- Painel de Estilos do Cabeçalho -->
+            <div class="p-4 bg-slate-50 rounded-lg border mb-6">
+              <h4 class="font-semibold text-slate-800 mb-3">Estilo do Cabeçalho da Seção</h4>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                  <label
+                    for="style-regulations-bg-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor de Fundo</label
+                  >
+                  <input type="color" id="style-regulations-bg-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-regulations-font-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor da Fonte</label
+                  >
+                  <input type="color" id="style-regulations-font-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-regulations-icon-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor do Ícone</label
+                  >
+                  <input type="color" id="style-regulations-icon-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-regulations-font-size"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Tamanho da Fonte</label
+                  >
+                  <select
+                    id="style-regulations-font-size"
+                    class="w-full p-1.5 border rounded-md bg-white"
+                  >
+                    <option value="14px">Pequeno (14px)</option>
+                    <option value="16px">Normal (16px)</option>
+                    <option value="18px">Grande (18px)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 p-3 bg-slate-50 rounded-md border">
+              <h4 class="font-medium text-sm mb-2">Período de Busca Padrão</h4>
+              <div class="flex items-center gap-4 text-sm">
+                <div>
+                  <label for="regulations-start-offset">Início (meses antes):</label>
+                  <input
+                    type="number"
+                    id="regulations-start-offset"
+                    class="w-20 p-1 border rounded-md"
+                    value="12"
+                    min="0"
+                  />
+                </div>
+                <div>
+                  <label for="regulations-end-offset">Fim (meses depois):</label>
+                  <input
+                    type="number"
+                    id="regulations-end-offset"
+                    class="w-20 p-1 border rounded-md"
+                    value="0"
+                    min="0"
+                  />
+                </div>
+              </div>
+              <p class="text-xs text-slate-400 mt-2">Use '0' para o mês atual.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+              <div>
+                <h3 class="font-semibold mb-2">Filtros Principais</h3>
+                <div
+                  id="regulations-main-filters-zone"
+                  class="drop-zone"
+                  data-section="regulations"
+                ></div>
+              </div>
+              <div>
+                <h3 class="font-semibold mb-2">Demais Filtros</h3>
+                <div
+                  id="regulations-more-filters-zone"
+                  class="drop-zone"
+                  data-section="regulations"
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div id="documents-tab" class="tab-content">
+            <!-- Painel de Estilos do Cabeçalho -->
+            <div class="p-4 bg-slate-50 rounded-lg border mb-6">
+              <h4 class="font-semibold text-slate-800 mb-3">Estilo do Cabeçalho da Seção</h4>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                  <label
+                    for="style-documents-bg-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor de Fundo</label
+                  >
+                  <input type="color" id="style-documents-bg-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-documents-font-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor da Fonte</label
+                  >
+                  <input type="color" id="style-documents-font-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-documents-icon-color"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Cor do Ícone</label
+                  >
+                  <input type="color" id="style-documents-icon-color" class="w-full" />
+                </div>
+                <div>
+                  <label
+                    for="style-documents-font-size"
+                    class="block text-sm font-medium text-slate-600 mb-1"
+                    >Tamanho da Fonte</label
+                  >
+                  <select
+                    id="style-documents-font-size"
+                    class="w-full p-1.5 border rounded-md bg-white"
+                  >
+                    <option value="14px">Pequeno (14px)</option>
+                    <option value="16px">Normal (16px)</option>
+                    <option value="18px">Grande (18px)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 p-3 bg-slate-50 rounded-md border">
+              <h4 class="font-medium text-sm mb-2">Período de Busca Padrão</h4>
+              <div class="flex items-center gap-4 text-sm">
+                <div>
+                  <label for="documents-start-offset">Início (meses antes):</label>
+                  <input
+                    type="number"
+                    id="documents-start-offset"
+                    class="w-20 p-1 border rounded-md"
+                    value="24"
+                    min="0"
+                  />
+                </div>
+                <div>
+                  <label for="documents-end-offset">Fim (meses depois):</label>
+                  <input
+                    type="number"
+                    id="documents-end-offset"
+                    class="w-20 p-1 border rounded-md"
+                    value="0"
+                    min="0"
+                  />
+                </div>
+              </div>
+              <p class="text-xs text-slate-400 mt-2">
+                Use '0' para o mês atual. Os valores são relativos a hoje.
+              </p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+              <div>
+                <h3 class="font-semibold mb-2">Filtros Principais</h3>
+                <div
+                  id="documents-main-filters-zone"
+                  class="drop-zone"
+                  data-section="documents"
+                ></div>
+              </div>
+              <div>
+                <h3 class="font-semibold mb-2">Demais Filtros</h3>
+                <div
+                  id="documents-more-filters-zone"
+                  class="drop-zone"
+                  data-section="documents"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Seção de Gestão de Dados (Existente) -->
+      <section
+        id="data-management-section"
+        class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm"
+      >
+        <h2 class="text-md font-semibold text-slate-700 mb-3">Gestão de Dados</h2>
+        <p class="text-sm text-slate-500 mb-4">
+          Exporte as suas configurações para fazer um backup ou partilhar com colegas. Importe um
+          ficheiro para aplicar configurações de outra pessoa.
+        </p>
+        <div class="flex items-center gap-4">
+          <button
+            id="exportButton"
+            class="px-4 py-2 bg-slate-600 text-white rounded-md hover:bg-slate-700 transition text-sm font-medium"
+          >
+            Exportar Configurações Gerais
+          </button>
+          <label
+            for="import-file-input"
+            class="cursor-pointer px-4 py-2 bg-slate-100 text-slate-700 rounded-md hover:bg-slate-200 transition text-sm font-medium"
+          >
+            Importar Configurações Gerais
+          </label>
+          <input type="file" id="import-file-input" class="hidden" accept=".json" />
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal para Editor de Regra -->
+    <div id="rule-editor-modal" class="modal-overlay hidden">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3 id="rule-editor-title">Criar Nova Regra de Automação</h3>
+        </div>
+        <div class="modal-body space-y-4">
+          <div>
+            <label for="rule-name-input" class="block font-medium text-sm mb-1"
+              >Nome da Regra</label
+            >
+            <input
+              type="text"
+              id="rule-name-input"
+              placeholder="Ex: Protocolo de Cardiologia"
+              class="w-full px-3 py-2 border border-slate-300 rounded-md"
+            />
+          </div>
+          <div>
+            <label for="rule-triggers-input" class="block font-medium text-sm mb-1"
+              >Palavras-chave de Gatilho (separadas por vírgula)</label
+            >
+            <input
+              type="text"
+              id="rule-triggers-input"
+              placeholder="Ex: ecocardiograma, cardiologia, I3581"
+              class="w-full px-3 py-2 border border-slate-300 rounded-md"
+            />
+          </div>
+          <div class="pt-4 border-t">
+            <h4 class="font-semibold text-slate-700 mb-2">Ações da Regra (Filtros a Aplicar)</h4>
+            <p class="text-sm text-slate-500 mb-3">
+              Configure os filtros para cada seção que serão aplicados quando esta regra for
+              acionada.
+            </p>
+            <div id="rule-editor-filter-tabs">
+              <!-- Abas para cada seção de filtros -->
+              <div class="tabs">
+                <button class="tab-button active" data-tab="consultations-rule-editor">
+                  Consultas
+                </button>
+                <button class="tab-button" data-tab="exams-rule-editor">Exames</button>
+                <button class="tab-button" data-tab="appointments-rule-editor">Agendamentos</button>
+                <button class="tab-button" data-tab="regulations-rule-editor">Regulação</button>
+                <button class="tab-button" data-tab="documents-rule-editor">Documentos</button>
+              </div>
+              <!-- Conteúdo das abas com os filtros -->
+              <div
+                id="consultations-rule-editor-tab"
+                class="tab-content active space-y-4 p-1"
+              ></div>
+              <div id="exams-rule-editor-tab" class="tab-content space-y-4 p-1"></div>
+              <div id="appointments-rule-editor-tab" class="tab-content space-y-4 p-1"></div>
+              <div id="regulations-rule-editor-tab" class="tab-content space-y-4 p-1"></div>
+              <div id="documents-rule-editor-tab" class="tab-content space-y-4 p-1"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            id="cancel-rule-btn"
+            class="px-4 py-2 bg-slate-100 text-slate-700 rounded-md hover:bg-slate-200 transition text-sm font-medium"
+          >
+            Cancelar
+          </button>
+          <button
+            id="save-rule-btn"
+            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition text-sm font-medium"
+          >
+            Salvar Regra
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOVO: Rodapé Flutuante para o Botão Salvar -->
+    <footer
+      id="save-footer"
+      class="sticky bottom-0 bg-white/80 backdrop-blur-sm border-t border-slate-200 p-4 z-10"
+    >
+      <div class="max-w-5xl mx-auto flex justify-end items-center gap-4">
+        <div id="statusMessage" class="text-sm font-medium"></div>
+        <button
+          id="saveButton"
+          class="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition text-sm font-semibold shadow-md"
+        >
+          Salvar Todas as Configurações
+        </button>
+      </div>
+    </footer>
+
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

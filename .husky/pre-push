@@ -1,0 +1,3 @@
+# Executa validação mais completa antes de fazer o push
+echo "🔍 Executando validação completa antes do push..."
+npm run validate && npm run lint

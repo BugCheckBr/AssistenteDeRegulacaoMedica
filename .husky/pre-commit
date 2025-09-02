@@ -1,0 +1,2 @@
+# Executa a formatação, linting e validação de segurança antes do commit
+npm run pre-commit

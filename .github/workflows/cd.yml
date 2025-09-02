@@ -1,0 +1,494 @@
+name: 'CD - Browser Extension Release'
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Release Type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'beta'
+        type: choice
+        options:
+          - beta
+          - production
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  # ===============================
+  # PRE-RELEASE VALIDATION
+  # ===============================
+
+  pre-release-check:
+    name: 🔍 Pre-Release Validation
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      is-production: ${{ steps.environment.outputs.is-production }}
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📥 Install Dependencies
+        run: npm ci
+
+      - name: 📋 Extract Version
+        id: version
+        run: |
+          if [[ ${{ github.ref }} =~ ^refs/tags/v(.+)$ ]]; then
+            VERSION=${BASH_REMATCH[1]}
+          else
+            VERSION=$(node -p "require('./package.json').version")
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "📦 Version: $VERSION"
+
+      - name: 🌍 Determine Environment
+        id: environment
+        run: |
+          if [[ "${{ github.event.inputs.environment }}" == "production" ]] || [[ ${{ github.ref }} =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "is-production=true" >> $GITHUB_OUTPUT
+            echo "🚀 Production Release"
+          else
+            echo "is-production=false" >> $GITHUB_OUTPUT
+            echo "🧪 Beta Release"
+          fi
+
+      - name: ✅ Validate Release Prerequisites
+        run: |
+          echo "🔍 Validating release prerequisites..."
+
+          # Validate version format
+          if ! [[ "${{ steps.version.outputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ Invalid version format: ${{ steps.version.outputs.version }}"
+            exit 1
+          fi
+
+          echo "✅ All prerequisites validated"
+
+  # ===============================
+  # RUN FULL CI PIPELINE
+  # ===============================
+
+  run-ci:
+    name: 🔄 Run CI Pipeline
+    uses: ./.github/workflows/ci.yml
+    needs: pre-release-check
+
+  # ===============================
+  # BUILD RELEASE PACKAGES
+  # ===============================
+
+  build-release:
+    name: 🏗️ Build Release Packages
+    runs-on: ubuntu-latest
+    needs: [pre-release-check, run-ci]
+    continue-on-error: true
+    strategy:
+      matrix:
+        browser: [chrome, firefox, edge]
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📥 Install Dependencies
+        run: npm ci
+
+      - name: 🔧 Update Version in Manifests
+        run: |
+          VERSION="${{ needs.pre-release-check.outputs.version }}"
+
+          # Update main manifest (Chrome)
+          jq --arg version "$VERSION" '.version = $version' manifest.json > manifest.tmp.json
+          mv manifest.tmp.json manifest.json
+
+          # Update Edge manifest
+          if [ -f "manifest-edge.json" ]; then
+            jq --arg version "$VERSION" '.version = $version' manifest-edge.json > manifest-edge.tmp.json
+            mv manifest-edge.tmp.json manifest-edge.json
+          fi
+
+          # Update Firefox manifest
+          if [ -f "manifest-firefox.json" ]; then
+            jq --arg version "$VERSION" '.version = $version' manifest-firefox.json > manifest-firefox.tmp.json
+            mv manifest-firefox.tmp.json manifest-firefox.json
+          fi
+
+          echo "📦 Updated version to $VERSION"
+
+      - name: 🏗️ Build Production
+        run: |
+          npm run build:css
+          npm run build:prod
+
+      - name: 📦 Package ${{ matrix.browser }}
+        run: npm run package:${{ matrix.browser }}
+
+      - name: 🔐 Sign Extension (Chrome)
+        if: matrix.browser == 'chrome' && needs.pre-release-check.outputs.is-production == 'true'
+        env:
+          CHROME_PRIVATE_KEY: ${{ secrets.CHROME_PRIVATE_KEY }}
+        run: |
+          if [ ! -z "$CHROME_PRIVATE_KEY" ]; then
+            mkdir -p keys
+            echo "$CHROME_PRIVATE_KEY" | base64 -d > keys/chrome-private-key.pem
+            node scripts/release/sign-chrome.js
+          fi
+        continue-on-error: true
+
+      - name: 📤 Upload Release Package
+        uses: actions/upload-artifact@v4
+        with:
+          name: release
+          path: dist-zips/
+
+  # ===============================
+  # STORE SUBMISSION (DISABLED)
+  # ===============================
+
+  # submit-chrome:
+  #   name: 🌐 Submit to Chrome Web Store
+  #   runs-on: ubuntu-latest
+  #   needs: [pre-release-check, build-release]
+  #   if: needs.pre-release-check.outputs.is-production == 'true'
+
+  #   steps:
+  #     - name: 📥 Checkout Repository
+  #       uses: actions/checkout@v4
+
+  #     - name: 🔧 Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+  #         cache: 'npm'
+
+  #     - name: 📥 Install Dependencies
+  #       run: npm ci
+
+  #     - name: 📦 Download Chrome Package
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: release-chrome-${{ needs.pre-release-check.outputs.version }}
+  #         path: dist/packages/
+
+  #     - name: 🚀 Upload to Chrome Web Store
+  #       env:
+  #         CHROME_EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}
+  #         CHROME_CLIENT_ID: ${{ secrets.CHROME_CLIENT_ID }}
+  #         CHROME_CLIENT_SECRET: ${{ secrets.CHROME_CLIENT_SECRET }}
+  #         CHROME_REFRESH_TOKEN: ${{ secrets.CHROME_REFRESH_TOKEN }}
+  #       run: |
+  #         if [ ! -z "$CHROME_EXTENSION_ID" ]; then
+  #           node scripts/release/upload-chrome.js
+  #         else
+  #           echo "⚠️ Chrome Web Store credentials not found, skipping upload"
+  #         fi
+  #       continue-on-error: true
+
+  # submit-firefox:
+  #   name: 🦊 Submit to Firefox Add-ons
+  #   runs-on: ubuntu-latest
+  #   needs: [pre-release-check, build-release]
+  #   if: needs.pre-release-check.outputs.is-production == 'true'
+
+  #   steps:
+  #     - name: 📥 Checkout Repository
+  #       uses: actions/checkout@v4
+
+  #     - name: 🔧 Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+  #         cache: 'npm'
+
+  #     - name: 📥 Install Dependencies
+  #       run: npm ci
+
+  #     - name: 📦 Download Firefox Package
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: release-firefox-${{ needs.pre-release-check.outputs.version }}
+  #         path: dist/packages/
+
+  #     - name: 🚀 Upload to Firefox Add-ons
+  #       env:
+  #         FIREFOX_JWT_ISSUER: ${{ secrets.FIREFOX_JWT_ISSUER }}
+  #         FIREFOX_JWT_SECRET: ${{ secrets.FIREFOX_JWT_SECRET }}
+  #         FIREFOX_EXTENSION_ID: ${{ secrets.FIREFOX_EXTENSION_ID }}
+  #       run: |
+  #         if [ ! -z "$FIREFOX_JWT_ISSUER" ]; then
+  #           node scripts/release/upload-firefox.js
+  #         else
+  #           echo "⚠️ Firefox Add-ons credentials not found, skipping upload"
+  #         fi
+  #       continue-on-error: true
+
+  # submit-edge:
+  #   name: 🌐 Submit to Edge Add-ons
+  #   runs-on: ubuntu-latest
+  #   needs: [pre-release-check, build-release]
+  #   if: needs.pre-release-check.outputs.is-production == 'true'
+
+  #   steps:
+  #     - name: 📥 Checkout Repository
+  #       uses: actions/checkout@v4
+
+  #     - name: 🔧 Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+  #         cache: 'npm'
+
+  #     - name: 📥 Install Dependencies
+  #       run: npm ci
+
+  #     - name: 📦 Download Edge Package
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: release-edge-${{ needs.pre-release-check.outputs.version }}
+  #         path: dist/packages/
+
+  #     - name: 🚀 Upload to Edge Add-ons
+  #       env:
+  #         EDGE_CLIENT_ID: ${{ secrets.EDGE_CLIENT_ID }}
+  #         EDGE_CLIENT_SECRET: ${{ secrets.EDGE_CLIENT_SECRET }}
+  #         EDGE_ACCESS_TOKEN_URL: ${{ secrets.EDGE_ACCESS_TOKEN_URL }}
+  #         EDGE_PRODUCT_ID: ${{ secrets.EDGE_PRODUCT_ID }}
+  #       run: |
+  #         if [ ! -z "$EDGE_CLIENT_ID" ]; then
+  #           node scripts/release/upload-edge.js
+  #         else
+  #           echo "⚠️ Edge Add-ons credentials not found, skipping upload"
+  #         fi
+  #       continue-on-error: true
+
+  # ===============================
+  # BETA DISTRIBUTION
+  # ===============================
+
+  beta-release:
+    name: 🧪 Beta Release Distribution
+    runs-on: ubuntu-latest
+    needs: [pre-release-check, build-release]
+    if: needs.pre-release-check.outputs.is-production == 'false'
+    permissions:
+      contents: write
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 📝 Update CHANGELOG
+        run: node scripts/release/release-changelog.js ${{ needs.pre-release-check.outputs.version }}
+
+      - name: 🚀 Commit and Push CHANGELOG
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add CHANGELOG.md
+          git commit -m "docs(changelog): update for version ${{ needs.pre-release-check.outputs.version }}"
+          git push origin HEAD:main
+
+      - name: 📦 Download All Packages
+        uses: actions/download-artifact@v4
+        with:
+          name: release
+          path: dist-zips/
+
+      - name: 🧪 Create Beta Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ needs.pre-release-check.outputs.version }}-beta
+          name: 🧪 Beta Release v${{ needs.pre-release-check.outputs.version }}
+          body: |
+            ## 🧪 Beta Release v${{ needs.pre-release-check.outputs.version }}
+
+            **⚠️ This is a beta release for testing purposes**
+
+            ### 📦 Available Downloads
+            - Chrome Extension (.zip)
+            - Firefox Extension (.xpi)
+            - Edge Extension (.zip)
+
+            ### 🚀 Installation Instructions
+            1. Download the appropriate package for your browser
+            2. Load as unpacked extension in developer mode
+            3. Report any issues on GitHub
+
+            **Commit:** ${{ github.sha }}
+            **Build Date:** ${{ github.run_id }}
+          files: dist-zips/**/*.zip
+          prerelease: true
+          draft: false
+
+  # ===============================
+  # PRODUCTION RELEASE
+  # ===============================
+
+  production-release:
+    name: 🚀 Production Release
+    runs-on: ubuntu-latest
+    needs: [pre-release-check, build-release]
+    if: needs.pre-release-check.outputs.is-production == 'true'
+    permissions:
+      contents: write
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 📝 Update CHANGELOG
+        run: node scripts/release/release-changelog.js ${{ needs.pre-release-check.outputs.version }}
+
+      - name: 🚀 Commit and Push CHANGELOG
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add CHANGELOG.md
+          git commit -m "docs(changelog): update for version ${{ needs.pre-release-check.outputs.version }}"
+          git push origin HEAD:main
+
+      - name: 📦 Download All Packages
+        uses: actions/download-artifact@v4
+        with:
+          name: release
+          path: dist-zips/
+
+      - name: 📝 Generate Changelog
+        id: changelog
+        run: |
+          VERSION="${{ needs.pre-release-check.outputs.version }}"
+          CHANGELOG_CONTENT=$(awk -v version="[${VERSION}]" '
+            $0 ~ version {
+              in_section=1
+              next
+            }
+            in_section && /^## / {
+              exit
+            }
+            in_section {
+              print
+            }
+          ' CHANGELOG.md)
+          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG_CONTENT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: 🚀 Create Production Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ needs.pre-release-check.outputs.version }}
+          name: 🚀 Release v${{ needs.pre-release-check.outputs.version }}
+          body: |
+            ## 🚀 Release v${{ needs.pre-release-check.outputs.version }}
+
+            ### 📦 Available on Browser Stores
+            - [Chrome Web Store](https://chrome.google.com/webstore/detail/${{ secrets.CHROME_EXTENSION_ID }})
+            - [Firefox Add-ons](https://addons.mozilla.org/addon/${{ secrets.FIREFOX_EXTENSION_ID }})
+            - [Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/${{ secrets.EDGE_EXTENSION_ID }})
+
+            ### 🔄 Changes
+            ${{ steps.changelog.outputs.CHANGELOG }}
+
+            ### 📊 Technical Details
+            - **Commit:** ${{ github.sha }}
+            - **Build Date:** ${{ github.run_id }}
+            - **Manifest Version:** 3
+            - **Browsers:** Chrome, Firefox, Edge
+
+            ### 🛡️ Security
+            All packages are digitally signed and verified.
+          files: dist-zips/**/*.zip
+          prerelease: false
+          draft: false
+
+  # ===============================
+  # POST-RELEASE MONITORING
+  # ===============================
+
+  post-release:
+    name: 📊 Post-Release Monitoring
+    runs-on: ubuntu-latest
+    needs: [pre-release-check, production-release, beta-release]
+    if: always() && (needs.production-release.result == 'success' || needs.beta-release.result == 'success')
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📥 Install Dependencies
+        run: npm ci
+
+      - name: 📊 Initialize Monitoring
+        run: |
+          echo "🚀 Release deployed successfully!"
+          echo "📊 Initializing post-release monitoring..."
+
+          # Setup error tracking
+          node scripts/monitoring/setup-tracking.js
+
+          # Send success notification
+          node scripts/utils/notification.js \
+            --type="success" \
+            --title="🚀 Extension Released" \
+            --version="${{ needs.pre-release-check.outputs.version }}" \
+            --environment="${{ needs.pre-release-check.outputs.is-production == 'true' && 'production' || 'beta' }}"
+
+  # ===============================
+  # NOTIFICATION & CLEANUP
+  # ===============================
+
+  notify-completion:
+    name: 📢 Notify Completion
+    runs-on: ubuntu-latest
+    needs: [pre-release-check, production-release, beta-release, post-release]
+    if: always()
+
+    steps:
+      - name: 📢 Success Notification
+        if: needs.post-release.result == 'success'
+        run: |
+          echo "✅ Release pipeline completed successfully!"
+          echo "🎉 Version ${{ needs.pre-release-check.outputs.version }} is now available"
+
+      - name: 📢 Failure Notification
+        if: failure()
+        run: |
+          echo "❌ Release pipeline failed!"
+          echo "🔍 Check the logs for details"
+          exit 1

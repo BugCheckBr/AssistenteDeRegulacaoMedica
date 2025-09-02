@@ -1,0 +1,2065 @@
+npm verbose cli C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+npm info using npm@10.9.2
+npm info using node@v22.17.0
+npm verbose title npm run test:unit
+npm verbose argv "run" "test:unit" "--runInBand" "--loglevel" "verbose"
+npm verbose logfile logs-max:10 dir:C:\Users\cleitomforni\AppData\Local\npm-cache\_logs\2025-09-01T14_49_51_507Z-
+npm verbose logfile C:\Users\cleitomforni\AppData\Local\npm-cache\_logs\2025-09-01T14_49_51_507Z-debug-0.log
+
+> assistente-de-regulacao-medica@4.0.5 test:unit
+> jest --config config/jest/jest.unit.cjs
+
+FAIL Unit Tests test/unit/keepalive-manager-fixed.test.js (11.079 s)
+  KeepAliveManager
+    Service Worker Detection
+      ÔêÜ should detect service worker environment when importScripts is undefined (121 ms)
+      ├ù should detect background script environment when importScripts exists (3 ms)
+    Alarms API Implementation
+      ├ù should create alarm when starting in service worker environment (1 ms)
+      ├ù should setup alarm listener when KeepAliveManager is created in service worker (1 ms)
+      ├ù should clear existing alarm before creating new one (2 ms)
+      ├ù should handle alarm events correctly (1 ms)
+      ├ù should ignore non-keepAlive alarms (1 ms)
+    SetInterval Implementation
+      ├ù should use setInterval in background script environment (1 ms)
+      ├ù should not create alarm in background script environment (1 ms)
+      ├ù should execute ping via setInterval (1 ms)
+    Stop Functionality
+      ├ù should clear alarm when stopping in service worker environment
+      ├ù should clear interval when stopping in background script environment (1 ms)
+      ├ù should remove alarm listener when stopping
+    Error Handling
+      ├ù should handle fetch errors gracefully in alarm context (1 ms)
+      ├ù should handle fetch errors gracefully in setInterval context (1 ms)
+      ├ù should handle missing alarms API gracefully (1 ms)
+    State Management
+      ├ù should track running state correctly (1 ms)
+      ├ù should prevent multiple starts (1 ms)
+    Cross-browser Compatibility
+      ├ù should work with chrome API (2 ms)
+      ├ù should work with browser API (3 ms)
+
+  ÔùÅ KeepAliveManager ÔÇ║ Service Worker Detection ÔÇ║ should detect background script environment when importScripts exists
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                                    ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.get (test/setup.js:108:36)
+
+  ÔùÅ KeepAliveManager ÔÇ║ Alarms API Implementation ÔÇ║ should create alarm when starting in service worker environment
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                                    ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.get (test/setup.js:108:36)
+
+  ÔùÅ KeepAliveManager ÔÇ║ Alarms API Implementation ÔÇ║ should setup alarm listener when KeepAliveManager is created in service worker
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                                    ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.get (test/setup.js:108:36)
+
+  ÔùÅ KeepAliveManager ÔÇ║ Alarms API Implementation ÔÇ║ should clear existing alarm before creating new one
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                                    ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.get (test/setup.js:108:36)
+
+  ÔùÅ KeepAliveManager ÔÇ║ Alarms API Implementation ÔÇ║ should handle alarm events correctly
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                                    ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.get (test/setup.js:108:36)
+
+  ÔùÅ KeepAliveManager ÔÇ║ Alarms API Implementation ÔÇ║ should ignore non-keepAlive alarms
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                                    ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.get (test/setup.js:108:36)
+
+  ÔùÅ KeepAliveManager ÔÇ║ SetInterval Implementation ÔÇ║ should use setInterval in background script environment
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                                    ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.get (test/setup.js:108:36)
+
+  ÔùÅ KeepAliveManager ÔÇ║ SetInterval Implementation ÔÇ║ should not create alarm in background script environment
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                                    ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.get (test/setup.js:108:36)
+
+  ÔùÅ KeepAliveManager ÔÇ║ SetInterval Implementation ÔÇ║ should execute ping via setInterval
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                                    ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.get (test/setup.js:108:36)
+
+  ÔùÅ KeepAliveManager ÔÇ║ Stop Functionality ÔÇ║ should clear alarm when stopping in service worker environment
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                                    ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.get (test/setup.js:108:36)
+
+  ÔùÅ KeepAliveManager ÔÇ║ Stop Functionality ÔÇ║ should clear interval when stopping in background script environment
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                                    ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.get (test/setup.js:108:36)
+
+  ÔùÅ KeepAliveManager ÔÇ║ Stop Functionality ÔÇ║ should remove alarm listener when stopping
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                                    ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.get (test/setup.js:108:36)
+
+  ÔùÅ KeepAliveManager ÔÇ║ Error Handling ÔÇ║ should handle fetch errors gracefully in alarm context
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                                    ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.get (test/setup.js:108:36)
+
+  ÔùÅ KeepAliveManager ÔÇ║ Error Handling ÔÇ║ should handle fetch errors gracefully in setInterval context
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                                    ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.get (test/setup.js:108:36)
+
+  ÔùÅ KeepAliveManager ÔÇ║ Error Handling ÔÇ║ should handle missing alarms API gracefully
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                                    ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.get (test/setup.js:108:36)
+
+  ÔùÅ KeepAliveManager ÔÇ║ State Management ÔÇ║ should track running state correctly
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                                    ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.get (test/setup.js:108:36)
+
+  ÔùÅ KeepAliveManager ÔÇ║ State Management ÔÇ║ should prevent multiple starts
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                                    ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.get (test/setup.js:108:36)
+
+  ÔùÅ KeepAliveManager ÔÇ║ Cross-browser Compatibility ÔÇ║ should work with chrome API
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                                    ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.get (test/setup.js:108:36)
+
+  ÔùÅ KeepAliveManager ÔÇ║ Cross-browser Compatibility ÔÇ║ should work with browser API
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                                    ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.get (test/setup.js:108:36)
+
+FAIL Unit Tests test/unit/api.test.js (8.981 s)
+  Medical APIs - Core Functions
+    fetchCadsusData
+      ├ù should handle patient search with CPF safely (60 ms)
+      ├ù should handle API errors gracefully (2 ms)
+      ├ù should handle empty response (1 ms)
+    fetchVisualizaUsuario
+      ├ù should fetch user visualization data (1 ms)
+      ├ù should handle malformed JSON response (1 ms)
+    fetchRegulationDetails
+      ├ù should fetch regulation details with lock management (1 ms)
+    clearRegulationLock
+      ├ù should clear regulation lock properly (1 ms)
+    fetchAllTimelineData
+      ├ù should fetch complete timeline data (1 ms)
+    searchPatients
+      ├ù should search patients by name (1 ms)
+  Medical Data Security
+    ├ù should never log sensitive medical data (1 ms)
+    ├ù should handle SIGSS origin validation (1 ms)
+  API Performance & Reliability
+    ├ù should handle network timeouts gracefully (15 ms)
+    ├ù should handle concurrent API calls efficiently (2 ms)
+
+  ÔùÅ Medical APIs - Core Functions ÔÇ║ fetchCadsusData ÔÇ║ should handle patient search with CPF safely
+
+    TypeError: API.fetchCadsusData is not a function
+
+      49 |       // Execute with timeout to prevent hanging
+      50 |       const result = await Promise.race([
+    > 51 |         API.fetchCadsusData(searchParams),
+         |             ^
+      52 |         new Promise((_, reject) => setTimeout(() => reject(new Error('Test timeout')), 5000)),
+      53 |       ]);
+      54 |
+
+      at Object.fetchCadsusData (test/unit/api.test.js:51:13)
+
+  ÔùÅ Medical APIs - Core Functions ÔÇ║ fetchCadsusData ÔÇ║ should handle API errors gracefully
+
+    TypeError: API.fetchCadsusData is not a function
+
+      74 |       const searchParams = { cpf: '123.456.789-00' };
+      75 |
+    > 76 |       await expect(API.fetchCadsusData(searchParams)).rejects.toThrow();
+         |                        ^
+      77 |     });
+      78 |
+      79 |     test('should handle empty response', async () => {
+
+      at Object.fetchCadsusData (test/unit/api.test.js:76:24)
+
+  ÔùÅ Medical APIs - Core Functions ÔÇ║ fetchCadsusData ÔÇ║ should handle empty response
+
+    TypeError: API.fetchCadsusData is not a function
+
+      83 |       });
+      84 |
+    > 85 |       const result = await API.fetchCadsusData({ cpf: '123.456.789-00' });
+         |                                ^
+      86 |       expect(result).toEqual([]);
+      87 |     });
+      88 |   });
+
+      at Object.fetchCadsusData (test/unit/api.test.js:85:32)
+
+  ÔùÅ Medical APIs - Core Functions ÔÇ║ fetchVisualizaUsuario ÔÇ║ should fetch user visualization data
+
+    TypeError: API.fetchVisualizaUsuario is not a function
+
+      105 |
+      106 |       const result = await Promise.race([
+    > 107 |         API.fetchVisualizaUsuario('TEST_ISEN_PK'),
+          |             ^
+      108 |         new Promise((_, reject) => setTimeout(() => reject(new Error('Test timeout')), 5000)),
+      109 |       ]);
+      110 |
+
+      at Object.fetchVisualizaUsuario (test/unit/api.test.js:107:13)
+
+  ÔùÅ Medical APIs - Core Functions ÔÇ║ fetchVisualizaUsuario ÔÇ║ should handle malformed JSON response
+
+    TypeError: API.fetchVisualizaUsuario is not a function
+
+      120 |       });
+      121 |
+    > 122 |       await expect(API.fetchVisualizaUsuario('TEST_ISEN_PK')).rejects.toThrow();
+          |                        ^
+      123 |     });
+      124 |   });
+      125 |
+
+      at Object.fetchVisualizaUsuario (test/unit/api.test.js:122:24)
+
+  ÔùÅ Medical APIs - Core Functions ÔÇ║ fetchRegulationDetails ÔÇ║ should fetch regulation details with lock management
+
+    TypeError: API.fetchRegulationDetails is not a function
+
+      139 |
+      140 |       const result = await Promise.race([
+    > 141 |         API.fetchRegulationDetails('REG_TEST_12345'),
+          |             ^
+      142 |         new Promise((_, reject) => setTimeout(() => reject(new Error('Test timeout')), 5000)),
+      143 |       ]);
+      144 |
+
+      at Object.fetchRegulationDetails (test/unit/api.test.js:141:13)
+
+  ÔùÅ Medical APIs - Core Functions ÔÇ║ clearRegulationLock ÔÇ║ should clear regulation lock properly
+
+    TypeError: API.clearRegulationLock is not a function
+
+      157 |
+      158 |       const result = await Promise.race([
+    > 159 |         API.clearRegulationLock('REG_TEST_12345'),
+          |             ^
+      160 |         new Promise((_, reject) => setTimeout(() => reject(new Error('Test timeout')), 5000)),
+      161 |       ]);
+      162 |
+
+      at Object.clearRegulationLock (test/unit/api.test.js:159:13)
+
+  ÔùÅ Medical APIs - Core Functions ÔÇ║ fetchAllTimelineData ÔÇ║ should fetch complete timeline data
+
+    TypeError: API.fetchAllTimelineData is not a function
+
+      202 |
+      203 |       const result = await Promise.race([
+    > 204 |         API.fetchAllTimelineData('MOCK_CRYPTO_TOKEN'),
+          |             ^
+      205 |         new Promise((_, reject) => setTimeout(() => reject(new Error('Test timeout')), 8000)),
+      206 |       ]);
+      207 |
+
+      at Object.fetchAllTimelineData (test/unit/api.test.js:204:13)
+
+  ÔùÅ Medical APIs - Core Functions ÔÇ║ searchPatients ÔÇ║ should search patients by name
+
+    TypeError: API.searchPatients is not a function
+
+      234 |
+      235 |       const result = await Promise.race([
+    > 236 |         API.searchPatients('PACIENTE TESTE'),
+          |             ^
+      237 |         new Promise((_, reject) => setTimeout(() => reject(new Error('Test timeout')), 5000)),
+      238 |       ]);
+      239 |
+
+      at Object.searchPatients (test/unit/api.test.js:236:13)
+
+  ÔùÅ Medical Data Security ÔÇ║ should never log sensitive medical data
+
+    TypeError: API.fetchCadsusData is not a function
+
+      271 |     });
+      272 |
+    > 273 |     await API.fetchCadsusData({ cpf: sensitiveData.cpf });
+          |               ^
+      274 |
+      275 |     // Verificar que dados sens├¡veis n├úo aparecem nos logs
+      276 |     const allLogs = [
+
+      at Object.fetchCadsusData (test/unit/api.test.js:273:15)
+
+  ÔùÅ Medical Data Security ÔÇ║ should handle SIGSS origin validation
+
+    TypeError: API.fetchRegulationDetails is not a function
+
+      299 |     });
+      300 |
+    > 301 |     await expect(API.fetchRegulationDetails('REG_123')).rejects.toThrow();
+          |                      ^
+      302 |   });
+      303 | });
+      304 |
+
+      at Object.fetchRegulationDetails (test/unit/api.test.js:301:22)
+
+  ÔùÅ API Performance & Reliability ÔÇ║ should handle network timeouts gracefully
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Test timeout"
+    Received: "API.fetchCadsusData is not a function"
+
+      338 |       const duration = Date.now() - startTime;
+      339 |       expect(duration).toBeLessThan(4000); // Should timeout before 4 seconds
+    > 340 |       expect(error.message).toBe('Test timeout');
+          |                             ^
+      341 |     }
+      342 |   });
+      343 |
+
+      at Object.toBe (test/unit/api.test.js:340:29)
+
+  ÔùÅ API Performance & Reliability ÔÇ║ should handle concurrent API calls efficiently
+
+    TypeError: API.fetchCadsusData is not a function
+
+      353 |     // Execute 5 concurrent calls
+      354 |     const promises = Array.from({ length: 5 }, (_, i) =>
+    > 355 |       API.fetchCadsusData({ cpf: `123.456.789-0${i}` })
+          |           ^
+      356 |     );
+      357 |
+      358 |     await Promise.all(promises);
+
+      at fetchCadsusData (test/unit/api.test.js:355:11)
+          at Function.from (<anonymous>)
+      at Object.from (test/unit/api.test.js:354:28)
+
+FAIL Unit Tests test/unit/ErrorHandler.test.js (8.97 s)
+  ErrorHandler Standalone Tests
+    Imports and Basic Structure
+      ├ù All imports are defined (82 ms)
+      ├ù ERROR_CATEGORIES has required properties (2 ms)
+      ├ù ERROR_LEVELS has required values (1 ms)
+      ├ù ErrorHandler is a valid instance (1 ms)
+    Singleton Pattern
+      ├ù getErrorHandler returns consistent instance (11 ms)
+    Data Sanitization
+      ├ù sanitizes sensitive medical fields (1 ms)
+      ├ù preserves technical IDs necessary for debugging (1 ms)
+      ├ù handles arrays with sanitization (1 ms)
+      ├ù limits large arrays (1 ms)
+      ├ù truncates very long strings (1 ms)
+    Logging Functions
+      ├ù logInfo works correctly
+      ├ù logError works correctly (1 ms)
+      ├ù automatically sanitizes data in logs (1 ms)
+    Medical Compliance
+      ├ù never logs sensitive medical fields (1 ms)
+      ├ù preserves technical IDs needed for medical debugging (2 ms)
+    ErrorHandler Instance Methods
+      ├ù ErrorHandler has all required methods (7 ms)
+      ├ù performance marks work (8 ms)
+      ├ù observer pattern works (1 ms)
+      ├ù unsubscribe removes observer (1 ms)
+    Error Storage
+      ├ù configuration enables error storage (1 ms)
+      ├ù stores critical errors (1 ms)
+      ├ù retrieves stored errors (1 ms)
+      ├ù handles storage errors gracefully (1 ms)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Imports and Basic Structure ÔÇ║ All imports are defined
+
+    expect(received).toBeDefined()
+
+    Received: undefined
+
+      64 |   describe('Imports and Basic Structure', () => {
+      65 |     test('All imports are defined', () => {
+    > 66 |       expect(ERROR_CATEGORIES).toBeDefined();
+         |                                ^
+      67 |       expect(ERROR_LEVELS).toBeDefined();
+      68 |       expect(ErrorHandler).toBeDefined();
+      69 |       expect(getErrorHandler).toBeDefined();
+
+      at Object.toBeDefined (test/unit/ErrorHandler.test.js:66:32)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Imports and Basic Structure ÔÇ║ ERROR_CATEGORIES has required properties
+
+    TypeError: Cannot read properties of undefined (reading 'SIGSS_API')
+
+      74 |
+      75 |     test('ERROR_CATEGORIES has required properties', () => {
+    > 76 |       expect(ERROR_CATEGORIES.SIGSS_API).toBe('sigss_api');
+         |                               ^
+      77 |       expect(ERROR_CATEGORIES.CADSUS_API).toBe('cadsus_api');
+      78 |       expect(ERROR_CATEGORIES.MEDICAL_DATA).toBe('medical_data');
+      79 |       expect(ERROR_CATEGORIES.SECURITY).toBe('security');
+
+      at Object.SIGSS_API (test/unit/ErrorHandler.test.js:76:31)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Imports and Basic Structure ÔÇ║ ERROR_LEVELS has required values
+
+    TypeError: Cannot read properties of undefined (reading 'DEBUG')
+
+      81 |
+      82 |     test('ERROR_LEVELS has required values', () => {
+    > 83 |       expect(ERROR_LEVELS.DEBUG).toBe(1);
+         |                           ^
+      84 |       expect(ERROR_LEVELS.INFO).toBe(2);
+      85 |       expect(ERROR_LEVELS.WARN).toBe(3);
+      86 |       expect(ERROR_LEVELS.ERROR).toBe(4);
+
+      at Object.DEBUG (test/unit/ErrorHandler.test.js:83:27)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Imports and Basic Structure ÔÇ║ ErrorHandler is a valid instance
+
+    expect(received).toBeDefined()
+
+    Received: undefined
+
+      89 |
+      90 |     test('ErrorHandler is a valid instance', () => {
+    > 91 |       expect(ErrorHandler).toBeDefined();
+         |                            ^
+      92 |       expect(typeof ErrorHandler.logInfo).toBe('function');
+      93 |       expect(typeof ErrorHandler.logError).toBe('function');
+      94 |       expect(typeof ErrorHandler.sanitizeForLogging).toBe('function');
+
+      at Object.toBeDefined (test/unit/ErrorHandler.test.js:91:28)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Singleton Pattern ÔÇ║ getErrorHandler returns consistent instance
+
+    expect(received).toStrictEqual(expected) // deep equality
+
+    Expected: {"createMedicalError": [Function mockConstructor], "logError": [Function mockConstructor], "logInfo": [Function mockConstructor], "logWarning": [Function mockConstructor], "sanitizeData": [Function mockConstructor], "setupGlobalErrorHandling": [Function mockConstructor]}
+    Received: serializes to the same string
+
+      100 |       const instance1 = getErrorHandler();
+      101 |       const instance2 = getErrorHandler();
+    > 102 |       expect(instance1).toStrictEqual(instance2);
+          |                         ^
+      103 |       expect(instance1.constructor).toBe(instance2.constructor);
+      104 |     });
+      105 |   });
+
+      at Object.toStrictEqual (test/unit/ErrorHandler.test.js:102:25)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Data Sanitization ÔÇ║ sanitizes sensitive medical fields
+
+    TypeError: (0 , _ErrorHandler.sanitizeForLog) is not a function
+
+      116 |       };
+      117 |
+    > 118 |       const sanitized = sanitizeForLog(sensitiveData);
+          |                                       ^
+      119 |
+      120 |       expect(sanitized.id).toBe('REGU_123'); // Technical ID - OK
+      121 |       expect(sanitized.reguId).toBe('REG_456'); // Technical ID - OK
+
+      at Object.<anonymous> (test/unit/ErrorHandler.test.js:118:39)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Data Sanitization ÔÇ║ preserves technical IDs necessary for debugging
+
+    TypeError: (0 , _ErrorHandler.sanitizeForLog) is not a function
+
+      136 |       };
+      137 |
+    > 138 |       const sanitized = sanitizeForLog(technicalData);
+          |                                       ^
+      139 |
+      140 |       // All technical IDs should be preserved
+      141 |       Object.keys(technicalData).forEach((key) => {
+
+      at Object.<anonymous> (test/unit/ErrorHandler.test.js:138:39)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Data Sanitization ÔÇ║ handles arrays with sanitization
+
+    TypeError: (0 , _ErrorHandler.sanitizeForLog) is not a function
+
+      150 |       ];
+      151 |
+    > 152 |       const sanitized = sanitizeForLog(arrayData);
+          |                                       ^
+      153 |
+      154 |       expect(sanitized).toHaveLength(2);
+      155 |       expect(sanitized[0].id).toBe('PAT_1');
+
+      at Object.<anonymous> (test/unit/ErrorHandler.test.js:152:39)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Data Sanitization ÔÇ║ limits large arrays
+
+    TypeError: (0 , _ErrorHandler.sanitizeForLog) is not a function
+
+      160 |     test('limits large arrays', () => {
+      161 |       const largeArray = new Array(10).fill({ id: 'TEST' });
+    > 162 |       const sanitized = sanitizeForLog(largeArray);
+          |                                       ^
+      163 |
+      164 |       expect(sanitized).toHaveLength(6); // 5 items + "...X more items"
+      165 |       expect(sanitized[5]).toContain('more items');
+
+      at Object.<anonymous> (test/unit/ErrorHandler.test.js:162:39)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Data Sanitization ÔÇ║ truncates very long strings
+
+    TypeError: (0 , _ErrorHandler.sanitizeForLog) is not a function
+
+      168 |     test('truncates very long strings', () => {
+      169 |       const longString = 'A'.repeat(200);
+    > 170 |       const sanitized = sanitizeForLog(longString);
+          |                                       ^
+      171 |
+      172 |       expect(sanitized).toHaveLength(103); // 100 chars + "..."
+      173 |       expect(sanitized).toMatch(/\.\.\.$/);
+
+      at Object.<anonymous> (test/unit/ErrorHandler.test.js:170:39)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Logging Functions ÔÇ║ logInfo works correctly
+
+    TypeError: Cannot read properties of undefined (reading 'SIGSS_API')
+
+      177 |   describe('Logging Functions', () => {
+      178 |     test('logInfo works correctly', () => {
+    > 179 |       logInfo('Test info message', { test: 'data' }, ERROR_CATEGORIES.SIGSS_API);
+          |                                                                       ^
+      180 |
+      181 |       expect(console.info).toHaveBeenCalledWith(
+      182 |         '[Assistente M├®dico sigss_api] Test info message',
+
+      at Object.SIGSS_API (test/unit/ErrorHandler.test.js:179:71)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Logging Functions ÔÇ║ logError works correctly
+
+    TypeError: Cannot read properties of undefined (reading 'MEDICAL_DATA')
+
+      186 |
+      187 |     test('logError works correctly', () => {
+    > 188 |       logError('Test error message', { error: 'details' }, ERROR_CATEGORIES.MEDICAL_DATA);
+          |                                                                             ^
+      189 |
+      190 |       expect(console.error).toHaveBeenCalledWith(
+      191 |         '[Assistente M├®dico medical_data] Test error message',
+
+      at Object.MEDICAL_DATA (test/unit/ErrorHandler.test.js:188:77)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Logging Functions ÔÇ║ automatically sanitizes data in logs
+
+    TypeError: Cannot read properties of undefined (reading 'MEDICAL_DATA')
+
+      201 |       };
+      202 |
+    > 203 |       logError('Test with sensitive data', sensitiveData, ERROR_CATEGORIES.MEDICAL_DATA);
+          |                                                                            ^
+      204 |
+      205 |       // Check that console.error was called
+      206 |       expect(console.error).toHaveBeenCalled();
+
+      at Object.MEDICAL_DATA (test/unit/ErrorHandler.test.js:203:76)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Medical Compliance ÔÇ║ never logs sensitive medical fields
+
+    TypeError: (0 , _ErrorHandler.sanitizeForLog) is not a function
+
+      239 |
+      240 |       testCases.forEach((testCase) => {
+    > 241 |         const sanitized = sanitizeForLog(testCase);
+          |                                         ^
+      242 |         Object.values(sanitized).forEach((value) => {
+      243 |           expect(value).toBe('[SANITIZED_MEDICAL_DATA]');
+      244 |         });
+
+      at test/unit/ErrorHandler.test.js:241:41
+          at Array.forEach (<anonymous>)
+      at Object.forEach (test/unit/ErrorHandler.test.js:240:17)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Medical Compliance ÔÇ║ preserves technical IDs needed for medical debugging
+
+    TypeError: (0 , _ErrorHandler.sanitizeForLog) is not a function
+
+      258 |       };
+      259 |
+    > 260 |       const sanitized = sanitizeForLog(medicalTechnicalData);
+          |                                       ^
+      261 |
+      262 |       Object.entries(medicalTechnicalData).forEach(([key, value]) => {
+      263 |         expect(sanitized[key]).toBe(value);
+
+      at Object.<anonymous> (test/unit/ErrorHandler.test.js:260:39)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ ErrorHandler Instance Methods ÔÇ║ ErrorHandler has all required methods
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "function"
+    Received: "undefined"
+
+      272 |       expect(typeof handler.logError).toBe('function');
+      273 |       expect(typeof handler.logWarning).toBe('function');
+    > 274 |       expect(typeof handler.sanitizeForLogging).toBe('function');
+          |                                                 ^
+      275 |       expect(typeof handler.startPerformanceMark).toBe('function');
+      276 |       expect(typeof handler.endPerformanceMark).toBe('function');
+      277 |       expect(typeof handler.subscribe).toBe('function');
+
+      at Object.toBe (test/unit/ErrorHandler.test.js:274:49)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ ErrorHandler Instance Methods ÔÇ║ performance marks work
+
+    TypeError: handler.startPerformanceMark is not a function
+
+      282 |     test('performance marks work', (done) => {
+      283 |       const handler = getErrorHandler();
+    > 284 |       handler.startPerformanceMark('test_operation');
+          |               ^
+      285 |
+      286 |       setTimeout(() => {
+      287 |         handler.endPerformanceMark('test_operation');
+
+      at Object.startPerformanceMark (test/unit/ErrorHandler.test.js:284:15)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ ErrorHandler Instance Methods ÔÇ║ observer pattern works
+
+    TypeError: handler.subscribe is not a function
+
+      298 |       const mockObserver = jest.fn();
+      299 |
+    > 300 |       handler.subscribe(mockObserver);
+          |               ^
+      301 |       handler.logInfo('Test message');
+      302 |
+      303 |       expect(mockObserver).toHaveBeenCalledWith(
+
+      at Object.subscribe (test/unit/ErrorHandler.test.js:300:15)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ ErrorHandler Instance Methods ÔÇ║ unsubscribe removes observer
+
+    TypeError: handler.subscribe is not a function
+
+      313 |       const mockObserver = jest.fn();
+      314 |
+    > 315 |       handler.subscribe(mockObserver);
+          |               ^
+      316 |       handler.unsubscribe(mockObserver);
+      317 |       handler.logInfo('Test message');
+      318 |
+
+      at Object.subscribe (test/unit/ErrorHandler.test.js:315:15)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Error Storage ÔÇ║ configuration enables error storage
+
+    TypeError: Cannot read properties of undefined (reading 'enableErrorStorage')
+
+      324 |     test('configuration enables error storage', () => {
+      325 |       const handler = getErrorHandler();
+    > 326 |       expect(handler.config.enableErrorStorage).toBe(true);
+          |                             ^
+      327 |     });
+      328 |
+      329 |     test('stores critical errors', async () => {
+
+      at Object.enableErrorStorage (test/unit/ErrorHandler.test.js:326:29)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Error Storage ÔÇ║ stores critical errors
+
+    TypeError: Cannot set properties of undefined (setting 'enableErrorStorage')
+
+      338 |
+      339 |       // Force storage to be enabled and console logging disabled for cleaner test
+    > 340 |       handler.config.enableErrorStorage = true;
+          |                                        ^
+      341 |       handler.config.enableConsoleLogging = false;
+      342 |
+      343 |       // Spy on the storeError method to see if it's being called
+
+      at Object.<anonymous> (test/unit/ErrorHandler.test.js:340:40)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Error Storage ÔÇ║ retrieves stored errors
+
+    TypeError: handler.getStoredErrors is not a function
+
+      390 |
+      391 |       const handler = getErrorHandler();
+    > 392 |       const storedErrors = await handler.getStoredErrors();
+          |                                          ^
+      393 |
+      394 |       expect(storedErrors).toEqual(mockErrors);
+      395 |       expect(chrome.storage.local.get).toHaveBeenCalledWith('medicalErrors');
+
+      at Object.getStoredErrors (test/unit/ErrorHandler.test.js:392:42)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Error Storage ÔÇ║ handles storage errors gracefully
+
+    TypeError: handler.getStoredErrors is not a function
+
+      401 |
+      402 |       const handler = getErrorHandler();
+    > 403 |       const storedErrors = await handler.getStoredErrors();
+          |                                          ^
+      404 |
+      405 |       // Should return empty array on error
+      406 |       expect(storedErrors).toEqual([]);
+
+      at Object.getStoredErrors (test/unit/ErrorHandler.test.js:403:42)
+
+FAIL Unit Tests test/unit/ErrorHandler.standalone.test.js (9.062 s)
+  ErrorHandler Standalone Tests
+    Imports and Basic Structure
+      ├ù All imports are defined (75 ms)
+      ├ù ERROR_CATEGORIES has required properties (2 ms)
+      ├ù ERROR_LEVELS has required values (2 ms)
+      ├ù ErrorHandler is a valid instance (2 ms)
+    Singleton Pattern
+      ├ù getErrorHandler returns consistent instance (10 ms)
+    Data Sanitization
+      ├ù sanitizes sensitive medical fields (1 ms)
+      ├ù preserves technical IDs necessary for debugging (2 ms)
+      ├ù handles arrays with sanitization (2 ms)
+      ├ù limits large arrays (2 ms)
+      ├ù truncates very long strings (1 ms)
+    Logging Functions
+      ├ù logInfo works correctly (1 ms)
+      ├ù logError works correctly (2 ms)
+      ├ù automatically sanitizes data in logs (2 ms)
+    Medical Compliance
+      ├ù never logs sensitive medical fields (1 ms)
+      ├ù preserves technical IDs needed for medical debugging
+    ErrorHandler Instance Methods
+      ├ù ErrorHandler has all required methods (6 ms)
+      ├ù performance marks work
+      ├ù observer pattern works (1 ms)
+      ├ù unsubscribe removes observer (2 ms)
+    Error Storage
+      ├ù stores critical errors (4 ms)
+      ├ù retrieves stored errors (2 ms)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Imports and Basic Structure ÔÇ║ All imports are defined
+
+    expect(received).toBeDefined()
+
+    Received: undefined
+
+      64 |   describe('Imports and Basic Structure', () => {
+      65 |     test('All imports are defined', () => {
+    > 66 |       expect(ERROR_CATEGORIES).toBeDefined();
+         |                                ^
+      67 |       expect(ERROR_LEVELS).toBeDefined();
+      68 |       expect(ErrorHandler).toBeDefined();
+      69 |       expect(getErrorHandler).toBeDefined();
+
+      at Object.toBeDefined (test/unit/ErrorHandler.standalone.test.js:66:32)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Imports and Basic Structure ÔÇ║ ERROR_CATEGORIES has required properties
+
+    TypeError: Cannot read properties of undefined (reading 'SIGSS_API')
+
+      74 |
+      75 |     test('ERROR_CATEGORIES has required properties', () => {
+    > 76 |       expect(ERROR_CATEGORIES.SIGSS_API).toBe('sigss_api');
+         |                               ^
+      77 |       expect(ERROR_CATEGORIES.CADSUS_API).toBe('cadsus_api');
+      78 |       expect(ERROR_CATEGORIES.MEDICAL_DATA).toBe('medical_data');
+      79 |       expect(ERROR_CATEGORIES.SECURITY).toBe('security');
+
+      at Object.SIGSS_API (test/unit/ErrorHandler.standalone.test.js:76:31)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Imports and Basic Structure ÔÇ║ ERROR_LEVELS has required values
+
+    TypeError: Cannot read properties of undefined (reading 'DEBUG')
+
+      81 |
+      82 |     test('ERROR_LEVELS has required values', () => {
+    > 83 |       expect(ERROR_LEVELS.DEBUG).toBe(1);
+         |                           ^
+      84 |       expect(ERROR_LEVELS.INFO).toBe(2);
+      85 |       expect(ERROR_LEVELS.WARN).toBe(3);
+      86 |       expect(ERROR_LEVELS.ERROR).toBe(4);
+
+      at Object.DEBUG (test/unit/ErrorHandler.standalone.test.js:83:27)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Imports and Basic Structure ÔÇ║ ErrorHandler is a valid instance
+
+    expect(received).toBeDefined()
+
+    Received: undefined
+
+      89 |
+      90 |     test('ErrorHandler is a valid instance', () => {
+    > 91 |       expect(ErrorHandler).toBeDefined();
+         |                            ^
+      92 |       expect(typeof ErrorHandler.logInfo).toBe('function');
+      93 |       expect(typeof ErrorHandler.logError).toBe('function');
+      94 |       expect(typeof ErrorHandler.sanitizeForLogging).toBe('function');
+
+      at Object.toBeDefined (test/unit/ErrorHandler.standalone.test.js:91:28)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Singleton Pattern ÔÇ║ getErrorHandler returns consistent instance
+
+    expect(received).toStrictEqual(expected) // deep equality
+
+    Expected: {"createMedicalError": [Function mockConstructor], "logError": [Function mockConstructor], "logInfo": [Function mockConstructor], "logWarning": [Function mockConstructor], "sanitizeData": [Function mockConstructor], "setupGlobalErrorHandling": [Function mockConstructor]}
+    Received: serializes to the same string
+
+      100 |       const instance1 = getErrorHandler();
+      101 |       const instance2 = getErrorHandler();
+    > 102 |       expect(instance1).toStrictEqual(instance2);
+          |                         ^
+      103 |       expect(instance1.constructor).toBe(instance2.constructor);
+      104 |     });
+      105 |   });
+
+      at Object.toStrictEqual (test/unit/ErrorHandler.standalone.test.js:102:25)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Data Sanitization ÔÇ║ sanitizes sensitive medical fields
+
+    TypeError: (0 , _ErrorHandler.sanitizeForLog) is not a function
+
+      116 |       };
+      117 |
+    > 118 |       const sanitized = sanitizeForLog(sensitiveData);
+          |                                       ^
+      119 |
+      120 |       expect(sanitized.id).toBe('REGU_123'); // Technical ID - OK
+      121 |       expect(sanitized.reguId).toBe('REG_456'); // Technical ID - OK
+
+      at Object.<anonymous> (test/unit/ErrorHandler.standalone.test.js:118:39)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Data Sanitization ÔÇ║ preserves technical IDs necessary for debugging
+
+    TypeError: (0 , _ErrorHandler.sanitizeForLog) is not a function
+
+      136 |       };
+      137 |
+    > 138 |       const sanitized = sanitizeForLog(technicalData);
+          |                                       ^
+      139 |
+      140 |       // All technical IDs should be preserved
+      141 |       Object.keys(technicalData).forEach((key) => {
+
+      at Object.<anonymous> (test/unit/ErrorHandler.standalone.test.js:138:39)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Data Sanitization ÔÇ║ handles arrays with sanitization
+
+    TypeError: (0 , _ErrorHandler.sanitizeForLog) is not a function
+
+      150 |       ];
+      151 |
+    > 152 |       const sanitized = sanitizeForLog(arrayData);
+          |                                       ^
+      153 |
+      154 |       expect(sanitized).toHaveLength(2);
+      155 |       expect(sanitized[0].id).toBe('PAT_1');
+
+      at Object.<anonymous> (test/unit/ErrorHandler.standalone.test.js:152:39)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Data Sanitization ÔÇ║ limits large arrays
+
+    TypeError: (0 , _ErrorHandler.sanitizeForLog) is not a function
+
+      160 |     test('limits large arrays', () => {
+      161 |       const largeArray = new Array(10).fill({ id: 'TEST' });
+    > 162 |       const sanitized = sanitizeForLog(largeArray);
+          |                                       ^
+      163 |
+      164 |       expect(sanitized).toHaveLength(6); // 5 items + "...X more items"
+      165 |       expect(sanitized[5]).toContain('more items');
+
+      at Object.<anonymous> (test/unit/ErrorHandler.standalone.test.js:162:39)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Data Sanitization ÔÇ║ truncates very long strings
+
+    TypeError: (0 , _ErrorHandler.sanitizeForLog) is not a function
+
+      168 |     test('truncates very long strings', () => {
+      169 |       const longString = 'A'.repeat(200);
+    > 170 |       const sanitized = sanitizeForLog(longString);
+          |                                       ^
+      171 |
+      172 |       expect(sanitized).toHaveLength(103); // 100 chars + "..."
+      173 |       expect(sanitized).toMatch(/\.\.\.$/);
+
+      at Object.<anonymous> (test/unit/ErrorHandler.standalone.test.js:170:39)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Logging Functions ÔÇ║ logInfo works correctly
+
+    TypeError: Cannot read properties of undefined (reading 'SIGSS_API')
+
+      177 |   describe('Logging Functions', () => {
+      178 |     test('logInfo works correctly', () => {
+    > 179 |       logInfo('Test info message', { test: 'data' }, ERROR_CATEGORIES.SIGSS_API);
+          |                                                                       ^
+      180 |
+      181 |       expect(console.info).toHaveBeenCalledWith(
+      182 |         '[Assistente M├®dico sigss_api] Test info message',
+
+      at Object.SIGSS_API (test/unit/ErrorHandler.standalone.test.js:179:71)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Logging Functions ÔÇ║ logError works correctly
+
+    TypeError: Cannot read properties of undefined (reading 'MEDICAL_DATA')
+
+      186 |
+      187 |     test('logError works correctly', () => {
+    > 188 |       logError('Test error message', { error: 'details' }, ERROR_CATEGORIES.MEDICAL_DATA);
+          |                                                                             ^
+      189 |
+      190 |       expect(console.error).toHaveBeenCalledWith(
+      191 |         '[Assistente M├®dico medical_data] Test error message',
+
+      at Object.MEDICAL_DATA (test/unit/ErrorHandler.standalone.test.js:188:77)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Logging Functions ÔÇ║ automatically sanitizes data in logs
+
+    TypeError: Cannot read properties of undefined (reading 'MEDICAL_DATA')
+
+      201 |       };
+      202 |
+    > 203 |       logError('Test with sensitive data', sensitiveData, ERROR_CATEGORIES.MEDICAL_DATA);
+          |                                                                            ^
+      204 |
+      205 |       // Check that console.error was called
+      206 |       expect(console.error).toHaveBeenCalled();
+
+      at Object.MEDICAL_DATA (test/unit/ErrorHandler.standalone.test.js:203:76)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Medical Compliance ÔÇ║ never logs sensitive medical fields
+
+    TypeError: (0 , _ErrorHandler.sanitizeForLog) is not a function
+
+      239 |
+      240 |       testCases.forEach((testCase) => {
+    > 241 |         const sanitized = sanitizeForLog(testCase);
+          |                                         ^
+      242 |         Object.values(sanitized).forEach((value) => {
+      243 |           expect(value).toBe('[SANITIZED_MEDICAL_DATA]');
+      244 |         });
+
+      at test/unit/ErrorHandler.standalone.test.js:241:41
+          at Array.forEach (<anonymous>)
+      at Object.forEach (test/unit/ErrorHandler.standalone.test.js:240:17)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Medical Compliance ÔÇ║ preserves technical IDs needed for medical debugging
+
+    TypeError: (0 , _ErrorHandler.sanitizeForLog) is not a function
+
+      258 |       };
+      259 |
+    > 260 |       const sanitized = sanitizeForLog(medicalTechnicalData);
+          |                                       ^
+      261 |
+      262 |       Object.entries(medicalTechnicalData).forEach(([key, value]) => {
+      263 |         expect(sanitized[key]).toBe(value);
+
+      at Object.<anonymous> (test/unit/ErrorHandler.standalone.test.js:260:39)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ ErrorHandler Instance Methods ÔÇ║ ErrorHandler has all required methods
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "function"
+    Received: "undefined"
+
+      272 |       expect(typeof handler.logError).toBe('function');
+      273 |       expect(typeof handler.logWarning).toBe('function');
+    > 274 |       expect(typeof handler.sanitizeForLogging).toBe('function');
+          |                                                 ^
+      275 |       expect(typeof handler.startPerformanceMark).toBe('function');
+      276 |       expect(typeof handler.endPerformanceMark).toBe('function');
+      277 |       expect(typeof handler.subscribe).toBe('function');
+
+      at Object.toBe (test/unit/ErrorHandler.standalone.test.js:274:49)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ ErrorHandler Instance Methods ÔÇ║ performance marks work
+
+    TypeError: handler.startPerformanceMark is not a function
+
+      282 |     test('performance marks work', (done) => {
+      283 |       const handler = getErrorHandler();
+    > 284 |       handler.startPerformanceMark('test_operation');
+          |               ^
+      285 |
+      286 |       setTimeout(() => {
+      287 |         handler.endPerformanceMark('test_operation');
+
+      at Object.startPerformanceMark (test/unit/ErrorHandler.standalone.test.js:284:15)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ ErrorHandler Instance Methods ÔÇ║ observer pattern works
+
+    TypeError: handler.subscribe is not a function
+
+      298 |       const mockObserver = jest.fn();
+      299 |
+    > 300 |       handler.subscribe(mockObserver);
+          |               ^
+      301 |       handler.logInfo('Test message');
+      302 |
+      303 |       expect(mockObserver).toHaveBeenCalledWith(
+
+      at Object.subscribe (test/unit/ErrorHandler.standalone.test.js:300:15)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ ErrorHandler Instance Methods ÔÇ║ unsubscribe removes observer
+
+    TypeError: handler.subscribe is not a function
+
+      313 |       const mockObserver = jest.fn();
+      314 |
+    > 315 |       handler.subscribe(mockObserver);
+          |               ^
+      316 |       handler.unsubscribe(mockObserver);
+      317 |       handler.logInfo('Test message');
+      318 |
+
+      at Object.subscribe (test/unit/ErrorHandler.standalone.test.js:315:15)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Error Storage ÔÇ║ stores critical errors
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: ObjectContaining {"medicalErrors": ArrayContaining [ObjectContaining {"level": "ERROR", "message": "Critical test error"}]}
+
+    Number of calls: 0
+
+      326 |       await handler.logError('Critical test error', { severity: 'high' });
+      327 |
+    > 328 |       expect(chrome.storage.local.set).toHaveBeenCalledWith(
+          |                                        ^
+      329 |         expect.objectContaining({
+      330 |           medicalErrors: expect.arrayContaining([
+      331 |             expect.objectContaining({
+
+      at Object.toHaveBeenCalledWith (test/unit/ErrorHandler.standalone.test.js:328:40)
+
+  ÔùÅ ErrorHandler Standalone Tests ÔÇ║ Error Storage ÔÇ║ retrieves stored errors
+
+    TypeError: handler.getStoredErrors is not a function
+
+      347 |
+      348 |       const handler = getErrorHandler();
+    > 349 |       const storedErrors = await handler.getStoredErrors();
+          |                                          ^
+      350 |
+      351 |       expect(storedErrors).toEqual(mockErrors);
+      352 |     });
+
+      at Object.getStoredErrors (test/unit/ErrorHandler.standalone.test.js:349:42)
+
+FAIL Unit Tests test/unit/utils.test.js (9.556 s)
+  Utils.js Medical Extension Tests
+    debounce
+      ├ù should delay function execution (260 ms)
+      ├ù should use default delay when not provided (6 ms)
+      ├ù should pass arguments correctly (163 ms)
+    showDialog
+      ├ù should create dialog with medical confirmation (5 ms)
+      ├ù should handle dialog without cancel callback (4 ms)
+    parseDate
+      ├ù should parse valid date string (5 ms)
+      ├ù should handle invalid date string (4 ms)
+      ├ù should handle medical date formats (4 ms)
+      ├ù should handle empty or null input (8 ms)
+    normalizeString
+      ├ù should normalize string correctly (5 ms)
+      ├ù should handle empty string (3 ms)
+      ├ù should handle special medical characters (3 ms)
+      ├ù should handle accented medical terms (2 ms)
+    normalizeTimelineData
+      ├ù should normalize timeline data from SIGSS API (7 ms)
+      ├ù should handle empty timeline data (3 ms)
+      ├ù should handle invalid timeline data (10 ms)
+      ├ù should preserve medical context in timeline (3 ms)
+    Medical Data Security
+      ├ù should not expose sensitive data in logs (4 ms)
+      ├ù should handle medical data without exposure (3 ms)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ debounce ÔÇ║ should delay function execution
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ debounce ÔÇ║ should use default delay when not provided
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ debounce ÔÇ║ should pass arguments correctly
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ showDialog ÔÇ║ should create dialog with medical confirmation
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ showDialog ÔÇ║ should handle dialog without cancel callback
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ parseDate ÔÇ║ should parse valid date string
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ parseDate ÔÇ║ should handle invalid date string
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ parseDate ÔÇ║ should handle medical date formats
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ parseDate ÔÇ║ should handle empty or null input
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeString ÔÇ║ should normalize string correctly
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeString ÔÇ║ should handle empty string
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeString ÔÇ║ should handle special medical characters
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeString ÔÇ║ should handle accented medical terms
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeTimelineData ÔÇ║ should normalize timeline data from SIGSS API
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 0
+
+      159 |       const normalized = normalizeTimelineData(mockApiData);
+      160 |       expect(Array.isArray(normalized)).toBe(true);
+    > 161 |       expect(normalized.length).toBe(1);
+          |                                 ^
+      162 |       expect(normalized[0]).toHaveProperty('id');
+      163 |     });
+      164 |     test('should handle empty timeline data', () => {
+
+      at Object.toBe (test/unit/utils.test.js:161:33)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeTimelineData ÔÇ║ should normalize timeline data from SIGSS API
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeTimelineData ÔÇ║ should handle empty timeline data
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeTimelineData ÔÇ║ should handle invalid timeline data
+
+    TypeError: Cannot read properties of undefined (reading 'TIMELINE_NORMALIZATION')
+
+      339 |         error: e,
+      340 |       },
+    > 341 |       ERROR_CATEGORIES.TIMELINE_NORMALIZATION
+          |                        ^
+      342 |     );
+      343 |   }
+      344 |
+
+      at TIMELINE_NORMALIZATION (utils.js:341:24)
+      at Object.<anonymous> (test/unit/utils.test.js:170:47)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeTimelineData ÔÇ║ should handle invalid timeline data
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeTimelineData ÔÇ║ should preserve medical context in timeline
+
+    expect(received).toHaveProperty(path)
+
+    Matcher error: received value must not be null nor undefined
+
+    Received has value: undefined
+
+      177 |       ];
+      178 |       const normalized = normalizeTimelineData(mockMedicalData);
+    > 179 |       expect(normalized[0]).toHaveProperty('especialidade');
+          |                             ^
+      180 |       expect(normalized[0].especialidade).toBe('Cardiologia');
+      181 |     });
+      182 |   });
+
+      at Object.toHaveProperty (test/unit/utils.test.js:179:29)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeTimelineData ÔÇ║ should preserve medical context in timeline
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ Medical Data Security ÔÇ║ should not expose sensitive data in logs
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ Medical Data Security ÔÇ║ should handle medical data without exposure
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+FAIL Unit Tests test/unit/basic.test.js
+  Assistente de Regula├º├úo M├®dica - Basic Tests
+    ÔêÜ should have basic globals available (2 ms)
+    ├ù should have chrome APIs mocked (2 ms)
+    ÔêÜ basic math operations work (2 ms)
+
+  ÔùÅ Assistente de Regula├º├úo M├®dica - Basic Tests ÔÇ║ should have chrome APIs mocked
+
+    expect(received).toBeDefined()
+
+    Received: undefined
+
+      14 |     expect(chrome.runtime).toBeDefined();
+      15 |     expect(chrome.storage).toBeDefined();
+    > 16 |     expect(chrome.tabs).toBeDefined();
+         |                         ^
+      17 |   });
+      18 |
+      19 |   test('basic math operations work', () => {
+
+      at Object.toBeDefined (test/unit/basic.test.js:16:25)
+
+FAIL Unit Tests test/unit/core/store-medical-flow-corrected.test.js (10.006 s)
+  Store Medical Flow - FIXED VERSION
+    Patient Data Flow
+      ÔêÜ should handle patient selection without memory leaks (75 ms)
+      ÔêÜ should handle patient clearing (4 ms)
+      ÔêÜ should manage recent patients correctly (3 ms)
+    Filter Sets Management
+      ÔêÜ should save and retrieve filter sets (5 ms)
+      ÔêÜ should delete filter sets (4 ms)
+    Data Persistence & Security
+      ├ù should handle auto-save correctly (1119 ms)
+      ├ù should clean old data correctly (8 ms)
+    Debug & Monitoring
+      ÔêÜ should provide debug information (4 ms)
+      ÔêÜ should track listener lifecycle correctly (3 ms)
+    Memory Leak Prevention
+      ÔêÜ should handle multiple subscriptions without leaks (4 ms)
+      ÔêÜ should auto-cleanup orphaned listeners (2 ms)
+
+  ÔùÅ Store Medical Flow - FIXED VERSION ÔÇ║ Data Persistence & Security ÔÇ║ should handle auto-save correctly
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 1
+    Received length: 2
+    Received array:  [{"id": "auto-save-test", "nome": "Test Patient", "searchedAt": 1756738228312, "source": "manual_search"}, {"id": "test-123", "nome": "Jo├úo Silva Test", "searchedAt": 1756738228301, "source": "manual_search"}]
+
+      116 |
+      117 |       const recentPatients = store.getRecentPatients();
+    > 118 |       expect(recentPatients).toHaveLength(1);
+          |                              ^
+      119 |     });
+      120 |
+      121 |     test('should clean old data correctly', () => {
+
+      at Object.toHaveLength (test/unit/core/store-medical-flow-corrected.test.js:118:30)
+
+  ÔùÅ Store Medical Flow - FIXED VERSION ÔÇ║ Data Persistence & Security ÔÇ║ should clean old data correctly
+
+    expect(received).toBeGreaterThan(expected)
+
+    Expected: > 50
+    Received:   50
+
+      132 |       }
+      133 |
+    > 134 |       expect(store.getRecentPatients().length).toBeGreaterThan(50);
+          |                                                ^
+      135 |
+      136 |       // Clean with max 30
+      137 |       store.clearOldData({ maxRecentPatients: 30 });
+
+      at Object.toBeGreaterThan (test/unit/core/store-medical-flow-corrected.test.js:134:48)
+
+FAIL Unit Tests test/unit/core/store-persistence.test.js (10.094 s)
+  Store Medical Persistence
+    ÔêÜ should only persist allowed medical data (1183 ms)
+    ÔêÜ should not persist current patient data (2 ms)
+    ÔêÜ should restore session correctly after restart (4 ms)
+    ├ù should handle storage errors gracefully (5 ms)
+    ÔêÜ should filter only allowed keys for persistence (3 ms)
+    ÔêÜ should use browser API when available (3 ms)
+    ├ù should not save when no persistent keys provided (1 ms)
+    ├ù should auto-save only specific keys (1 ms)
+    ├ù should handle partial data load gracefully (1 ms)
+    ├ù should return empty object on load error (1 ms)
+    ├ù should debug log persistence operations
+
+  ÔùÅ Store Medical Persistence ÔÇ║ should handle storage errors gracefully
+
+    expect(received).resolves.not.toThrow()
+
+    Received promise rejected instead of resolved
+    Rejected to value: [TypeError: (0 , _ErrorHandler.logError) is not a function]
+
+      118 |
+      119 |     // N├úo deve gerar erro n├úo tratado
+    > 120 |     await expect(store.saveToStorage(['recentPatients'])).resolves.not.toThrow();
+          |           ^
+      121 |   });
+      122 |
+      123 |   test('should filter only allowed keys for persistence', async () => {
+
+      at expect (node_modules/expect/build/index.js:113:15)
+      at Object.expect (test/unit/core/store-persistence.test.js:120:11)
+
+  ÔùÅ Store Medical Persistence ÔÇ║ should not save when no persistent keys provided
+
+    TypeError: Cannot read properties of undefined (reading 'storage')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                      ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.storage (test/setup.js:108:22)
+
+  ÔùÅ Store Medical Persistence ÔÇ║ should auto-save only specific keys
+
+    TypeError: Cannot read properties of undefined (reading 'storage')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                      ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.storage (test/setup.js:108:22)
+
+  ÔùÅ Store Medical Persistence ÔÇ║ should handle partial data load gracefully
+
+    TypeError: Cannot read properties of undefined (reading 'storage')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                      ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.storage (test/setup.js:108:22)
+
+  ÔùÅ Store Medical Persistence ÔÇ║ should return empty object on load error
+
+    TypeError: Cannot read properties of undefined (reading 'storage')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                      ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.storage (test/setup.js:108:22)
+
+  ÔùÅ Store Medical Persistence ÔÇ║ should debug log persistence operations
+
+    TypeError: Cannot read properties of undefined (reading 'storage')
+
+      106 |
+      107 |   // Reconfigurar chrome.storage se necess├írio
+    > 108 |   if (!global.chrome.storage.local.get.mockResolvedValue) {
+          |                      ^
+      109 |     global.chrome.storage.local = createChromeStorageMock();
+      110 |     global.chrome.storage.sync = createChromeStorageMock();
+      111 |     global.chrome.storage.session = createChromeStorageMock();
+
+      at Object.storage (test/setup.js:108:22)
+
+PASS Unit Tests test/unit/core/store-medical-flow.test.js
+  Store Medical Flow
+    ÔêÜ should reset filters when changing patient (6 ms)
+    ÔêÜ should use fallback filter reset method (2 ms)
+    ÔêÜ should not add auto-detected patients to recent list (2 ms)
+    ÔêÜ should add manually searched patients to recent list (3 ms)
+    ÔêÜ should apply automation when available and enabled (2 ms)
+    ÔêÜ should use fallback automation method (2 ms)
+    ÔêÜ should work without automation (graceful degradation) (3 ms)
+    ÔêÜ should sanitize patient data for recent list (3 ms)
+    ÔêÜ should handle clearPatient with different options (3 ms)
+    ÔêÜ should maintain timeline temporarily when requested (158 ms)
+    ÔêÜ should prevent duplicate patients in recent list (3 ms)
+    ÔêÜ should respect maxRecent limit (5 ms)
+
+PASS Unit Tests test/unit/keepalive-manager.test.js
+  KeepAliveManager
+    Service Worker Detection
+      ÔêÜ should detect service worker environment when importScripts is undefined (30 ms)
+      ÔêÜ should detect background script environment when importScripts exists (8 ms)
+    Alarms API Implementation
+      ÔêÜ should create alarm when starting in service worker environment (9 ms)
+      ÔêÜ should setup alarm listener when starting in service worker environment (8 ms)
+      ÔêÜ should clear existing alarm before creating new one (7 ms)
+      ÔêÜ should handle alarm events correctly (8 ms)
+      ÔêÜ should ignore non-keepAlive alarms (8 ms)
+    SetInterval Implementation
+      ÔêÜ should use setInterval in background script environment (7 ms)
+      ÔêÜ should not create alarm in background script environment (7 ms)
+      ÔêÜ should execute ping via setInterval (8 ms)
+    Stop Functionality
+      ÔêÜ should clear alarm when stopping in service worker environment (8 ms)
+      ÔêÜ should clear interval when stopping in background script environment (7 ms)
+      ÔêÜ should remove alarm listener when stopping (7 ms)
+    Error Handling
+      ÔêÜ should handle fetch errors gracefully in alarm context (55 ms)
+      ÔêÜ should handle fetch errors gracefully in setInterval context (10 ms)
+      ÔêÜ should handle missing alarms API gracefully (7 ms)
+    State Management
+      ÔêÜ should track running state correctly (7 ms)
+      ÔêÜ should prevent multiple starts (14 ms)
+    Cross-browser Compatibility
+      ÔêÜ should work with chrome API (7 ms)
+      ÔêÜ should work with browser API (7 ms)
+
+PASS Unit Tests test/unit/core/store-performance.test.js
+  Store Performance
+    ÔêÜ should handle many listeners efficiently (13 ms)
+    ÔêÜ should maintain performance with large recent patients list (40 ms)
+    ÔêÜ should perform fast notifications with many listeners (6 ms)
+    ÔêÜ should handle rapid state changes efficiently (3 ms)
+    ÔêÜ should efficiently cleanup old data (9 ms)
+    ÔêÜ should handle memory cleanup without performance impact (22 ms)
+    ÔêÜ should maintain consistent performance across operations (9 ms)
+    ÔêÜ should handle stress test with combined operations (8 ms)
+
+PASS Unit Tests test/unit/message-validation.test.js
+  TASK-C-003: Message Validation - Instala├º├úo Inicial
+    ÔêÜ deve detectar que URL n├úo est├í configurada na inicializa├º├úo (4 ms)
+    ÔêÜ deve processar URL quando configurada (4 ms)
+  TASK-C-003: Origin Validation
+    ÔêÜ deve aceitar mensagens de dom├¡nio SIGSS v├ílido (10 ms)
+    ÔêÜ deve rejeitar mensagens de dom├¡nios completamente externos (5 ms)
+    ÔêÜ deve aceitar subdom├¡nios de saude.gov.br como v├ílidos (5 ms)
+    ÔêÜ deve rejeitar URLs que n├úo s├úo do servi├ºo SIGSS mesmo que sejam dom├¡nio v├ílido (4 ms)
+    ÔêÜ deve sanitizar URLs para logging seguro (4 ms)
+  TASK-C-003: Rate Limiting
+    ÔêÜ deve permitir mensagens dentro do limite (2 ms)
+    ÔêÜ deve bloquear mensagens acima do limite (1 ms)
+    ÔêÜ deve permitir mensagens sem tabId (edge case)
+    ÔêÜ deve manter contadores separados para tabs diferentes
+  TASK-C-003: Payload Validation
+    ÔêÜ deve validar payload correto de regula├º├úo (1 ms)
+    ÔêÜ deve rejeitar payload com campos ausentes (1 ms)
+    ÔêÜ deve rejeitar payload com IDs n├úo num├®ricos (1 ms)
+    ÔêÜ deve rejeitar payload com IDs muito longos (1 ms)
+    ÔêÜ deve rejeitar payload null ou undefined (1 ms)
+  TASK-C-003: Message Structure Validation
+    ÔêÜ deve validar mensagem com estrutura correta (1 ms)
+    ÔêÜ deve rejeitar mensagem sem tipo (1 ms)
+    ÔêÜ deve rejeitar tipo de mensagem n├úo permitido (7 ms)
+    ÔêÜ deve rejeitar mensagem null ou n├úo-objeto (1 ms)
+  TASK-C-003: URL Configuration Changes
+    ÔêÜ deve atualizar dom├¡nios v├ílidos quando URL base muda (2 ms)
+    ÔêÜ deve lidar com URLs malformadas graciosamente (2 ms)
+  TASK-C-003: Security Integration Tests
+    ÔêÜ deve implementar valida├º├úo completa de seguran├ºa (3 ms)
+    ÔêÜ deve rejeitar mensagem com origem suspeita (2 ms)
+
+PASS Unit Tests test/unit/phone-utils.test.js
+  phone-utils
+    ÔêÜ normalizeNumber removes country code 55 and leading zeros (3 ms)
+    ÔêÜ extractPhoneMap extracts multiple numbers and groups by sufix (2 ms)
+    ÔêÜ gatherPhoneValues encontra telefones em objetos aninhados (3 ms)
+
+FAIL Unit Tests test/unit/core/store-memory.test.js
+  Store Memory Management
+    ÔêÜ should not leak listeners (5 ms)
+    ÔêÜ should cleanup old data correctly (2 ms)
+    ÔêÜ should track listener metadata correctly (3 ms)
+    ├ù should handle listener errors gracefully (3 ms)
+    ├ù should maintain performance with many listeners (1 ms)
+    ├ù should update memory stats when available (2 ms)
+    ├ù should auto-cleanup every 100 notifications (2 ms)
+    ├ù should clear all data when requested (2 ms)
+
+  ÔùÅ Store Memory Management ÔÇ║ should handle listener errors gracefully
+
+    TypeError: (0 , _ErrorHandler.logError) is not a function
+
+      90 |       } catch (error) {
+      91 |         const metadata = listenerMetadata.get(listener);
+    > 92 |         logError('STORE_LISTENER', 'Erro num listener do store', {
+         |                 ^
+      93 |           errorMessage: error.message,
+      94 |           listenerMetadata: metadata,
+      95 |         });
+
+      at Object._notify (store.js:92:17)
+      at Object._notify [as setPatient] (store.js:255:10)
+      at Object.setPatient (test/unit/core/store-memory.test.js:95:11)
+
+  ÔùÅ Store Memory Management ÔÇ║ should handle listener errors gracefully
+
+    TypeError: (0 , _ErrorHandler.logError) is not a function
+
+      90 |       } catch (error) {
+      91 |         const metadata = listenerMetadata.get(listener);
+    > 92 |         logError('STORE_LISTENER', 'Erro num listener do store', {
+         |                 ^
+      93 |           errorMessage: error.message,
+      94 |           listenerMetadata: metadata,
+      95 |         });
+
+      at Object._notify (store.js:92:17)
+      at Object._notify [as clearOldData] (store.js:215:12)
+      at Object.clearOldData (test/unit/core/store-memory.test.js:17:11)
+
+  ÔùÅ Store Memory Management ÔÇ║ should maintain performance with many listeners
+
+    TypeError: (0 , _ErrorHandler.logError) is not a function
+
+      90 |       } catch (error) {
+      91 |         const metadata = listenerMetadata.get(listener);
+    > 92 |         logError('STORE_LISTENER', 'Erro num listener do store', {
+         |                 ^
+      93 |           errorMessage: error.message,
+      94 |           listenerMetadata: metadata,
+      95 |         });
+
+      at Object._notify (store.js:92:17)
+      at Object._notify [as clearOldData] (store.js:215:12)
+      at Object.clearOldData (test/unit/core/store-memory.test.js:11:11)
+
+  ÔùÅ Store Memory Management ÔÇ║ should maintain performance with many listeners
+
+    TypeError: (0 , _ErrorHandler.logError) is not a function
+
+      90 |       } catch (error) {
+      91 |         const metadata = listenerMetadata.get(listener);
+    > 92 |         logError('STORE_LISTENER', 'Erro num listener do store', {
+         |                 ^
+      93 |           errorMessage: error.message,
+      94 |           listenerMetadata: metadata,
+      95 |         });
+
+      at Object._notify (store.js:92:17)
+      at Object._notify [as clearOldData] (store.js:215:12)
+      at Object.clearOldData (test/unit/core/store-memory.test.js:17:11)
+
+  ÔùÅ Store Memory Management ÔÇ║ should update memory stats when available
+
+    TypeError: (0 , _ErrorHandler.logError) is not a function
+
+      90 |       } catch (error) {
+      91 |         const metadata = listenerMetadata.get(listener);
+    > 92 |         logError('STORE_LISTENER', 'Erro num listener do store', {
+         |                 ^
+      93 |           errorMessage: error.message,
+      94 |           listenerMetadata: metadata,
+      95 |         });
+
+      at Object._notify (store.js:92:17)
+      at Object._notify [as clearOldData] (store.js:215:12)
+      at Object.clearOldData (test/unit/core/store-memory.test.js:11:11)
+
+  ÔùÅ Store Memory Management ÔÇ║ should update memory stats when available
+
+    TypeError: (0 , _ErrorHandler.logError) is not a function
+
+      90 |       } catch (error) {
+      91 |         const metadata = listenerMetadata.get(listener);
+    > 92 |         logError('STORE_LISTENER', 'Erro num listener do store', {
+         |                 ^
+      93 |           errorMessage: error.message,
+      94 |           listenerMetadata: metadata,
+      95 |         });
+
+      at Object._notify (store.js:92:17)
+      at Object._notify [as clearOldData] (store.js:215:12)
+      at Object.clearOldData (test/unit/core/store-memory.test.js:17:11)
+
+  ÔùÅ Store Memory Management ÔÇ║ should auto-cleanup every 100 notifications
+
+    TypeError: (0 , _ErrorHandler.logError) is not a function
+
+      90 |       } catch (error) {
+      91 |         const metadata = listenerMetadata.get(listener);
+    > 92 |         logError('STORE_LISTENER', 'Erro num listener do store', {
+         |                 ^
+      93 |           errorMessage: error.message,
+      94 |           listenerMetadata: metadata,
+      95 |         });
+
+      at Object._notify (store.js:92:17)
+      at Object._notify [as clearOldData] (store.js:215:12)
+      at Object.clearOldData (test/unit/core/store-memory.test.js:11:11)
+
+  ÔùÅ Store Memory Management ÔÇ║ should auto-cleanup every 100 notifications
+
+    TypeError: (0 , _ErrorHandler.logError) is not a function
+
+      90 |       } catch (error) {
+      91 |         const metadata = listenerMetadata.get(listener);
+    > 92 |         logError('STORE_LISTENER', 'Erro num listener do store', {
+         |                 ^
+      93 |           errorMessage: error.message,
+      94 |           listenerMetadata: metadata,
+      95 |         });
+
+      at Object._notify (store.js:92:17)
+      at Object._notify [as clearOldData] (store.js:215:12)
+      at Object.clearOldData (test/unit/core/store-memory.test.js:17:11)
+
+  ÔùÅ Store Memory Management ÔÇ║ should clear all data when requested
+
+    TypeError: (0 , _ErrorHandler.logError) is not a function
+
+      90 |       } catch (error) {
+      91 |         const metadata = listenerMetadata.get(listener);
+    > 92 |         logError('STORE_LISTENER', 'Erro num listener do store', {
+         |                 ^
+      93 |           errorMessage: error.message,
+      94 |           listenerMetadata: metadata,
+      95 |         });
+
+      at Object._notify (store.js:92:17)
+      at Object._notify [as clearOldData] (store.js:215:12)
+      at Object.clearOldData (test/unit/core/store-memory.test.js:11:11)
+
+  ÔùÅ Store Memory Management ÔÇ║ should clear all data when requested
+
+    TypeError: (0 , _ErrorHandler.logError) is not a function
+
+      90 |       } catch (error) {
+      91 |         const metadata = listenerMetadata.get(listener);
+    > 92 |         logError('STORE_LISTENER', 'Erro num listener do store', {
+         |                 ^
+      93 |           errorMessage: error.message,
+      94 |           listenerMetadata: metadata,
+      95 |         });
+
+      at Object._notify (store.js:92:17)
+      at Object._notify [as clearOldData] (store.js:215:12)
+      at Object.clearOldData (test/unit/core/store-memory.test.js:17:11)
+
+------------------------------------------|---------|----------|---------|---------|-------------------------------------------------------------------------------------------------------------
+File                                      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                                                                                           
+------------------------------------------|---------|----------|---------|---------|-------------------------------------------------------------------------------------------------------------
+All files                                 |    8.34 |     7.86 |   10.52 |    8.67 |                                                                                                             
+ AssistenteDeRegulacaoMedica              |    7.78 |     7.57 |    9.94 |    8.12 |                                                                                                             
+  ErrorHandler-Demo.js                    |       0 |        0 |       0 |       0 | 18-150                                                                                                      
+  ErrorHandler.js                         |       0 |        0 |       0 |       0 | 12-636                                                                                                      
+  KeepAliveManager.js                     |   81.11 |    76.81 |    87.5 |   81.11 | 39-40,54-55,78-81,94,111-112,120-121,160-161,171-172,214-220                                                
+  SectionManager.js                       |       0 |        0 |       0 |       0 | 17-858                                                                                                      
+  TimelineManager.js                      |       0 |        0 |       0 |       0 | 12-279                                                                                                      
+  api.js                                  |       0 |        0 |       0 |       0 | 11-1337                                                                                                     
+  background-edge.js                      |       0 |        0 |       0 |       0 |                                                                                                             
+  background.js                           |       0 |        0 |       0 |       0 | 6-869                                                                                                       
+  browser-polyfill.js                     |       0 |        0 |       0 |       0 |                                                                                                             
+  content-script.js                       |       0 |        0 |       0 |       0 | 7-91                                                                                                        
+  debug-autoload.js                       |       0 |        0 |       0 |       0 | 6-55                                                                                                        
+  debug-connection.js                     |       0 |        0 |       0 |       0 | 7-50                                                                                                        
+  debug-storage.js                        |       0 |        0 |       0 |       0 | 6-68                                                                                                        
+  field-config.js                         |       0 |        0 |       0 |       0 | 16-413                                                                                                      
+  filter-config.js                        |       0 |      100 |     100 |       0 | 19                                                                                                          
+  help.js                                 |       0 |        0 |       0 |       0 | 1-23                                                                                                        
+  options.js                              |       0 |        0 |       0 |       0 | 8-1138                                                                                                      
+  renderers.js                            |       0 |        0 |       0 |       0 | 9-753                                                                                                       
+  sidebar.js                              |       0 |        0 |       0 |       0 | 10-1185                                                                                                     
+  store-test-methods.js                   |       0 |        0 |       0 |       0 | 13-48                                                                                                       
+  store.js                                |   80.38 |    67.11 |   94.59 |   80.39 | 117-130,137,176,221,243,268,281-282,286,313,347,362-365,388,402-405,431-434,449,488,493-506,530-533,543,555 
+  test-autoload-fix-validation.js         |       0 |        0 |       0 |       0 | 21-213                                                                                                      
+  test-autoload-fix.js                    |       0 |        0 |       0 |       0 | 8-132                                                                                                       
+  test-autoload.js                        |       0 |        0 |     100 |       0 | 2-27                                                                                                        
+  test-independent-autoload-validation.js |       0 |        0 |       0 |       0 | 17-231                                                                                                      
+  utils.js                                |   24.63 |    15.45 |   17.07 |   27.42 | 33,36-37,40-41,69-100,132,146-224,234-261,283-296,312-317,348-364,377-402,415-434,447-464,478-492,505-591   
+ AssistenteDeRegulacaoMedica/ui           |   13.77 |       10 |   17.77 |   14.28 |                                                                                                             
+  patient-card.js                         |       0 |        0 |       0 |       0 | 15-436                                                                                                      
+  phone-utils.js                          |   59.34 |     42.5 |      80 |   69.01 | 61-62,71-83,115-130                                                                                         
+  search.js                               |       0 |        0 |       0 |       0 | 14-168                                                                                                      
+------------------------------------------|---------|----------|---------|---------|-------------------------------------------------------------------------------------------------------------
+Jest: "global" coverage threshold for statements (80%) not met: 8.34%
+Jest: "global" coverage threshold for branches (70%) not met: 7.86%
+Jest: "global" coverage threshold for lines (80%) not met: 8.67%
+Jest: "global" coverage threshold for functions (80%) not met: 10.52%
+Test Suites: 9 failed, 1 skipped, 5 passed, 14 of 15 total
+Tests:       109 failed, 5 skipped, 87 passed, 201 total
+Snapshots:   0 total
+Time:        44.381 s
+Ran all test suites.
+npm verbose cwd C:\Users\cleitomforni\OneDrive\Programa├º├úo\Git\AssistenteDeRegulacaoMedica
+npm verbose os Windows_NT 10.0.22621
+npm verbose node v22.17.0
+npm verbose npm  v10.9.2
+npm verbose exit 1
+npm verbose code 1

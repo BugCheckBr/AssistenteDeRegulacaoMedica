@@ -1,0 +1,163 @@
+
+> assistente-de-regulacao-medica@4.0.2 release:patch
+> npm version patch && npm run release:prod
+
+v4.0.3
+
+> assistente-de-regulacao-medica@4.0.3 release:prod
+> npm run release:all && node scripts/release/upload-stores.js
+
+
+> assistente-de-regulacao-medica@4.0.3 release:all
+> npm run validate && npm run test && npm run build:prod && npm run package
+
+
+> assistente-de-regulacao-medica@4.0.3 validate
+> npm run validate:all
+
+
+> assistente-de-regulacao-medica@4.0.3 validate:all
+> npm run validate:manifest && npm run validate:security && npm run validate:performance && npm run validate:packages
+
+
+> assistente-de-regulacao-medica@4.0.3 validate:manifest
+> node scripts/validation/validate-manifest.js
+
+
+> assistente-de-regulacao-medica@4.0.3 validate:security
+> node scripts/validation/security-check.js || echo 'Security validation script not found'
+
+'Security validation script not found'
+
+> assistente-de-regulacao-medica@4.0.3 validate:performance
+> node scripts/validation/validate-performance.cjs
+
+­ƒÜÇ Performance Validation
+Checking bundle sizes and performance metrics
+
+
+­ƒôè Checking bundle sizes...
+
+
+CHROME Distribution:
+Ô£à sidebar.js: 45KB (within 500KB limit)
+Ô£à service-worker.js: 25KB (within 500KB limit)
+Ô£à options.js: 41KB (within 500KB limit)
+
+FIREFOX Distribution:
+Ô£à sidebar.js: 45KB (within 500KB limit)
+Ô£à background.js: 25KB (within 500KB limit)
+Ô£à options.js: 41KB (within 500KB limit)
+
+EDGE Distribution:
+Ô£à sidebar.js: 49KB (within 500KB limit)
+Ô£à background.js: 27KB (within 500KB limit)
+Ô£à options.js: 44KB (within 500KB limit)
+
+­ƒºá Memory usage validation...
+
+Ôä╣´©Å  options.js: Skipped for memory leak check due to UI complexity.
+Ô£à No obvious memory leak patterns detected
+
+­ƒôï Performance Summary:
+Ô£à All performance checks passed!
+
+> assistente-de-regulacao-medica@4.0.3 validate:packages
+> node scripts/validation/validate-package-contents.js
+
+­ƒÅÑ Medical Extension Package Contents Validation
+================================================
+Found 3 packages to validate
+
+
+­ƒöì Validating Chrome package: AssistenteDeRegulacao-chrome-v3.3.8.zip
+­ƒôª Package contains 26 files
+
+­ƒÜ½ Checking for forbidden files...
+Ô£à No forbidden files found
+
+­ƒôï Checking for required files...
+Ô£à All required files present
+
+­ƒôÅ Package size: 105 KB
+Ô£à Package size within limits (< 200 KB)
+
+Ô£à Chrome package validation passed!
+
+­ƒöì Validating Edge package: AssistenteDeRegulacao-edge-v3.3.8.zip
+­ƒôª Package contains 26 files
+
+­ƒÜ½ Checking for forbidden files...
+Ô£à No forbidden files found
+
+­ƒôï Checking for required files...
+Ô£à All required files present
+
+­ƒôÅ Package size: 105 KB
+Ô£à Package size within limits (< 200 KB)
+
+Ô£à Edge package validation passed!
+
+­ƒöì Validating Firefox package: AssistenteDeRegulacao-firefox-v3.3.8.zip
+­ƒôª Package contains 26 files
+
+­ƒÜ½ Checking for forbidden files...
+Ô£à No forbidden files found
+
+­ƒôï Checking for required files...
+Ô£à All required files present
+
+­ƒôÅ Package size: 105 KB
+Ô£à Package size within limits (< 200 KB)
+
+Ô£à Firefox package validation passed!
+
+================================================
+­ƒÄë All packages passed validation!
+Ô£à Extension packages are clean and production-ready
+
+> assistente-de-regulacao-medica@4.0.3 test
+> npm run test:all
+
+
+> assistente-de-regulacao-medica@4.0.3 test:all
+> npm run test:unit
+
+
+> assistente-de-regulacao-medica@4.0.3 test:unit
+> jest --config config/jest/jest.unit.cjs
+
+------------------------------------------|---------|----------|---------|---------|-------------------------------------------------------------------------------------------------------------
+File                                      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                                                                                           
+------------------------------------------|---------|----------|---------|---------|-------------------------------------------------------------------------------------------------------------
+All files                                 |    7.88 |     7.88 |    9.79 |    8.21 |                                                                                                             
+ AssistenteDeRegulacaoMedica              |    8.23 |     8.31 |   10.21 |    8.57 |                                                                                                             
+  ErrorHandler-Demo.js                    |       0 |        0 |       0 |       0 | 18-150                                                                                                      
+  ErrorHandler.js                         |       0 |        0 |       0 |       0 | 12-636                                                                                                      
+  KeepAliveManager.js                     |   81.11 |    76.81 |    87.5 |   81.11 | 39-40,54-55,78-81,94,111-112,120-121,160-161,171-172,214-220                                                
+  SectionManager.js                       |       0 |        0 |       0 |       0 | 17-858                                                                                                      
+  TimelineManager.js                      |       0 |        0 |       0 |       0 | 12-279                                                                                                      
+  api.js                                  |       0 |        0 |       0 |       0 | 10-1273                                                                                                     
+  background.js                           |       0 |        0 |       0 |       0 | 6-869                                                                                                       
+  browser-polyfill.js                     |       0 |        0 |       0 |       0 |                                                                                                             
+  content-script.js                       |       0 |        0 |       0 |       0 | 7-91                                                                                                        
+  debug-autoload.js                       |       0 |        0 |       0 |       0 | 6-55                                                                                                        
+  debug-connection.js                     |       0 |        0 |       0 |       0 | 7-50                                                                                                        
+  debug-storage.js                        |       0 |        0 |       0 |       0 | 6-68                                                                                                        
+  field-config.js                         |       0 |        0 |       0 |       0 | 16-335                                                                                                      
+  filter-config.js                        |       0 |      100 |     100 |       0 | 19                                                                                                          
+  help.js                                 |       0 |        0 |       0 |       0 | 1-23                                                                                                        
+  options.js                              |       0 |        0 |       0 |       0 | 8-1127                                                                                                      
+  renderers.js                            |       0 |        0 |       0 |       0 | 9-625                                                                                                       
+  sidebar.js                              |       0 |        0 |       0 |       0 | 10-1148                                                                                                     
+  store-test-methods.js                   |       0 |        0 |       0 |       0 | 13-48                                                                                                       
+  store.js                                |   80.38 |    67.11 |   94.59 |   80.39 | 117-130,137,176,221,243,268,281-282,286,313,347,362-365,388,402-405,431-434,449,488,493-506,530-533,543,555 
+  test-autoload-fix-validation.js         |       0 |        0 |       0 |       0 | 21-213                                                                                                      
+  test-autoload-fix.js                    |       0 |        0 |       0 |       0 | 8-132                                                                                                       
+  test-autoload.js                        |       0 |        0 |     100 |       0 | 2-27                                                                                                        
+  test-independent-autoload-validation.js |       0 |        0 |       0 |       0 | 17-231                                                                                                      
+  utils.js                                |   31.61 |    20.98 |   19.44 |   33.57 | 33,36-37,40-41,69-100,132,146,156-183,205-218,235-239,264-286,299-318,331-348,362-376,389-475               
+ AssistenteDeRegulacaoMedica/ui           |       0 |        0 |       0 |       0 |                                                                                                             
+  patient-card.js                         |       0 |        0 |       0 |       0 | 14-163                                                                                                      
+  search.js                               |       0 |        0 |       0 |       0 | 14-161                                                                                                      
+------------------------------------------|---------|----------|---------|---------|-------------------------------------------------------------------------------------------------------------

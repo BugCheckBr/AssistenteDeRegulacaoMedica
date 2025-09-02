@@ -1,0 +1,19 @@
+/* src/input.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos para lista de telefones no patient-card */
+.phone-list {
+  margin-top: 0.25rem;
+}
+.phone-item {
+  margin: 0.125rem 0;
+}
+.phone-link {
+  color: #0b63e5; /* azul suave */
+  text-decoration: none;
+}
+.phone-link:hover {
+  text-decoration: underline;
+}

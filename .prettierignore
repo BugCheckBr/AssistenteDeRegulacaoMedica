@@ -1,0 +1,18 @@
+# Prettier ignore patterns
+node_modules/
+dist/
+dist-zips/
+coverage/
+.nyc_output/
+*.zip
+*.xpi
+*.png
+*.jpg
+*.svg
+*.ico
+*.gif
+*.bat
+*.sh
+config/webpack/
+config/jest/
+test/setup.js

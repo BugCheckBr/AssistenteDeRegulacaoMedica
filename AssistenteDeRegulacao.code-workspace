@@ -1,0 +1,72 @@
+{
+  "folders": [
+    {
+      "name": "🏥 Assistente de Regulação Médica",
+      "path": ".",
+    },
+  ],
+  "settings": {
+    "files.associations": {
+      "*.json": "jsonc",
+      "manifest*.json": "json",
+      ".babelrc": "json",
+      ".eslintrc": "json",
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/coverage": true,
+      "**/.chrome-debug": true,
+      "**/.firefox-debug": true,
+      "**/dist-zips": true,
+    },
+    "files.watcherExclude": {
+      "**/node_modules/**": true,
+      "**/dist/**": true,
+      "**/coverage/**": true,
+      "**/.chrome-debug/**": true,
+      "**/.firefox-debug/**": true,
+    },
+    "typescript.preferences.includePackageJsonAutoImports": "on",
+    "javascript.preferences.includePackageJsonAutoImports": "on",
+    "npm.enableScriptExplorer": true,
+    "npm.scriptExplorerAction": "run",
+    "eslint.workingDirectories": ["."],
+    "eslint.validate": ["javascript", "javascriptreact", "html"],
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit",
+      "source.fixAll.stylelint": "explicit",
+    },
+    "emmet.includeLanguages": {
+      "javascript": "javascriptreact",
+    },
+    "codium.codeCompletion.enable": false,
+    "files.exclude": {
+      "logseq/*": true,
+    },
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "options": {
+      "env": {
+        "NODE_ENV": "development",
+      },
+    },
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [],
+  },
+  "extensions": {
+    "recommendations": [
+      "esbenp.prettier-vscode",
+      "dbaeumer.vscode-eslint",
+      "bradlc.vscode-tailwindcss",
+      "firefox-devtools.vscode-firefox-debug",
+      "msjsdiag.debugger-for-chrome",
+      "orta.vscode-jest",
+      "github.copilot",
+      "ms-vscode.vscode-json",
+    ],
+  },
+}

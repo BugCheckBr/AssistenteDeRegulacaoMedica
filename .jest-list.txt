@@ -1,0 +1,15 @@
+C:\Users\cleitomforni\OneDrive\Programa├º├úo\Git\AssistenteDeRegulacaoMedica\test\unit\keepalive-manager-fixed.test.js
+C:\Users\cleitomforni\OneDrive\Programa├º├úo\Git\AssistenteDeRegulacaoMedica\test\unit\core\store-persistence.test.js
+C:\Users\cleitomforni\OneDrive\Programa├º├úo\Git\AssistenteDeRegulacaoMedica\test\unit\core\store-medical-flow-corrected.test.js
+C:\Users\cleitomforni\OneDrive\Programa├º├úo\Git\AssistenteDeRegulacaoMedica\test\unit\utils.test.js
+C:\Users\cleitomforni\OneDrive\Programa├º├úo\Git\AssistenteDeRegulacaoMedica\test\unit\ErrorHandler.standalone.test.js
+C:\Users\cleitomforni\OneDrive\Programa├º├úo\Git\AssistenteDeRegulacaoMedica\test\unit\ErrorHandler.test.js
+C:\Users\cleitomforni\OneDrive\Programa├º├úo\Git\AssistenteDeRegulacaoMedica\test\unit\core\store-memory.test.js
+C:\Users\cleitomforni\OneDrive\Programa├º├úo\Git\AssistenteDeRegulacaoMedica\test\unit\basic.test.js
+C:\Users\cleitomforni\OneDrive\Programa├º├úo\Git\AssistenteDeRegulacaoMedica\test\unit\api.test.js
+C:\Users\cleitomforni\OneDrive\Programa├º├úo\Git\AssistenteDeRegulacaoMedica\test\unit\core\store-medical-flow-fixed.test.js
+C:\Users\cleitomforni\OneDrive\Programa├º├úo\Git\AssistenteDeRegulacaoMedica\test\unit\core\store-medical-flow.test.js
+C:\Users\cleitomforni\OneDrive\Programa├º├úo\Git\AssistenteDeRegulacaoMedica\test\unit\keepalive-manager.test.js
+C:\Users\cleitomforni\OneDrive\Programa├º├úo\Git\AssistenteDeRegulacaoMedica\test\unit\core\store-performance.test.js
+C:\Users\cleitomforni\OneDrive\Programa├º├úo\Git\AssistenteDeRegulacaoMedica\test\unit\message-validation.test.js
+C:\Users\cleitomforni\OneDrive\Programa├º├úo\Git\AssistenteDeRegulacaoMedica\test\unit\phone-utils.test.js

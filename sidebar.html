@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assistente de Regulação</title>
+    <script src="browser-polyfill.js"></script>
+    <link href="dist/output.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      .hidden {
+        display: none !important;
+      }
+      .collapse-section {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease-in-out;
+      }
+      .collapse-section.show {
+        max-height: 10000px;
+      }
+      .btn-active {
+        background-color: #2563eb;
+        color: white;
+      }
+      .comparison-icon,
+      .copy-icon {
+        display: inline-block;
+        margin-left: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        position: relative;
+      }
+      .comparison-icon[data-tooltip]:hover::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: 120%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #1f2937;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        white-space: pre-wrap;
+        z-index: 9999;
+        display: block;
+        min-width: 280px;
+        max-width: 320px;
+        text-align: left;
+        pointer-events: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .comparison-icon[data-tooltip]::after {
+        display: none;
+      }
+      .sort-header {
+        cursor: pointer;
+        user-select: none;
+      }
+      .sort-header:hover {
+        color: #2563eb;
+      }
+      .sort-indicator {
+        display: inline-block;
+        margin-left: 4px;
+        font-size: 1.2em;
+        line-height: 1;
+      }
+      .refresh-icon.spinning {
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .section-icon svg {
+        width: 1.125rem; /* 18px */
+        height: 1.125rem; /* 18px */
+        fill: currentColor;
+      }
+      /* Novos estilos para cabeçalhos de seção usando Variáveis CSS */
+      .section-header {
+        background-color: var(--section-bg-color, #ffffff);
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        border-radius: 0.375rem;
+        transition:
+          background-color 0.2s,
+          color 0.2s;
+        /* As classes do Tailwind (flex, justify-between, etc.) continuam no HTML */
+      }
+      .section-header h2 {
+        color: var(--section-font-color, #1e293b);
+        font-size: var(--section-font-size, 1rem); /* 16px */
+      }
+      .section-header button {
+        color: var(--section-font-color, #1e293b);
+      }
+      .section-header .section-icon svg {
+        stroke: var(--section-icon-color, #1e293b);
+        fill: none !important; /* Garante que o ícone não seja preenchido */
+      }
+      /* Estilos para a nova Linha do Tempo */
+      .timeline-details-body {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease-in-out;
+      }
+      .timeline-details-body.show {
+        max-height: 10000px; /* Use um valor grande para permitir a transição */
+      }
+      /* Permite quebra de palavras e rolagem para textos longos */
+      .timeline-details-body {
+        word-break: break-word;
+      }
+      .timeline-details-body .whitespace-pre-wrap {
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-800 antialiased flex flex-col h-screen">
+    <header
+      class="p-4 flex-shrink-0 flex items-center space-x-2 pb-2 border-b border-slate-200 justify-between"
+    >
+      <div class="flex items-center space-x-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="text-blue-600"
+        >
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        </svg>
+        <h1 class="text-lg font-bold text-slate-900">Assistente de Regulação</h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <button
+          id="context-info-btn"
+          class="hidden text-slate-400 hover:text-blue-600"
+          title="Contexto não detetado"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+            />
+          </svg>
+        </button>
+        <div class="flex items-center space-x-1 text-xs">
+          <span id="auto-mode-label" class="font-medium text-slate-500">Auto</span>
+          <label for="auto-mode-toggle" class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="auto-mode-toggle" class="sr-only peer" />
+            <div
+              class="w-9 h-5 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"
+            ></div>
+          </label>
+        </div>
+        <button
+          id="reload-sidebar-btn"
+          title="Recarregar Assistente"
+          class="text-slate-400 hover:text-blue-600 transition"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0011.664 0l3.181-3.183m-3.181-4.991v4.99"
+            />
+          </svg>
+        </button>
+        <a href="options.html" title="Configurações" target="_blank">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+            class="text-slate-400 hover:text-blue-600 transition"
+          >
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09c0 .66.42 1.24 1 1.51a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.66 0 1.24.42 1.51 1H21a2 2 0 1 1 0 4h-.09c-.27 0-.52.11-.71.29-.19.18-.29.43-.29.71z"
+            />
+          </svg>
+        </a>
+        <a href="help.html" title="Ajuda" target="_blank" class="ml-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+            <circle cx="10" cy="10" r="10" fill="#2563eb" />
+            <text
+              x="10"
+              y="15"
+              text-anchor="middle"
+              font-size="13"
+              fill="white"
+              font-family="Arial"
+              font-weight="bold"
+            >
+              ?
+            </text>
+          </svg>
+        </a>
+      </div>
+    </header>
+
+    <div
+      id="url-config-warning"
+      class="hidden p-6 text-center flex-grow flex flex-col justify-center"
+    >
+      <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+        <svg
+          class="mx-auto h-12 w-12 text-yellow-500"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+          />
+        </svg>
+        <h2 class="text-lg font-semibold text-slate-800 mt-4">URL Base Não Configurada</h2>
+        <p class="text-slate-600 mt-2 text-sm">
+          Para que a extensão funcione, você precisa configurar a URL base do seu sistema de gestão.
+        </p>
+        <div class="mt-6 flex flex-col gap-3">
+          <button
+            id="open-options-from-warning"
+            class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition text-sm font-medium"
+          >
+            Abrir Configurações
+          </button>
+          <button
+            id="reload-sidebar-from-warning"
+            class="w-full bg-slate-200 text-slate-800 py-2 rounded-md hover:bg-slate-300 transition text-sm font-medium"
+          >
+            Recarregar Assistente
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <main id="main-content" class="flex-grow p-4 space-y-4 overflow-y-auto">
+      <section
+        id="search-section"
+        class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm"
+      >
+        <h2 class="text-md font-semibold text-slate-700 mb-3">Buscar Paciente</h2>
+        <div class="relative">
+          <input
+            type="search"
+            id="patient-search-input"
+            placeholder="Digite o nome ou CPF..."
+            class="w-full px-3 py-2 text-sm border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-150 ease-in-out"
+          />
+          <div
+            id="loader"
+            class="absolute inset-y-0 right-3 flex items-center"
+            style="display: none"
+          >
+            <svg
+              class="animate-spin h-5 w-5 text-blue-600"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+          </div>
+        </div>
+        <ul id="search-results" class="mt-2 border-t border-slate-200 -mx-4"></ul>
+        <ul id="recent-patients-list" class="hidden mt-2 border-t border-slate-200 -mx-4"></ul>
+      </section>
+
+      <section
+        id="patient-details-section"
+        class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm"
+        style="display: none"
+      >
+        <div class="section-header flex justify-between items-center">
+          <h2 class="flex items-center gap-2 font-semibold">
+            <span id="patient-details-section-icon" class="section-icon"></span>
+            <span>Dados do Paciente</span>
+          </h2>
+        </div>
+        <div id="patient-main-info" class="space-y-2 text-sm"></div>
+        <button
+          id="toggle-details-btn"
+          class="text-blue-600 text-sm font-medium mt-4 hover:underline"
+        >
+          Mostrar mais
+        </button>
+        <div
+          id="patient-additional-info"
+          class="collapse-section mt-4 pt-4 border-t border-slate-200 space-y-2 text-sm"
+        ></div>
+        <div
+          id="patient-card-footer"
+          class="mt-4 pt-3 border-t border-slate-200 text-xs text-slate-500 flex justify-between items-center"
+        >
+          <span id="cadsus-timestamp"></span>
+          <button
+            id="refresh-cadsus-btn"
+            title="Atualizar dados do CADSUS"
+            class="p-1 hover:bg-slate-200 rounded-full"
+          >
+            <svg
+              class="refresh-icon h-4 w-4"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0011.664 0l3.181-3.183m-3.181-4.991v4.99"
+              />
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- Seção da Linha do Tempo -->
+      <section
+        id="timeline-section"
+        class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm"
+        style="display: none"
+      >
+        <div class="section-header flex justify-between items-center">
+          <h2 class="flex items-center gap-2 font-semibold">
+            <span id="timeline-section-icon" class="section-icon"></span>
+            <span>Linha do Tempo</span>
+          </h2>
+          <button id="toggle-timeline-list-btn" class="text-xs text-slate-500 hover:text-blue-600">
+            Recolher
+          </button>
+        </div>
+        <div id="timeline-wrapper" class="collapse-section show">
+          <div
+            id="timeline-automation-feedback"
+            class="hidden mb-3 p-2 bg-blue-50 border border-blue-200 rounded-md text-sm text-blue-700"
+          ></div>
+
+          <div id="timeline-filters" class="space-y-4 mt-4">
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <label for="timeline-date-initial" class="block font-medium">Data Inicial</label>
+                <input
+                  type="date"
+                  id="timeline-date-initial"
+                  class="mt-1 w-full px-2 py-1 border border-slate-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label for="timeline-date-final" class="block font-medium">Data Final</label>
+                <input
+                  type="date"
+                  id="timeline-date-final"
+                  class="mt-1 w-full px-2 py-1 border border-slate-300 rounded-md"
+                />
+              </div>
+            </div>
+            <div>
+              <label for="timeline-search-keyword" class="block font-medium text-sm"
+                >Buscar na Linha do Tempo</label
+              >
+              <input
+                type="search"
+                id="timeline-search-keyword"
+                placeholder="Digite para filtrar eventos..."
+                class="mt-1 w-full px-3 py-2 text-sm border border-slate-300 rounded-md"
+              />
+            </div>
+          </div>
+
+          <button
+            id="fetch-timeline-btn"
+            class="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition text-sm"
+          >
+            Buscar na Linha do Tempo
+          </button>
+          <div id="timeline-content" class="pt-4 mt-4 border-t border-slate-200">
+            <!-- O conteúdo da linha do tempo, incluindo estados de carregamento/vazio/erro, será renderizado aqui -->
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="regulations-section"
+        class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm"
+        style="display: none"
+      >
+        <div class="section-header flex justify-between items-center">
+          <h2 class="flex items-center gap-2 font-semibold">
+            <span id="regulations-section-icon" class="section-icon"></span>
+            <span>Regulação</span>
+          </h2>
+          <button
+            id="toggle-regulations-list-btn"
+            class="text-xs text-slate-500 hover:text-blue-600"
+          >
+            Recolher
+          </button>
+        </div>
+        <div id="regulations-wrapper" class="collapse-section show">
+          <div
+            id="regulations-automation-feedback"
+            class="hidden mb-3 p-2 bg-blue-50 border border-blue-200 rounded-md text-sm text-blue-700"
+          ></div>
+          <div id="regulation-main-filters" class="space-y-3"></div>
+          <button
+            id="fetch-regulations-btn"
+            class="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition text-sm"
+          >
+            Buscar Regulações
+          </button>
+          <div class="mt-2 py-2 border-t border-slate-200 space-y-2">
+            <div class="flex justify-between items-center text-sm">
+              <button id="toggle-more-regulation-filters-btn" class="text-blue-600 hover:underline">
+                <span class="button-text">Mais filtros</span
+                ><span
+                  class="hidden ml-1 text-xs bg-blue-500 text-white rounded-full px-1.5 py-0.5"
+                ></span>
+              </button>
+              <button id="clear-regulation-filters-btn" class="text-slate-500 hover:text-red-600">
+                Limpar
+              </button>
+            </div>
+            <div id="regulation-more-filters" class="collapse-section space-y-3 text-sm"></div>
+          </div>
+          <div id="regulations-content" class="pt-2 border-t"></div>
+        </div>
+      </section>
+
+      <section
+        id="consultations-section"
+        class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm"
+        style="display: none"
+      >
+        <div class="section-header flex justify-between items-center">
+          <h2 class="flex items-center gap-2 font-semibold">
+            <span id="consultations-section-icon" class="section-icon"></span>
+            <span>Consultas</span>
+          </h2>
+          <button
+            id="toggle-consultations-list-btn"
+            class="text-xs text-slate-500 hover:text-blue-600"
+          >
+            Recolher
+          </button>
+        </div>
+        <div id="consultations-wrapper" class="collapse-section show">
+          <div
+            id="consultations-automation-feedback"
+            class="hidden mb-3 p-2 bg-blue-50 border border-blue-200 rounded-md text-sm text-blue-700"
+          ></div>
+          <div id="consultation-main-filters" class="space-y-3"></div>
+          <button
+            id="fetch-consultations-btn"
+            class="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition text-sm"
+          >
+            Buscar Consultas
+          </button>
+          <div class="mt-2 py-2 border-t border-slate-200 space-y-2">
+            <div class="flex justify-between items-center text-sm">
+              <button
+                id="toggle-more-consultation-filters-btn"
+                class="text-blue-600 hover:underline"
+              >
+                <span class="button-text">Mais filtros</span
+                ><span
+                  class="hidden ml-1 text-xs bg-blue-500 text-white rounded-full px-1.5 py-0.5"
+                ></span>
+              </button>
+              <button id="clear-consultation-filters-btn" class="text-slate-500 hover:text-red-600">
+                Limpar
+              </button>
+            </div>
+            <div id="consultation-more-filters" class="collapse-section space-y-3 text-sm"></div>
+          </div>
+          <div id="consultations-content" class="pt-2 border-t"></div>
+        </div>
+      </section>
+
+      <section
+        id="exams-section"
+        class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm"
+        style="display: none"
+      >
+        <div class="section-header flex justify-between items-center">
+          <h2 class="flex items-center gap-2 font-semibold">
+            <span id="exams-section-icon" class="section-icon"></span>
+            <span>Exames Solicitados</span>
+          </h2>
+          <button id="toggle-exams-list-btn" class="text-xs text-slate-500 hover:text-blue-600">
+            Recolher
+          </button>
+        </div>
+        <div id="exams-wrapper" class="collapse-section show">
+          <div
+            id="exams-automation-feedback"
+            class="hidden mb-3 p-2 bg-blue-50 border border-blue-200 rounded-md text-sm text-blue-700"
+          ></div>
+          <div id="exam-main-filters" class="space-y-3"></div>
+          <button
+            id="fetch-exams-btn"
+            class="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition text-sm"
+          >
+            Buscar Exames
+          </button>
+          <div class="mt-2 py-2 border-t border-slate-200 space-y-2">
+            <div class="flex justify-between items-center text-sm">
+              <button id="toggle-more-exam-filters-btn" class="text-blue-600 hover:underline">
+                <span class="button-text">Mais filtros</span
+                ><span
+                  class="hidden ml-1 text-xs bg-blue-500 text-white rounded-full px-1.5 py-0.5"
+                ></span>
+              </button>
+              <button id="clear-exam-filters-btn" class="text-slate-500 hover:text-red-600">
+                Limpar
+              </button>
+            </div>
+            <div id="exam-more-filters" class="collapse-section space-y-3 text-sm"></div>
+          </div>
+          <div
+            id="exams-content"
+            class="pt-2 border-t"
+            style="max-height: none; overflow: visible"
+          ></div>
+        </div>
+      </section>
+
+      <section
+        id="appointments-section"
+        class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm"
+        style="display: none"
+      >
+        <div class="section-header flex justify-between items-center">
+          <h2 class="flex items-center gap-2 font-semibold">
+            <span id="appointments-section-icon" class="section-icon"></span>
+            <span>Agendamentos</span>
+          </h2>
+          <button
+            id="toggle-appointments-list-btn"
+            class="text-xs text-slate-500 hover:text-blue-600"
+          >
+            Recolher
+          </button>
+        </div>
+        <div id="appointments-wrapper" class="collapse-section show">
+          <div
+            id="appointments-automation-feedback"
+            class="hidden mb-3 p-2 bg-blue-50 border border-blue-200 rounded-md text-sm text-blue-700"
+          ></div>
+          <div id="appointment-main-filters" class="space-y-3"></div>
+          <button
+            id="fetch-appointments-btn"
+            class="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition text-sm"
+          >
+            Buscar Agendamentos
+          </button>
+          <div class="mt-2 py-2 border-t border-slate-200 space-y-2">
+            <div class="flex justify-between items-center text-sm">
+              <button
+                id="toggle-more-appointment-filters-btn"
+                class="text-blue-600 hover:underline"
+              >
+                <span class="button-text">Mais filtros</span
+                ><span
+                  class="hidden ml-1 text-xs bg-blue-500 text-white rounded-full px-1.5 py-0.5"
+                ></span>
+              </button>
+              <button id="clear-appointment-filters-btn" class="text-slate-500 hover:text-red-600">
+                Limpar
+              </button>
+            </div>
+            <div id="appointment-more-filters" class="collapse-section space-y-3 text-sm"></div>
+          </div>
+          <div id="appointments-content" class="pt-2 border-t"></div>
+        </div>
+      </section>
+
+      <section
+        id="documents-section"
+        class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm"
+        style="display: none"
+      >
+        <div class="section-header flex justify-between items-center">
+          <h2 class="flex items-center gap-2 font-semibold">
+            <span id="documents-section-icon" class="section-icon"></span>
+            <span>Documentos</span>
+          </h2>
+          <button id="toggle-documents-list-btn" class="text-xs text-slate-500 hover:text-blue-600">
+            Recolher
+          </button>
+        </div>
+        <div id="documents-wrapper" class="collapse-section show">
+          <div
+            id="documents-automation-feedback"
+            class="hidden mb-3 p-2 bg-blue-50 border border-blue-200 rounded-md text-sm text-blue-700"
+          ></div>
+          <div id="document-main-filters" class="space-y-3"></div>
+          <button
+            id="fetch-documents-btn"
+            class="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition text-sm"
+          >
+            Buscar Documentos
+          </button>
+          <div class="mt-2 py-2 border-t border-slate-200 space-y-2">
+            <div class="flex justify-between items-center text-sm">
+              <button id="toggle-more-document-filters-btn" class="text-blue-600 hover:underline">
+                <span class="button-text">Mais filtros</span
+                ><span
+                  class="hidden ml-1 text-xs bg-blue-500 text-white rounded-full px-1.5 py-0.5"
+                ></span>
+              </button>
+              <button id="clear-document-filters-btn" class="text-slate-500 hover:text-red-600">
+                Limpar
+              </button>
+            </div>
+            <div id="document-more-filters" class="collapse-section space-y-3 text-sm"></div>
+          </div>
+          <div id="documents-content" class="pt-2 border-t"></div>
+        </div>
+      </section>
+
+      <div id="message-area" class="p-3 rounded-md text-sm" style="display: none"></div>
+    </main>
+
+    <div
+      id="info-modal"
+      class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4"
+    >
+      <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md max-h-full overflow-y-auto">
+        <div class="flex justify-between items-center mb-4">
+          <h3 id="modal-title" class="text-lg font-bold text-slate-800">Detalhes</h3>
+          <button
+            id="modal-close-btn"
+            class="text-gray-500 hover:text-gray-800 text-2xl leading-none"
+          >
+            &times;
+          </button>
+        </div>
+        <div id="modal-content" class="text-sm space-y-2"></div>
+      </div>
+    </div>
+
+    <script type="module" src="sidebar.js"></script>
+  </body>
+</html>

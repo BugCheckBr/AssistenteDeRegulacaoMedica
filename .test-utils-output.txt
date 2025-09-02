@@ -1,0 +1,622 @@
+FAIL test/unit/utils.test.js
+  Utils.js Medical Extension Tests
+    debounce
+      ├ù should delay function execution (3 ms)
+      ├ù should use default delay when not provided (1 ms)
+      ├ù should pass arguments correctly
+    showDialog
+      ├ù should create dialog with medical confirmation
+      ├ù should handle dialog without cancel callback (1 ms)
+    parseDate
+      ├ù should parse valid date string (1 ms)
+      ├ù should handle invalid date string (1 ms)
+      ├ù should handle medical date formats
+      ├ù should handle empty or null input
+    normalizeString
+      ├ù should normalize string correctly
+      ├ù should handle empty string
+      ├ù should handle special medical characters
+      ├ù should handle accented medical terms
+    normalizeTimelineData
+      ├ù should normalize timeline data from SIGSS API
+      ├ù should handle empty timeline data
+      ├ù should handle invalid timeline data
+      ├ù should preserve medical context in timeline
+    Medical Data Security
+      ├ù should not expose sensitive data in logs (1 ms)
+      ├ù should handle medical data without exposure
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ debounce ÔÇ║ should delay function execution
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: document is not defined
+
+      20 |
+      21 |     // Mock DOM para fun├º├Áes que manipulam UI
+    > 22 |     document.body.innerHTML = '<div id="message-container"></div>';
+         |     ^
+      23 |     global.document.querySelector = jest.fn((selector) => {
+      24 |       if (selector === '#message-container') {
+      25 |         return document.getElementById('message-container');
+
+      at Object.document (test/unit/utils.test.js:22:5)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ debounce ÔÇ║ should delay function execution
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ debounce ÔÇ║ should use default delay when not provided
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: document is not defined
+
+      20 |
+      21 |     // Mock DOM para fun├º├Áes que manipulam UI
+    > 22 |     document.body.innerHTML = '<div id="message-container"></div>';
+         |     ^
+      23 |     global.document.querySelector = jest.fn((selector) => {
+      24 |       if (selector === '#message-container') {
+      25 |         return document.getElementById('message-container');
+
+      at Object.document (test/unit/utils.test.js:22:5)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ debounce ÔÇ║ should use default delay when not provided
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ debounce ÔÇ║ should pass arguments correctly
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: document is not defined
+
+      20 |
+      21 |     // Mock DOM para fun├º├Áes que manipulam UI
+    > 22 |     document.body.innerHTML = '<div id="message-container"></div>';
+         |     ^
+      23 |     global.document.querySelector = jest.fn((selector) => {
+      24 |       if (selector === '#message-container') {
+      25 |         return document.getElementById('message-container');
+
+      at Object.document (test/unit/utils.test.js:22:5)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ debounce ÔÇ║ should pass arguments correctly
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ showDialog ÔÇ║ should create dialog with medical confirmation
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: document is not defined
+
+      20 |
+      21 |     // Mock DOM para fun├º├Áes que manipulam UI
+    > 22 |     document.body.innerHTML = '<div id="message-container"></div>';
+         |     ^
+      23 |     global.document.querySelector = jest.fn((selector) => {
+      24 |       if (selector === '#message-container') {
+      25 |         return document.getElementById('message-container');
+
+      at Object.document (test/unit/utils.test.js:22:5)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ showDialog ÔÇ║ should create dialog with medical confirmation
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ showDialog ÔÇ║ should handle dialog without cancel callback
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: document is not defined
+
+      20 |
+      21 |     // Mock DOM para fun├º├Áes que manipulam UI
+    > 22 |     document.body.innerHTML = '<div id="message-container"></div>';
+         |     ^
+      23 |     global.document.querySelector = jest.fn((selector) => {
+      24 |       if (selector === '#message-container') {
+      25 |         return document.getElementById('message-container');
+
+      at Object.document (test/unit/utils.test.js:22:5)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ showDialog ÔÇ║ should handle dialog without cancel callback
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ parseDate ÔÇ║ should parse valid date string
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: document is not defined
+
+      20 |
+      21 |     // Mock DOM para fun├º├Áes que manipulam UI
+    > 22 |     document.body.innerHTML = '<div id="message-container"></div>';
+         |     ^
+      23 |     global.document.querySelector = jest.fn((selector) => {
+      24 |       if (selector === '#message-container') {
+      25 |         return document.getElementById('message-container');
+
+      at Object.document (test/unit/utils.test.js:22:5)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ parseDate ÔÇ║ should parse valid date string
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ parseDate ÔÇ║ should handle invalid date string
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: document is not defined
+
+      20 |
+      21 |     // Mock DOM para fun├º├Áes que manipulam UI
+    > 22 |     document.body.innerHTML = '<div id="message-container"></div>';
+         |     ^
+      23 |     global.document.querySelector = jest.fn((selector) => {
+      24 |       if (selector === '#message-container') {
+      25 |         return document.getElementById('message-container');
+
+      at Object.document (test/unit/utils.test.js:22:5)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ parseDate ÔÇ║ should handle invalid date string
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ parseDate ÔÇ║ should handle medical date formats
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: document is not defined
+
+      20 |
+      21 |     // Mock DOM para fun├º├Áes que manipulam UI
+    > 22 |     document.body.innerHTML = '<div id="message-container"></div>';
+         |     ^
+      23 |     global.document.querySelector = jest.fn((selector) => {
+      24 |       if (selector === '#message-container') {
+      25 |         return document.getElementById('message-container');
+
+      at Object.document (test/unit/utils.test.js:22:5)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ parseDate ÔÇ║ should handle medical date formats
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ parseDate ÔÇ║ should handle empty or null input
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: document is not defined
+
+      20 |
+      21 |     // Mock DOM para fun├º├Áes que manipulam UI
+    > 22 |     document.body.innerHTML = '<div id="message-container"></div>';
+         |     ^
+      23 |     global.document.querySelector = jest.fn((selector) => {
+      24 |       if (selector === '#message-container') {
+      25 |         return document.getElementById('message-container');
+
+      at Object.document (test/unit/utils.test.js:22:5)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ parseDate ÔÇ║ should handle empty or null input
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeString ÔÇ║ should normalize string correctly
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: document is not defined
+
+      20 |
+      21 |     // Mock DOM para fun├º├Áes que manipulam UI
+    > 22 |     document.body.innerHTML = '<div id="message-container"></div>';
+         |     ^
+      23 |     global.document.querySelector = jest.fn((selector) => {
+      24 |       if (selector === '#message-container') {
+      25 |         return document.getElementById('message-container');
+
+      at Object.document (test/unit/utils.test.js:22:5)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeString ÔÇ║ should normalize string correctly
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeString ÔÇ║ should handle empty string
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: document is not defined
+
+      20 |
+      21 |     // Mock DOM para fun├º├Áes que manipulam UI
+    > 22 |     document.body.innerHTML = '<div id="message-container"></div>';
+         |     ^
+      23 |     global.document.querySelector = jest.fn((selector) => {
+      24 |       if (selector === '#message-container') {
+      25 |         return document.getElementById('message-container');
+
+      at Object.document (test/unit/utils.test.js:22:5)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeString ÔÇ║ should handle empty string
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeString ÔÇ║ should handle special medical characters
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: document is not defined
+
+      20 |
+      21 |     // Mock DOM para fun├º├Áes que manipulam UI
+    > 22 |     document.body.innerHTML = '<div id="message-container"></div>';
+         |     ^
+      23 |     global.document.querySelector = jest.fn((selector) => {
+      24 |       if (selector === '#message-container') {
+      25 |         return document.getElementById('message-container');
+
+      at Object.document (test/unit/utils.test.js:22:5)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeString ÔÇ║ should handle special medical characters
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeString ÔÇ║ should handle accented medical terms
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: document is not defined
+
+      20 |
+      21 |     // Mock DOM para fun├º├Áes que manipulam UI
+    > 22 |     document.body.innerHTML = '<div id="message-container"></div>';
+         |     ^
+      23 |     global.document.querySelector = jest.fn((selector) => {
+      24 |       if (selector === '#message-container') {
+      25 |         return document.getElementById('message-container');
+
+      at Object.document (test/unit/utils.test.js:22:5)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeString ÔÇ║ should handle accented medical terms
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeTimelineData ÔÇ║ should normalize timeline data from SIGSS API
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: document is not defined
+
+      20 |
+      21 |     // Mock DOM para fun├º├Áes que manipulam UI
+    > 22 |     document.body.innerHTML = '<div id="message-container"></div>';
+         |     ^
+      23 |     global.document.querySelector = jest.fn((selector) => {
+      24 |       if (selector === '#message-container') {
+      25 |         return document.getElementById('message-container');
+
+      at Object.document (test/unit/utils.test.js:22:5)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeTimelineData ÔÇ║ should normalize timeline data from SIGSS API
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeTimelineData ÔÇ║ should handle empty timeline data
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: document is not defined
+
+      20 |
+      21 |     // Mock DOM para fun├º├Áes que manipulam UI
+    > 22 |     document.body.innerHTML = '<div id="message-container"></div>';
+         |     ^
+      23 |     global.document.querySelector = jest.fn((selector) => {
+      24 |       if (selector === '#message-container') {
+      25 |         return document.getElementById('message-container');
+
+      at Object.document (test/unit/utils.test.js:22:5)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeTimelineData ÔÇ║ should handle empty timeline data
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeTimelineData ÔÇ║ should handle invalid timeline data
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: document is not defined
+
+      20 |
+      21 |     // Mock DOM para fun├º├Áes que manipulam UI
+    > 22 |     document.body.innerHTML = '<div id="message-container"></div>';
+         |     ^
+      23 |     global.document.querySelector = jest.fn((selector) => {
+      24 |       if (selector === '#message-container') {
+      25 |         return document.getElementById('message-container');
+
+      at Object.document (test/unit/utils.test.js:22:5)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeTimelineData ÔÇ║ should handle invalid timeline data
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeTimelineData ÔÇ║ should preserve medical context in timeline
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: document is not defined
+
+      20 |
+      21 |     // Mock DOM para fun├º├Áes que manipulam UI
+    > 22 |     document.body.innerHTML = '<div id="message-container"></div>';
+         |     ^
+      23 |     global.document.querySelector = jest.fn((selector) => {
+      24 |       if (selector === '#message-container') {
+      25 |         return document.getElementById('message-container');
+
+      at Object.document (test/unit/utils.test.js:22:5)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ normalizeTimelineData ÔÇ║ should preserve medical context in timeline
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ Medical Data Security ÔÇ║ should not expose sensitive data in logs
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: document is not defined
+
+      20 |
+      21 |     // Mock DOM para fun├º├Áes que manipulam UI
+    > 22 |     document.body.innerHTML = '<div id="message-container"></div>';
+         |     ^
+      23 |     global.document.querySelector = jest.fn((selector) => {
+      24 |       if (selector === '#message-container') {
+      25 |         return document.getElementById('message-container');
+
+      at Object.document (test/unit/utils.test.js:22:5)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ Medical Data Security ÔÇ║ should not expose sensitive data in logs
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ Medical Data Security ÔÇ║ should handle medical data without exposure
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: document is not defined
+
+      20 |
+      21 |     // Mock DOM para fun├º├Áes que manipulam UI
+    > 22 |     document.body.innerHTML = '<div id="message-container"></div>';
+         |     ^
+      23 |     global.document.querySelector = jest.fn((selector) => {
+      24 |       if (selector === '#message-container') {
+      25 |         return document.getElementById('message-container');
+
+      at Object.document (test/unit/utils.test.js:22:5)
+
+  ÔùÅ Utils.js Medical Extension Tests ÔÇ║ Medical Data Security ÔÇ║ should handle medical data without exposure
+
+    TypeError: cleanup.cleanup is not a function
+
+      30 |
+      31 |   afterEach(() => {
+    > 32 |     cleanup.cleanup();
+         |             ^
+      33 |     document.body.innerHTML = '';
+      34 |     jest.clearAllMocks();
+      35 |   });
+
+      at Object.cleanup (test/unit/utils.test.js:32:13)
+
+Test Suites: 1 failed, 1 total
+Tests:       19 failed, 19 total
+Snapshots:   0 total
+Time:        3.797 s, estimated 5 s
+Ran all test suites matching /test\\unit\\utils.test.js/i.

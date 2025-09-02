@@ -1,0 +1,6 @@
+# Ignorar arquivos de cobertura gerados automaticamente
+coverage/**/*.html
+# Ignorar outros diretórios não relevantes
+node_modules/**/*.html
+dist/**/*.html
+dist-zips/**/*.html

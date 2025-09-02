@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="pt-br" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guia do Usuário - Assistente de Regulação</title>
+    <link href="dist/output.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f8fafc;
+      }
+      section {
+        scroll-margin-top: 4rem;
+      }
+      h2 {
+        font-size: 1.875rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #334155;
+      }
+      h4 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #475569;
+      }
+      kbd {
+        background-color: #e2e8f0;
+        color: #334155;
+        border-radius: 6px;
+        padding: 4px 8px;
+        font-size: 0.85em;
+        font-weight: 600;
+        border-bottom: 2px solid #cbd5e1;
+      }
+      .toc-link.active {
+        color: #2563eb;
+        font-weight: 600;
+        transform: translateX(4px);
+      }
+      .tip-box {
+        padding: 1.25rem 1.5rem;
+        margin-top: 1.5rem;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      .tip-box svg {
+        flex-shrink: 0;
+      }
+      .pro-tip {
+        background-color: #eff6ff;
+        border-left: 4px solid #3b82f6;
+        color: #1e3a8a;
+      }
+      .important-note {
+        background-color: #fefce8;
+        border-left: 4px solid #facc15;
+        color: #854d0e;
+      }
+    </style>
+  </head>
+  <body class="text-slate-700">
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="lg:flex lg:gap-8">
+        <!-- Índice de Navegação (TOC) -->
+        <nav
+          id="toc"
+          class="hidden lg:block w-64 flex-shrink-0 py-16 lg:py-24 pr-8 sticky top-0 h-screen overflow-y-auto"
+        >
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Neste Guia</h3>
+          <ul class="mt-4 space-y-2 text-slate-500">
+            <li>
+              <a
+                href="#introducao"
+                class="toc-link block transition-all duration-200 hover:text-slate-900"
+                >1. Introdução</a
+              >
+            </li>
+            <li>
+              <a
+                href="#configuracao"
+                class="toc-link block transition-all duration-200 hover:text-slate-900"
+                >2. Configuração Inicial</a
+              >
+            </li>
+            <li>
+              <a href="#uso" class="toc-link block transition-all duration-200 hover:text-slate-900"
+                >3. Utilizando a Extensão</a
+              >
+            </li>
+            <li>
+              <a
+                href="#opcoes-avancadas"
+                class="toc-link block transition-all duration-200 hover:text-slate-900"
+                >4. Personalização Avançada</a
+              >
+            </li>
+            <li>
+              <a href="#faq" class="toc-link block transition-all duration-200 hover:text-slate-900"
+                >5. Solução de Problemas</a
+              >
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Conteúdo Principal -->
+        <div class="w-full min-w-0">
+          <div class="bg-white shadow-xl rounded-2xl my-12">
+            <header
+              class="text-center p-8 sm:p-12 rounded-t-2xl bg-gradient-to-br from-blue-50 to-indigo-100"
+            >
+              <div class="inline-block bg-blue-600 p-3 rounded-xl shadow-md mb-4">
+                <svg
+                  class="w-8 h-8 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.286Z"
+                  />
+                </svg>
+              </div>
+              <h1 class="text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight">
+                Guia Completo do Usuário
+              </h1>
+              <p class="text-lg text-slate-600 mt-3 max-w-2xl mx-auto">
+                Tudo o que você precisa saber para dominar o Assistente de Regulação Médica.
+              </p>
+              <a
+                href="options.html"
+                target="_blank"
+                class="mt-6 inline-flex items-center gap-2 bg-white text-blue-600 font-semibold py-2 px-5 rounded-lg shadow-sm hover:bg-blue-50 transition"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  ></path>
+                </svg>
+                <span>Abrir Página de Configurações</span>
+              </a>
+            </header>
+
+            <main class="p-8 sm:p-12">
+              <section id="introducao">
+                <h2 class="text-3xl font-bold">
+                  <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M13 10V3L4 14h7v7l9-11h-7z"
+                      />
+                    </svg>
+                  </span>
+                  <span>1. Introdução</span>
+                </h2>
+                <p class="text-slate-600 leading-relaxed mt-4">
+                  Bem-vindo ao Assistente de Regulação! Esta extensão foi criada para ser uma
+                  ferramenta poderosa no seu dia a dia, otimizando o processo de análise de
+                  solicitações de regulação. Ela se integra ao sistema de gestão que você já
+                  utiliza, centralizando informações cruciais do paciente e automatizando tarefas
+                  repetitivas para que você possa focar no que é mais importante: a decisão médica.
+                </p>
+              </section>
+
+              <section id="configuracao">
+                <h2 class="text-3xl font-bold">
+                  <span class="bg-gray-100 text-gray-600 p-2 rounded-lg">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                  </span>
+                  <span>2. Configuração Inicial</span>
+                </h2>
+                <p class="text-slate-600 leading-relaxed mt-4">
+                  Para que a extensão possa se comunicar com o sistema de gestão, uma única
+                  configuração inicial é necessária.
+                </p>
+                <h3 class="text-2xl font-semibold">2.1. Abrindo a Página de Opções</h3>
+                <p class="text-slate-600 leading-relaxed mt-4">
+                  Existem algumas maneiras de abrir a página de Opções da extensão:
+                </p>
+                <ul class="list-disc list-inside space-y-3 mt-4 text-slate-600">
+                  <li>
+                    <strong>Através da Barra Lateral (Recomendado):</strong>
+                    Abra a barra lateral clicando no ícone da extensão (escudo azul). No canto
+                    superior direito da barra lateral, clique no ícone de engrenagem (Configurações)
+                    para abrir as opções em uma nova aba.
+                  </li>
+                  <li>
+                    <strong>Através do Ícone da Extensão:</strong> Na maioria dos navegadores, você
+                    pode clicar com o botão direito do mouse sobre o ícone da extensão (escudo azul)
+                    na barra de ferramentas e selecionar a opção "Opções".
+                  </li>
+                  <li>
+                    <strong>Através da Página de Extensões:</strong> Você também pode navegar até a
+                    página de gerenciamento de extensões do seu navegador (como
+                    <kbd>chrome://extensions</kbd> ou <kbd>about:addons</kbd>), encontrar o
+                    "Assistente de Regulação" e clicar no link de opções.
+                  </li>
+                </ul>
+
+                <h3 class="text-2xl font-semibold">2.2. Configurando a URL Base</h3>
+                <p class="text-slate-600 leading-relaxed mt-4">
+                  Esta é a etapa mais importante. Na página de Opções, no campo
+                  <kbd>URL base do sistema</kbd>, insira o endereço principal do seu sistema de
+                  gestão (ex: <kbd>https://meusistema.com.br</kbd>). A extensão usará esta URL para
+                  todas as comunicações. Sem ela, nenhuma informação poderá ser carregada.
+                </p>
+                <div class="tip-box pro-tip">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                    />
+                  </svg>
+                  <div>
+                    <h4 class="font-bold">Dica</h4>
+                    <p class="mt-1">
+                      A URL base é geralmente o endereço que você vê na barra do navegador antes de
+                      qualquer caminho específico (como `/sigss/...`). Não inclua a barra `/` no
+                      final.
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              <section id="uso">
+                <h2 class="text-3xl font-bold">
+                  <span class="bg-green-100 text-green-600 p-2 rounded-lg">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                      />
+                    </svg>
+                  </span>
+                  <span>3. Utilizando a Extensão</span>
+                </h2>
+
+                <h3 class="text-2xl font-semibold">3.1. A Interface Principal: A Barra Lateral</h3>
+                <p class="text-slate-600 leading-relaxed mt-4">
+                  Toda a interação com a extensão acontece na barra lateral. Para abri-la ou
+                  fechá-la, basta clicar no ícone da extensão (um escudo azul) na barra de
+                  ferramentas do seu navegador.
+                </p>
+
+                <h3 class="text-2xl font-semibold">Modo Automático vs. Modo Manual</h3>
+                <p class="text-slate-600 leading-relaxed mt-4">
+                  A extensão opera em dois modos, que podem ser alternados no topo da barra lateral
+                  através de um interruptor
+                  <kbd>Auto</kbd>:
+                </p>
+                <ul class="list-disc list-inside space-y-2 mt-4 text-slate-600">
+                  <li>
+                    <strong>Modo Automático (Padrão):</strong> Quando você acessa uma página de
+                    regulação no sistema (especificamente a aba "Manutenção"), a extensão detecta
+                    automaticamente os dados do paciente e carrega suas informações. Um ícone de
+                    informação (ⓘ) aparecerá, mostrando o contexto detectado (ex: procedimento,
+                    especialidade). Clicar neste ícone exibe todos os dados brutos recebidos da
+                    regulação. Este modo também ativa as
+                    <a href="#opcoes-avancadas" class="text-blue-600 font-medium hover:underline"
+                      >Regras de Automação</a
+                    >.
+                  </li>
+                  <li>
+                    <strong>Modo Manual:</strong> Se a detecção automática estiver desativada (no
+                    interruptor <kbd>Auto</kbd>) ou falhar, você pode usar a caixa de busca
+                    <kbd>Buscar Paciente</kbd> para encontrar qualquer paciente pelo nome ou CPF. Ao
+                    focar na busca, uma lista de pacientes recentes será exibida para acesso rápido.
+                  </li>
+                </ul>
+
+                <h3 class="text-2xl font-semibold">3.3. Entendendo as Seções</h3>
+
+                <h4 class="text-xl font-semibold">Dados do Paciente</h4>
+                <p class="text-slate-600 leading-relaxed mt-4">
+                  Após selecionar um paciente, sua ficha é exibida. A extensão realiza uma
+                  comparação em tempo real dos dados do seu sistema com os do CADSUS, fornecendo um
+                  feedback visual:
+                </p>
+                <ul class="list-disc list-inside space-y-2 mt-4 text-slate-600">
+                  <li><kbd>✅</kbd>: O dado confere com o CADSUS.</li>
+                  <li>
+                    <kbd>⚠️</kbd>: Há uma divergência entre os sistemas. Passe o mouse sobre o ícone
+                    para ver os dois valores e identificar a discrepância.
+                  </li>
+                  <li>
+                    <kbd>📄</kbd>: Clique para copiar o valor daquele campo para a área de
+                    transferência.
+                  </li>
+                  <li>
+                    O botão <kbd>Mostrar mais</kbd> revela informações adicionais do cadastro do
+                    paciente.
+                  </li>
+                </ul>
+
+                <h4 class="text-xl font-semibold">Seções de Histórico (Consultas, Exames, etc.)</h4>
+                <p class="text-slate-600 leading-relaxed mt-4">
+                  Todas as seções de dados (Consultas, Exames, Agendamentos e Regulação) seguem um
+                  padrão de interface similar, projetado para ser intuitivo:
+                </p>
+                <ul class="list-disc list-inside space-y-2 mt-4 text-slate-600">
+                  <li>
+                    <strong>Automação:</strong> No Modo Automático, se uma regra for acionada, uma
+                    mensagem aparecerá no topo da seção indicando qual regra foi aplicada e os
+                    filtros foram pré-preenchidos.
+                  </li>
+                  <li>
+                    <strong>Filtros Principais:</strong> Os filtros mais comuns ficam sempre
+                    visíveis para acesso rápido.
+                  </li>
+                  <li>
+                    <strong>Botão de Busca:</strong> Após ajustar os filtros, clique no botão
+                    <kbd>Buscar [Seção]</kbd> para carregar os dados.
+                  </li>
+                  <li>
+                    <strong>Mais Filtros:</strong> Clique em <kbd>Mais filtros</kbd> para revelar
+                    opções de filtragem adicionais. Um número aparecerá ao lado se houver filtros
+                    ativos nesta área.
+                  </li>
+                  <li>
+                    <strong>Limpar Filtros:</strong> Restaura todos os filtros daquela seção para
+                    seus valores padrão.
+                  </li>
+                  <li>
+                    <strong>Ordenação:</strong> Clique nos cabeçalhos das colunas (ex:
+                    <kbd>Data</kbd>, <kbd>Status</kbd>) para ordenar os resultados em ordem
+                    ascendente ou descendente.
+                  </li>
+                </ul>
+              </section>
+
+              <section id="opcoes-avancadas">
+                <h2 class="text-3xl font-bold">
+                  <span class="bg-purple-100 text-purple-600 p-2 rounded-lg">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M12 6V4m0 16v-2m0-10v10m0 0h5.571m-5.571 0H6.429M3.34 7.429L4.43 8.52m15.14-1.09l-1.09 1.09m-1.09 7.56l1.09 1.09m-13.06-1.09l1.09-1.09"
+                      />
+                    </svg>
+                  </span>
+                  <span>4. Personalização Avançada</span>
+                </h2>
+                <p class="text-slate-600 leading-relaxed mt-4">
+                  A página de Opções é o centro de comando para adaptar a extensão exatamente ao seu
+                  fluxo de trabalho.
+                </p>
+                <h3 class="text-2xl font-semibold">4.1. Gerenciador de Automação</h3>
+                <p class="text-slate-600 leading-relaxed mt-4">
+                  Esta é a funcionalidade mais poderosa para economia de tempo. Crie regras que
+                  aplicam conjuntos de filtros automaticamente com base no conteúdo de uma
+                  solicitação de regulação.
+                </p>
+                <ul class="list-disc list-inside space-y-2 mt-4 text-slate-600">
+                  <li>Clique em <kbd>+ Criar Nova Regra de Automação</kbd>.</li>
+                  <li>
+                    <strong>Nome da Regra:</strong> Dê um nome descritivo (ex: "Protocolo de
+                    Ortopedia - Joelho").
+                  </li>
+                  <li>
+                    <strong>Palavras-chave de Gatilho:</strong> Insira os termos que acionarão a
+                    regra, separados por vírgula (ex: <kbd>ortopedia, joelho, M25.5</kbd>). Se
+                    qualquer um desses termos for encontrado no procedimento ou CID da regulação, a
+                    regra é ativada.
+                  </li>
+                  <li>
+                    <strong>Ações da Regra:</strong> Em cada aba (Consultas, Exames, etc.),
+                    configure os filtros que você deseja aplicar quando a regra for acionada. Por
+                    exemplo, para o protocolo de joelho, você pode configurar a seção de Exames para
+                    buscar automaticamente por "Raio X, Ressonância".
+                  </li>
+                  <li>
+                    <strong>Prioridade:</strong> Arraste as regras para definir a ordem de
+                    prioridade. A primeira regra que corresponder aos gatilhos será aplicada.
+                  </li>
+                  <li>
+                    <strong>Importar/Exportar Regras:</strong> Use os botões
+                    <kbd>Exportar Regras</kbd> e <kbd>Importar Regras</kbd> no topo desta seção para
+                    fazer backup ou compartilhar apenas suas regras de automação com colegas.
+                  </li>
+                </ul>
+
+                <h3 class="text-2xl font-semibold">4.2. Configurar Layouts, Padrões e Estilos</h3>
+                <p class="text-slate-600 leading-relaxed mt-4">
+                  Personalize a aparência e o comportamento padrão da extensão.
+                </p>
+                <ul class="list-disc list-inside space-y-2 mt-4 text-slate-600">
+                  <li>
+                    <strong>Reordenar Seções:</strong> Arraste e solte as abas
+                    (<kbd>Consultas</kbd>, <kbd>Exames</kbd>, etc.) para mudar a ordem em que as
+                    seções aparecem na barra lateral.
+                  </li>
+                  <li>
+                    <strong>Reordenar Campos e Filtros:</strong> Dentro de cada aba, arraste e solte
+                    os itens para definir a ordem dos campos (na Ficha do Paciente) ou dos filtros.
+                    Você pode mover um filtro da área "Demais Filtros" para "Filtros Principais"
+                    para que ele fique sempre visível.
+                  </li>
+                  <li>
+                    <strong>Definir Padrões:</strong> Use os campos de "Padrão" para definir valores
+                    pré-selecionados para os filtros (ex: sempre ocultar consultas com falta) ou
+                    para os períodos de busca, economizando cliques.
+                  </li>
+                  <li>
+                    <strong>Estilos de Cabeçalho:</strong> Dentro de cada aba, você pode
+                    personalizar as cores de fundo, da fonte e do ícone, além do tamanho da fonte do
+                    cabeçalho de cada seção.
+                  </li>
+                </ul>
+
+                <h3 class="text-2xl font-semibold">4.3. Gestão de Dados (Configurações Gerais)</h3>
+                <p class="text-slate-600 leading-relaxed mt-4">
+                  Na última seção da página, use os botões
+                  <kbd>Exportar Configurações Gerais</kbd> e
+                  <kbd>Importar Configurações Gerais</kbd> para salvar um backup de todas as suas
+                  configurações de layout, filtros padrão e ordem das seções. Este arquivo é
+                  diferente do arquivo de regras de automação.
+                </p>
+              </section>
+
+              <div class="tip-box important-note">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+                <div>
+                  <h4 class="font-bold">Sempre Salve Suas Alterações!</h4>
+                  <p class="mt-1">
+                    Após realizar qualquer alteração na página de Opções (seja reordenar itens,
+                    mudar textos ou definir padrões), você
+                    <strong>deve</strong> rolar até o final da página e clicar no botão azul
+                    <kbd>Salvar Todas as Configurações</kbd>. As mudanças só terão efeito após serem
+                    salvas.
+                  </p>
+                </div>
+              </div>
+
+              <section id="faq">
+                <h2 class="text-3xl font-bold">
+                  <span class="bg-red-100 text-red-600 p-2 rounded-lg">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </span>
+                  <span>5. Solução de Problemas (FAQ)</span>
+                </h2>
+                <div class="space-y-6 mt-6">
+                  <div>
+                    <h4 class="text-xl font-semibold">
+                      P: A extensão não carrega nenhum dado e mostra erros.
+                    </h4>
+                    <p class="text-slate-600 mt-2">
+                      <strong>R:</strong> A causa mais comum é a
+                      <kbd>URL base do sistema</kbd> incorreta. Verifique na página de Opções se ela
+                      está preenchida corretamente. Além disso, certifique-se de que você está
+                      logado no sistema de gestão em outra aba do navegador, pois a extensão depende
+                      da sua sessão ativa.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 class="text-xl font-semibold">
+                      P: O modo automático não detecta o paciente na página de regulação.
+                    </h4>
+                    <p class="text-slate-600 mt-2">
+                      <strong>R:</strong> Certifique-se de que a opção "Ativar deteção automática"
+                      está marcada nas Opções. A detecção foi projetada para funcionar
+                      especificamente na tela de "Manutenção" da solicitação no sistema. Se ainda
+                      assim não funcionar, use a busca manual.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 class="text-xl font-semibold">
+                      P: Mudei um filtro, mas os resultados não atualizaram.
+                    </h4>
+                    <p class="text-slate-600 mt-2">
+                      <strong>R:</strong> A extensão não atualiza os resultados automaticamente ao
+                      mudar um filtro para evitar buscas desnecessárias. Após ajustar os filtros
+                      desejados, você precisa clicar no botão <kbd>Buscar [Seção]</kbd> para aplicar
+                      as novas condições.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 class="text-xl font-semibold">
+                      P: Criei uma regra de automação, mas ela não foi aplicada.
+                    </h4>
+                    <p class="text-slate-600 mt-2">
+                      <strong>R:</strong> Verifique alguns pontos: 1) O interruptor
+                      <kbd>Auto</kbd> está ativado na barra lateral? 2) As
+                      <kbd>Palavras-chave de Gatilho</kbd> da sua regra correspondem exatamente (sem
+                      acentos, etc.) ao texto do procedimento ou CID na página de regulação? 3)
+                      Verifique a prioridade das regras; uma outra regra com gatilhos mais genéricos
+                      pode estar sendo acionada antes da sua.
+                    </p>
+                  </div>
+                </div>
+              </section>
+            </main>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="help.js"></script>
+  </body>
+</html>
