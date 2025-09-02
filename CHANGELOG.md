@@ -15,6 +15,12 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - **🔧 exames**: normalização e visualização de resultado funcionando
 - Exames: normalização e visualização de resultado funcionando
 
+### 🧹 Removed
+
+- Remoção completa dos arquivos de teste (`test/`, arquivos soltos e mocks)
+- Limpeza de variáveis não utilizadas e correção de todos erros de lint
+- Projeto preparado para commit e produção sem artefatos de teste
+
 ## [4.0.4] - 2025-08-07
 
 ### 🛠️ Changed
@@ -31,7 +37,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ### 🐞 Fixed
 
 - **Content Script ES6 Compatibility**: Removido uso de módulos ES6 do content script para compatibilidade com Manifest V3
-
   - **Problema**: Content scripts não podem usar `import`/`export` ES6 modules em extensões
   - **Solução**: Implementação inline das funções de logging necessárias do ErrorHandler
   - **Compatibilidade**: Mantida funcionalidade de logging médico com sanitização automática
@@ -39,7 +44,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
   - **Validação**: Linting passou sem erros após correção
 
 - **🔒 CRÍTICO: Carregamento Automático Indevido das Seções**: Corrigido comportamento crítico onde as seções carregavam automaticamente mesmo com todas as opções de autoload desligadas
-
   - **Problema Raiz Identificado**: O método `clearFilters()` do `SectionManager` estava chamando `handleFetchTypeChange()` durante a inicialização dos filtros, que por sua vez sempre executava `fetchData()`, ignorando completamente as configurações do usuário
   - **Localizações do Bug**:
     - `SectionManager.js` linha 374: `this.handleFetchTypeChange(radioToCheck);`
@@ -61,7 +65,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
   - **Esclarecimento de Lógica**: Confirmado que a implementação atual está correta - `enableAutomaticDetection` controla apenas detecção de pacientes e regras de automação, enquanto `autoLoadExams` etc. controlam carregamento das seções independentemente
 
 - **ErrorHandler**: Corrigidos todos os 23 testes unitários (100% passando)
-
   - **Storage Tests**: Resolvido problema de detecção browser vs chrome APIs em ambiente de teste
   - **Cross-browser API**: Forçado uso de `chrome.storage.local` mockado em testes
   - **Jest Configuration**: Criado `jest.errorhandler.cjs` standalone sem module mapping conflicts
@@ -72,7 +75,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
   - **Test Performance**: Execução em 5.3s com 74% de cobertura
 
 - **KeepAliveManager**: Corrigidos todos os 20 testes unitários (100% passando)
-
   - **Idempotência**: Método `start()` agora previne múltiplas inicializações
   - **Listener Management**: Adicionada propriedade `_alarmListener` para remoção correta de listeners
   - **Async Callbacks**: Listeners de alarm retornam promises adequadamente
@@ -82,7 +84,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
   - **Coverage**: 81.11% de cobertura de código
 
 - **Code Quality**: Aplicado `npm run lint:fix` com 100% de conformidade
-
   - **ESLint**: Zero erros de linting
   - **Prettier**: Formatação consistente aplicada
   - **StyleLint**: CSS validado e corrigido
@@ -122,7 +123,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ### �🐞 Fixed
 
 - **🏥 Carregamento Automático**: Corrigido comportamento inconsistente onde pesquisas eram executadas automaticamente mesmo com "Carregamento Automático por Secção (Modo Manual)" desabilitado
-
   - **Problema**: `SectionManager.setPatient()` executava `fetchData()` automaticamente sempre que um paciente era selecionado
   - **Solução**: Removido carregamento automático de `setPatient()`, alinhando comportamento com `TimelineManager`
   - **Comportamento Atual**: Carregamento apenas manual via botão "Buscar", respeitando configuração do usuário
@@ -136,7 +136,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - **🔧 automation**: implementa solução completa para fluxo obrigatório agents.md
 - **🔧 automation**: implementa automação completa do fluxo agents.md
 - **🔧 SelectGroup Filter Support**: Implementado suporte completo para filtros tipo `selectGroup` nas seções de agendamentos e regulação
-
   - **Visual Consistency**: Filtros `selectGroup` agora possuem contorno visual idêntico aos elementos `select` tradicionais
   - **Renderização Radio Buttons**: `selectGroup` renderizado como radio buttons com aparência de combobox
   - **Event Handling**: Suporte completo para eventos de mudança em radio buttons
@@ -159,7 +158,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ### ✨ Added
 
 - **🏗️ Store Pattern Refactoring (TASK-M-001)**: Refatoração completa do sistema de store para melhor gerenciamento de memória
-
   - **Memory Management**: Implementação de WeakMap para listeners registry, auto-cleanup de listeners órfãos e controle de tamanho de estado
   - **Debug Tools**: Modo debug habilitável/desabilitável, tracking de uso de memória e estatísticas detalhadas de store
   - **Medical Flow Preservation**: Sistema que preserva o fluxo médico de "nova análise = filtros resetados para padrão do usuário"
@@ -170,7 +168,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
   - **Medical Compliance**: LGPD/HIPAA compliance com sanitização automática de dados sensíveis
 
 - **🔄 KeepAliveManager Service Worker Migration (TASK-C-004)**: Migração completa para compatibilidade com service workers
-
   - **Hybrid Architecture**: Implementação dual que detecta automaticamente o ambiente (service worker vs background script)
   - **Chrome/Edge**: Utiliza Alarms API para manter sessões ativas em service workers
   - **Firefox**: Mantém setInterval em background scripts tradicionais
@@ -179,7 +176,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
   - **Medical Compliance**: Sessões SIGSS mantidas ativas para reguladores médicos
 
 - **🔧 Manifest V3 Service Worker Migration (TASK-A-005)**: Migração completa para service workers compatíveis
-
   - **Chrome/Edge**: Restaurado `"type": "module"` necessário para ES6 imports em service workers
   - **Firefox**: Migrado de `"scripts"` para `"service_worker"` para conformidade Manifest V3
   - **Cross-browser consistency**: Configuração otimizada para cada navegador
@@ -188,7 +184,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
   - **Zero breaking changes**: Funcionalidades médicas preservadas
 
 - **🛡️ Security Validation Framework**: Implementado sistema completo de validação de mensagens (TASK-C-003)
-
   - **URLConfigurationManager**: Validação dinâmica de domínios SIGSS baseada em URL configurada
   - **MessageRateLimiter**: Rate limiting de 5 mensagens/segundo por aba para prevenir ataques DoS
   - **PayloadValidator**: Validação estrutural de dados de regulação médica
@@ -207,7 +202,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ### 🛠️ Changed
 
 - **🌐 Browser API Standardization (TASK-M-003)**: Padronização completa das APIs cross-browser
-
   - **Padrão unificado**: Implementado `const api = typeof browser !== 'undefined' ? browser : chrome;` em todos os arquivos
   - **content-script.js**: Migrado de `const api = browser;` para padrão fallback
   - **options.js**: Migrado de `const api = window.browser || window.chrome;` para padrão fallback
@@ -361,7 +355,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 #### Added
 
 - **Pipeline CI/CD Completo**: Sistema de integração e deploy contínuo
-
   - GitHub Actions workflows para CI, CD e security scan
   - Validação automatizada de manifests e segurança
   - Build multi-browser (Chrome, Firefox, Edge)
@@ -369,7 +362,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
   - Upload automatizado para Chrome Web Store e Firefox AMO
 
 - **Sistema de Build Avançado**:
-
   - Webpack configurations específicas por browser
   - Build otimizado para produção com minificação
   - Hot reload para desenvolvimento
@@ -377,14 +369,12 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
   - Bundle analysis e performance monitoring
 
 - **Automação de Release**:
-
   - Scripts de packaging para Chrome (.zip), Firefox (.xpi) e Edge (.zip)
   - Validação de compliance para cada web store
   - Upload automatizado com retry logic
   - Geração automática de changelog e versioning
 
 - **Quality Assurance**:
-
   - ESLint, StyleLint e HTMLHint configurados
   - Jest para testes unitários e integração
   - Playwright para testes E2E
@@ -392,7 +382,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
   - Security scanning com Snyk e CodeQL
 
 - **Compliance Médico Avançado**:
-
   - Validação GDPR/LGPD automática
   - Sanitização de logs médicos
   - Verificação de não persistência de dados sensíveis

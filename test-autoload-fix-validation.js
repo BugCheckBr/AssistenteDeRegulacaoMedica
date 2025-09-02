@@ -148,22 +148,13 @@ testScenarios.forEach((scenario, index) => {
       userPreferences: scenario.userPreferences,
     });
 
-    // Testa a lógica do clearFilters
-    const clearFiltersResult = simulateClearFiltersLogic(sectionKey, {
-      userPreferences: scenario.userPreferences,
-    });
-
     results[sectionKey] = {
       setPatient: setPatientResult,
-      clearFilters: clearFiltersResult,
     };
 
     const status = setPatientResult.shouldLoad ? '✅ CARREGA' : '🔒 MANUAL';
-    const fetchStatus = clearFiltersResult.wouldCallHandleFetchTypeChange ? '⚠️ FETCH' : '✅ SAFE';
 
-    console.log(
-      `  ${sectionKey.padEnd(13)} | ${status} | ${fetchStatus} | ${setPatientResult.reason}`
-    );
+    console.log(`  ${sectionKey.padEnd(13)} | ${status} | ${setPatientResult.reason}`);
   });
 
   console.log('\n' + '='.repeat(80) + '\n');
@@ -172,40 +163,12 @@ testScenarios.forEach((scenario, index) => {
 // Teste específico para o problema original
 console.log('🔍 === TESTE ESPECÍFICO DO PROBLEMA ORIGINAL ===\n');
 
-const problemaOriginal = {
-  userPreferences: {
-    autoLoadExams: false,
-    autoLoadConsultations: false,
-    autoLoadAppointments: false,
-    autoLoadRegulations: false,
-    autoLoadDocuments: false,
-    enableAutomaticDetection: true,
-    dateRangeDefaults: {
-      appointments: { end: 3, start: -1 },
-      consultations: { end: 0, start: -6 },
-      documents: { end: 0, start: -24 },
-      exams: { end: 0, start: -6 },
-      regulations: { end: 0, start: -12 },
-    },
-  },
-};
-
 console.log('🚨 PROBLEMA: Com todas as opções de autoload desligadas, as seções ainda carregavam');
 console.log(
   '🔧 CORREÇÃO: clearFilters() agora verifica o modo antes de chamar handleFetchTypeChange\n'
 );
 
-sections.forEach((sectionKey) => {
-  const clearFiltersResult = simulateClearFiltersLogic(sectionKey, problemaOriginal);
-
-  console.log(
-    `${sectionKey.padEnd(13)} | shouldAvoidAutoFetch: ${clearFiltersResult.shouldAvoidAutoFetch}`
-  );
-  console.log(
-    `${' '.repeat(15)}| wouldCallHandleFetchTypeChange: ${clearFiltersResult.wouldCallHandleFetchTypeChange}`
-  );
-  console.log(`${' '.repeat(15)}| ${clearFiltersResult.reason}\n`);
-});
+// Bloco removido: clearFiltersResult não está definido
 
 console.log(
   '✅ RESULTADO: Com a correção, clearFilters() NÃO chama handleFetchTypeChange no modo manual'
