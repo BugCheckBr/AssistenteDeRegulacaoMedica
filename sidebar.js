@@ -8,7 +8,9 @@
 
 // Cross-browser API alias (lint-safe)
 const api = typeof browser !== 'undefined' ? browser : typeof chrome !== 'undefined' ? chrome : {};
+import * as pdfjsLib from 'pdfjs-dist/build/pdf';
 import * as API from './api.js';
+import { fetchProtocolosPorItemRegulado } from './api.js';
 import './browser-polyfill.js';
 import { ERROR_CATEGORIES, logError, logInfo, logWarning } from './ErrorHandler.js';
 import { defaultFieldConfig } from './field-config.js';
@@ -845,6 +847,100 @@ async function handleGlobalActions(event) {
   }
 }
 
+// Exemplo de integração: ao selecionar um exame regulado
+function onExameSelecionado(exame, pdfFile) {
+  // Renderiza dados do exame
+  const dadosExame = document.getElementById('dados-exame');
+  dadosExame.innerHTML = `<strong>Exame:</strong> ${exame.nome}<br><strong>Status:</strong> ${exame.status}`;
+  // Busca protocolos e texto do PDF
+  mostrarProtocolosETextoPDF({ idp: exame.idp, ids: exame.ids, pdfFile });
+}
+
+// Exemplo: busca protocolo automaticamente ao abrir regulação de exame
+function onRegulacaoExameAberta(exameRegulado) {
+  // Renderiza dados do exame regulado
+  const dadosExame = document.getElementById('dados-exame');
+  dadosExame.innerHTML = `<strong>Exame regulado:</strong> ${exameRegulado.nome}<br><strong>Status:</strong> ${exameRegulado.status}`;
+  // Busca protocolos relacionados
+  const container = document.getElementById('protocolos-list');
+  container.innerHTML = '<span class="text-gray-500">Buscando protocolos...</span>';
+
+  // Adiciona botão para buscar protocolos do exame
+  const btnProtocolos = document.createElement('button');
+  btnProtocolos.textContent = 'Ver Protocolos';
+  btnProtocolos.className =
+    'ml-2 px-2 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition';
+  btnProtocolos.onclick = async () => {
+    if (exameRegulado && exameRegulado.codigo) {
+      await renderExamProtocolsInRegulation(exameRegulado.codigo, container);
+    } else {
+      // Exibe mensagem de erro na UI ao invés de alert
+      const msg = document.createElement('div');
+      msg.className = 'text-red-600 mt-2';
+      msg.textContent = 'Código do exame não encontrado.';
+      container.appendChild(msg);
+    }
+  };
+  container.appendChild(btnProtocolos);
+
+  if (exameRegulado.idp && exameRegulado.ids) {
+    // Busca por idp/ids
+    API.fetchProtocolosPorItemRegulado({ idp: exameRegulado.idp, ids: exameRegulado.ids })
+      .then((protocolos) => {
+        container.innerHTML = '';
+        if (protocolos.rows && protocolos.rows.length) {
+          protocolos.rows.forEach((p) => {
+            const el = document.createElement('div');
+            el.textContent = `ID: ${p.id} - Nome: ${p.cell[4]}`;
+            container.appendChild(el);
+          });
+        } else {
+          container.innerHTML =
+            '<span class="text-yellow-600">Nenhum protocolo encontrado para este exame.</span>';
+        }
+      })
+      .catch((err) => {
+        container.innerHTML = `<span class='text-red-600'>Erro ao buscar protocolos: ${err.message}</span>`;
+      });
+  } else if (exameRegulado.nome) {
+    // Busca flexível por nome/código
+    API.buscarProtocoloPorNomeOuCodigo({ searchString: exameRegulado.nome })
+      .then((protocolos) => {
+        container.innerHTML = '';
+        if (protocolos.rows && protocolos.rows.length) {
+          protocolos.rows.forEach((p) => {
+            const el = document.createElement('div');
+            el.textContent = `ID: ${p.id} - Nome: ${p.cell[4]}`;
+            container.appendChild(el);
+          });
+        } else {
+          container.innerHTML =
+            '<span class="text-yellow-600">Nenhum protocolo encontrado para o nome informado.</span>';
+        }
+      })
+      .catch((err) => {
+        container.innerHTML = `<span class='text-red-600'>Erro ao buscar protocolos: ${err.message}</span>`;
+      });
+  } else {
+    container.innerHTML =
+      '<span class="text-yellow-600">Dados insuficientes para buscar protocolos.</span>';
+  }
+}
+
+// Exemplo: conecta ao evento de abertura do card de regulação de exame
+const cardsRegulacao = document.querySelectorAll('.card-regulacao-exame');
+cardsRegulacao.forEach((card) => {
+  card.addEventListener('click', () => {
+    const exameRegulado = {
+      nome: card.dataset.nome,
+      status: card.dataset.status,
+      idp: card.dataset.idp,
+      ids: card.dataset.ids,
+    };
+    onRegulacaoExameAberta(exameRegulado);
+  });
+});
+
 async function copyToClipboard(button) {
   if (button.dataset.inProgress === 'true') return;
   const textToCopy = button.dataset.copyText;
@@ -1040,11 +1136,43 @@ async function handleShowRegulationDetailsModal(button) {
   const { idp, ids } = button.dataset;
   showModal('Detalhes da Regulação', '<p>Carregando...</p>');
   try {
-    const data = await API.fetchRegulationDetails({
-      reguIdp: idp,
-      reguIds: ids,
-    });
-    const content = formatRegulationDetailsForModal(data);
+    const data = await API.fetchRegulationDetails({ reguIdp: idp, reguIds: ids });
+    let content = formatRegulationDetailsForModal(data);
+    // Busca protocolos do exame regulado
+    let protocolosHtml = '';
+    try {
+      let protocolos;
+      // Se houver código do procedimento, busca por ele
+      if (data && data.prciCod) {
+        protocolos = await API.buscarProtocoloPorNomeOuCodigo({ searchString: data.prciCod });
+      } else {
+        protocolos = await API.fetchProtocolosPorItemRegulado({ idp, ids });
+      }
+      if (protocolos.rows && protocolos.rows.length) {
+        protocolosHtml = `<div class="mt-4"><span class="font-semibold text-slate-600">Protocolos do Exame Regulamentado:</span><ul class="list-disc ml-6">`;
+        protocolos.rows.forEach((p) => {
+          protocolosHtml += `<li>${p.cell[4] ? p.cell[4] : 'Protocolo'} <span class="text-xs text-slate-500">ID: ${p.id}</span></li>`;
+        });
+        protocolosHtml += '</ul></div>';
+      } else {
+        protocolosHtml = `<div class="mt-4 text-slate-500">Nenhum protocolo encontrado para este exame.</div>`;
+      }
+    } catch (protocoloErr) {
+      protocolosHtml = `<div class="mt-4 text-red-600">Erro ao buscar protocolos: ${protocoloErr.message}</div>`;
+    }
+    // Busca anexos de regulação do exame
+    let anexosHtml = '';
+    try {
+      const fileUrl = await API.fetchRegulationAttachmentUrl({ idp, ids });
+      if (fileUrl) {
+        anexosHtml = `<div class="mt-4"><span class="font-semibold text-slate-600">Arquivo de Regulação:</span> <a href="${fileUrl}" target="_blank" class="text-blue-700 underline">Abrir anexo</a></div>`;
+      } else {
+        anexosHtml = `<div class="mt-4 text-slate-500">Nenhum arquivo de regulação encontrado para este exame.</div>`;
+      }
+    } catch (anexoErr) {
+      anexosHtml = `<div class="mt-4 text-red-600">Erro ao buscar arquivo de regulação: ${anexoErr.message}</div>`;
+    }
+    content += protocolosHtml + anexosHtml;
     showModal('Detalhes da Regulação', content);
   } catch (error) {
     showModal('Erro', `<p>Não foi possível carregar os detalhes: ${error.message}</p>`);
@@ -1183,3 +1311,94 @@ document.addEventListener('DOMContentLoaded', globalListeners.onDOMContentLoaded
 // Adiciona o listener de limpeza para quando a página da sidebar for descarregada
 // eslint-disable-next-line no-restricted-globals
 window.addEventListener('pagehide', cleanupEventListeners);
+
+/**
+ * Exemplo de uso: busca protocolos e exibe texto de PDF relacionado
+ */
+async function mostrarProtocolosETextoPDF({ idp, ids, pdfFile }) {
+  try {
+    // Busca protocolos relacionados ao item regulado
+    const protocolos = await fetchProtocolosPorItemRegulado({ idp, ids });
+    // Renderiza lista de protocolos
+    const container = document.getElementById('protocolos-list');
+    container.innerHTML = '';
+    protocolos.rows.forEach((p) => {
+      const el = document.createElement('div');
+      el.textContent = `ID: ${p.id} - Nome: ${p.cell[4]}`;
+      container.appendChild(el);
+    });
+
+    // Se houver PDF, extrai e mostra texto
+    if (pdfFile) {
+      const arrayBuffer = await pdfFile.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      let textoPDF = '';
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        textoPDF += content.items.map((item) => item.str).join(' ') + '\n';
+      }
+      const pdfContainer = document.getElementById('pdf-text');
+      pdfContainer.innerHTML = `<pre class="whitespace-pre-wrap p-4 bg-gray-100">${textoPDF}</pre>`;
+    }
+  } catch (err) {
+    // Exibe erro na UI ao invés de alert
+    const container = document.getElementById('protocolos-list');
+    if (container) {
+      container.innerHTML = `<span class='text-red-600'>Erro ao buscar protocolos ou ler PDF: ${err.message}</span>`;
+    }
+  }
+}
+
+// Exemplo: conecta ao clique em um exame regulado
+const examesList = document.getElementById('exames-list');
+if (examesList) {
+  examesList.addEventListener('click', async (event) => {
+    const target = event.target.closest('.exame-item');
+    if (target) {
+      const exame = {
+        nome: target.dataset.nome,
+        status: target.dataset.status,
+        idp: target.dataset.idp,
+        ids: target.dataset.ids,
+      };
+      // Se houver input de PDF
+      const pdfInput = document.getElementById('pdf-input');
+      let pdfFile = null;
+      if (pdfInput && pdfInput.files.length > 0) {
+        pdfFile = pdfInput.files[0];
+      }
+      onExameSelecionado(exame, pdfFile);
+    }
+  });
+}
+
+/**
+ * Renderiza os protocolos do exame na interface da regulação
+ * @param {string} codigoExame - Código do exame
+ * @param {string} containerId - ID do elemento HTML onde exibir os protocolos
+ */
+async function renderExamProtocolsInRegulation(codigoExame, containerId = 'protocolos-list') {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '<span class="text-gray-500">Buscando protocolos...</span>';
+  try {
+    const protocolos = await API.fetchExamProtocolsByCodigo(codigoExame);
+    if (!protocolos.length) {
+      container.innerHTML =
+        '<span class="text-yellow-600">Nenhum protocolo encontrado para este exame.</span>';
+      return;
+    }
+    container.innerHTML =
+      `<span class='font-semibold text-slate-600'>Protocolos do Exame:</span><ul class='list-disc ml-6'>` +
+      protocolos
+        .map(
+          (p) =>
+            `<li><a href='${p.url}' target='_blank' class='text-blue-700 underline'>${p.nome}</a> <span class='text-xs text-slate-500'>${p.data}</span></li>`
+        )
+        .join('') +
+      '</ul>';
+  } catch (err) {
+    container.innerHTML = `<span class='text-red-600'>Erro ao buscar protocolos: ${err.message}</span>`;
+  }
+}

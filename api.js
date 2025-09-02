@@ -1296,7 +1296,7 @@ export async function fetchAllTimelineData({ isenPK, isenFullPKCrypto, dataInici
 
 /**
  * Envia uma requisição para manter a sessão ativa no sistema.
- * @returns {Promise<boolean>} True se a requisição foi bem-sucedida, false caso contrário.
+ * @returns {Promise<boolean>}
  */
 export async function keepSessionAlive() {
   try {
@@ -1336,4 +1336,105 @@ export async function keepSessionAlive() {
     );
     return false;
   }
+}
+
+/**
+ * Busca protocolos relacionados ao item regulado (exame, consulta, etc.)
+ * @param {Object} params - { idp, ids }
+ * @returns {Promise<Object>} - JSON de protocolos
+ */
+export async function fetchProtocolosPorItemRegulado({ idp, ids }) {
+  const url = `http://saude.farroupilha.rs.gov.br/sigss/protocoloExames/listarProtocolos?prciPK.idp=${idp}&prciPK.ids=${ids}&_search=false&rows=30&page=1&sidx=imgNome&sord=asc`;
+  const response = await fetch(url, {
+    headers: {
+      accept: 'application/json, text/javascript, */*; q=0.01',
+      'x-requested-with': 'XMLHttpRequest',
+    },
+    credentials: 'include',
+    method: 'GET',
+  });
+  if (!response.ok) throw new Error('Erro ao buscar protocolos');
+  return await response.json();
+}
+
+/**
+ * Busca protocolos de exames por nome ou código
+ * @param {Object} params - { searchString }
+ * @returns {Promise<Object>} - JSON de protocolos
+ */
+export async function buscarProtocoloPorNomeOuCodigo({ searchString }) {
+  const url = `http://saude.farroupilha.rs.gov.br/sigss/protocoloExames/buscarProtocolosExames?searchField=nome&searchString=${encodeURIComponent(searchString)}&searchStatus=&jaCadastrados=false&_search=false&rows=20&page=1&sidx=prciNome&sord=asc`;
+  const response = await fetch(url, {
+    headers: {
+      accept: 'application/json, text/javascript, */*; q=0.01',
+      'x-requested-with': 'XMLHttpRequest',
+    },
+    credentials: 'include',
+    method: 'GET',
+  });
+  if (!response.ok) throw new Error('Erro ao buscar protocolo por nome/código');
+  return await response.json();
+}
+
+/**
+ * Busca protocolos e arquivos relacionados ao exame pelo código
+ * @param {string} codigoExame
+ * @returns {Promise<Array<{nome: string, url: string, id: string, data: string, extensao: string}>>}
+ */
+export async function fetchExamProtocolsByCodigo(codigoExame) {
+  // 1. Buscar protocolo pelo código do exame
+  const urlBusca = `http://saude.farroupilha.rs.gov.br/sigss/protocoloExames/buscarProtocolosExames?searchField=nome&searchString=${encodeURIComponent(codigoExame)}&searchStatus=&jaCadastrados=false&_search=false&rows=20&page=1&sidx=prciNome&sord=asc`;
+  const respBusca = await fetch(urlBusca, {
+    headers: {
+      accept: 'application/json, text/javascript, */*; q=0.01',
+      'x-requested-with': 'XMLHttpRequest',
+    },
+    credentials: 'include',
+  });
+  const dadosBusca = await respBusca.json();
+  if (!dadosBusca.rows || !dadosBusca.rows.length) return [];
+
+  // 2. Buscar detalhes do protocolo (pega PK)
+  const protocoloId = dadosBusca.rows[0].id;
+  const urlDetalhe = `http://saude.farroupilha.rs.gov.br/sigss/protocoloExames/visualizar?id=${protocoloId}`;
+  const respDetalhe = await fetch(urlDetalhe, {
+    headers: {
+      accept: 'application/json, text/javascript, */*; q=0.01',
+      'x-requested-with': 'XMLHttpRequest',
+    },
+    credentials: 'include',
+  });
+  const dadosDetalhe = await respDetalhe.json();
+  const prciPK = dadosDetalhe.protocoloExames.procedimento.fullPK.split('-');
+  const prciIdp = prciPK[0];
+  const prciIds = prciPK[1];
+
+  // 3. Buscar lista de arquivos do protocolo
+  const urlArquivos = `http://saude.farroupilha.rs.gov.br/sigss/protocoloExames/listarProtocolos?prciPK.idp=${prciIdp}&prciPK.ids=${prciIds}&_search=false&rows=30&page=1&sidx=imgNome&sord=asc`;
+  const respArquivos = await fetch(urlArquivos, {
+    headers: {
+      accept: 'application/json, text/javascript, */*; q=0.01',
+      'x-requested-with': 'XMLHttpRequest',
+    },
+    credentials: 'include',
+  });
+  const dadosArquivos = await respArquivos.json();
+  if (!dadosArquivos.rows || !dadosArquivos.rows.length) return [];
+
+  // 4. Monta lista detalhada para interface
+  return dadosArquivos.rows.map((arq) => {
+    let caminho = '';
+    if (typeof arq.cell[0] === 'string' && arq.cell[0].length === 36) {
+      caminho = `/sigss/arquivo/${arq.cell[0]}/${encodeURIComponent(arq.cell[2])}`;
+    } else if (typeof arq.cell[2] === 'string' && arq.cell[2].startsWith('/sigss/arquivo/')) {
+      caminho = arq.cell[2];
+    }
+    return {
+      nome: arq.cell[2],
+      url: caminho ? 'http://saude.farroupilha.rs.gov.br' + caminho : '',
+      id: arq.id,
+      data: arq.cell[1],
+      extensao: arq.cell[3] || '',
+    };
+  });
 }
