@@ -3,6 +3,13 @@
  * Exporta funções puras para facilitar testes unitários.
  */
 
+// Mensagem padrão centralizada para uso em toda a UI/fluxo WhatsApp.
+// Edite aqui para alterar o texto padrão exibido/compartilhado pelo sistema.
+export const DEFAULT_WHATSAPP_MESSAGE = `SAUDACAO Aqui é da Secretaria da Saúde de Farroupilha
+Tenho esse telefone como contato para "NOME DO PACIENTE"
+Ligar com URGÊNCIA no telefone 054 2131-5303 - opção 4
+Assunto: Agendamento de CONSULTA/EXAME`;
+
 export function computeMaskedName(name) {
   if (!name) return '***';
   const parts = String(name).trim().split(/\s+/).filter(Boolean);
@@ -15,9 +22,9 @@ export function computeMaskedName(name) {
 
 export function selectGreeting(date = new Date()) {
   const h = date.getHours();
-  if (h >= 5 && h < 12) return 'Bom dia!';
-  if (h >= 12 && h < 18) return 'Boa tarde!';
-  return 'Boa noite!';
+  if (h >= 7 && h < 12) return 'Bom dia 🙂!';
+  if (h >= 12 && h < 18) return 'Boa tarde 🙂!';
+  return 'Boa noite 😴!';
 }
 
 /**
@@ -36,7 +43,7 @@ export function buildWhatsAppMessage(template = '', fullName = '', date = new Da
   const tpl = String(template);
 
   // Troca saudação inicial se houver (Bom dia!/Boa tarde!/Boa noite!) no começo do template
-  const greetingRegex = /^\s*(Bom dia!?|Boa tarde!?|Boa noite!?)[\s\r\n]*/i;
+  const greetingRegex = /^\s*(SAUDACAO?|Bom dia!?|Boa tarde!?|Boa noite!?)[\s\r\n]*/i;
   let result;
   if (greetingRegex.test(tpl)) {
     result = tpl.replace(greetingRegex, `${greeting}\n`);

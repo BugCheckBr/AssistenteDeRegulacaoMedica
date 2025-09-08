@@ -161,44 +161,53 @@ export const defaultFieldConfig = [
       try {
         if (!cell || !Array.isArray(cell)) return '';
 
-        const isDate = (s) => /\d{2}\/\d{2}\/\d{4}/.test(s);
-        const hasLabelWords = (s) =>
-          /definitivo|provisorio|cartao|ctps|rg|cpf|serie|pai:|mae:/i.test(s);
-        const isEmail = (s) => /@/.test(s);
-        const looksLikeCpfFormatted = (s) => /\d{3}\.\d{3}\.\d{3}-\d{2}/.test(s);
+        // Índices fixos a ler do CADSUS (ajuste conforme seu ambiente)
+        const preferredIndices = [15, 16, 17, 18, 19];
 
-        const validToken = (raw) => {
-          if (!raw) return false;
-          if (isDate(raw) || hasLabelWords(raw) || isEmail(raw)) return false;
-          const digits = raw.replace(/\D/g, '');
-          if (!digits) return false;
-          // permitir telefones com DDI + DDD até 15 dígitos (casos com prefixos e códigos)
-          if (digits.length < 6 || digits.length > 15) return false;
-          // somente excluir CPF formatado quando for realmente 11 dígitos formatados
-          if (looksLikeCpfFormatted(raw) && digits.length === 11) return false;
-          return true;
+        const toCanonicalDigits = (raw) => {
+          if (!raw) return null;
+          const s = String(raw).trim();
+          // 1) +55-<DDD>-<RESTO> ou 55<sep>DDD<sep>RESTO
+          let m = s.match(/^\+?55[^\d]*([0-9]{2})[^\d]*([0-9]{6,10})/);
+          if (m) return `55${m[1]}${String(m[2]).replace(/\D/g, '')}`;
+          // 2) <DDD>-<RESTO> ou DDD RESTO
+          m = s.match(/^([0-9]{2})[^\d]*([0-9]{6,10})/);
+          if (m) return `55${m[1]}${String(m[2]).replace(/\D/g, '')}`;
+          // 3) fallback: só dígitos -> aplicar heurística semelhante a normalizeNumber
+          const digits = s.replace(/\D/g, '');
+          if (!digits) return null;
+          // remover prefixo 55 se presente
+          let core = digits.startsWith('55') ? digits.slice(2) : digits;
+          // escolher entre últimos 11/10 quando demais dígitos
+          if (core.length > 11) {
+            const last11 = core.slice(-11);
+            const last10 = core.slice(-10);
+            const localFirst = last11.charAt(2);
+            core = localFirst === '9' ? last11 : last10;
+          }
+          return `55${core}`;
         };
 
-        // Ajuste estas posições conforme a rotina local do CADSUS (ex.: 15,16,18 neste projeto)
-        const preferredIndices = [15, 16, 17, 18, 19];
         const found = [];
         for (const idx of preferredIndices) {
           if (idx >= 0 && idx < cell.length) {
             const raw = String(cell[idx] || '').trim();
-            if (validToken(raw)) found.push(raw);
+            const canon = toCanonicalDigits(raw);
+            if (canon) found.push(canon);
           }
         }
 
-        // Deduplicação simples preservando ordem
+        // Deduplicação preservando ordem
         const unique = [];
         const seen = new Set();
-        for (const p of found) {
-          if (!seen.has(p)) {
-            seen.add(p);
-            unique.push(p);
+        for (const v of found) {
+          if (!seen.has(v)) {
+            seen.add(v);
+            unique.push(v);
           }
         }
 
+        // Retornar dígitos canônicos separados por " / " (ex: "5594981480662 / 551199999999")
         return unique.join(' / ');
       } catch {
         return '';

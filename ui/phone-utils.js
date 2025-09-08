@@ -111,21 +111,130 @@ export const gatherPhoneValues = (obj, maxDepth = 3) => {
   return results;
 };
 // Formatação simples para exibição a partir do número normalizado
+// Objetivo: formatar exatamente como +55-<DDD>-<resto> sem hífen adicional na parte local.
 export const formatDisplayNumber = (num) => {
   if (!num) return '';
   const raw = String(num);
-  const n = raw.replace(/\D/g, '');
-  // se já contém DDI 55 no começo, remover para formatar como +55-DD-resto
-  if (n.startsWith('55') && n.length > 2) {
-    const rem = n.slice(2);
-    if (rem.length === 8) return `+55-${rem.slice(0, 4)}-${rem.slice(4)}`;
-    if (rem.length === 9) return `+55-${rem.slice(0, 5)}-${rem.slice(5)}`;
-    if (rem.length === 10 || rem.length === 11) return `+55-${rem.slice(0, 2)}-${rem.slice(2)}`;
-    return `+55-${rem}`;
+  let n = raw.replace(/\D/g, '');
+  if (!n) return '';
+
+  // Garantir DDI 55 como prefixo canônico
+  if (!n.startsWith('55')) n = '55' + n;
+  // rem => parte após o DDI (DDD + resto)
+  const rem = n.slice(2);
+  if (!rem) return '+55';
+
+  // DDD = primeiros 2 dígitos (quando disponíveis)
+  const ddd = rem.length >= 2 ? rem.slice(0, 2) : rem;
+  const local = rem.length > 2 ? rem.slice(2) : '';
+
+  // Resultado final: +55-<DDD>-<resto> exatamente (sem hífen dentro do resto)
+  return local ? `+55-${ddd}-${local}` : `+55-${ddd}`;
+};
+
+/**
+ * Extrai e normaliza o telefone principal do paciente.
+ *
+ * Observações de escopo:
+ * - Procura APENAS dentro de usuarioServico.entidadeFisica.entidade (campos iniciados por "entiTel*")
+ * - Ignora telefones administrativos (ex.: usuarioServico.unidadeSaude, usuarioCad, etc.)
+ * - Prioriza campos contendo "cel" ou "celular" no nome; em seguida, heurística por dígitos
+ * - Normaliza para E.164 com +55 (usa normalizeNumber para extração dos dígitos relevantes)
+ *
+ * Retorna string E.164 (+55...) ou null se não encontrar.
+ */
+export function extractPatientPhone(usuarioServico) {
+  if (!usuarioServico || typeof usuarioServico !== 'object') return null;
+  const entidadeFisica = usuarioServico.entidadeFisica || {};
+  const entidade = entidadeFisica.entidade || {};
+
+  // Reunir candidatos APENAS do objeto entidade (chaves que começam com 'entiTel').
+  // Não fazer fallback para entidadeFisica para evitar captar telefones administrativos.
+  const rawMap = new Map(); // key -> string value
+  try {
+    Object.keys(entidade).forEach((k) => {
+      if (/^entiTel/i.test(k)) {
+        const v = entidade[k];
+        if (v != null && (typeof v === 'string' || typeof v === 'number')) {
+          rawMap.set(k, String(v));
+        }
+      }
+    });
+  } catch {
+    // defensivo
   }
 
-  if (n.length === 8) return n.slice(0, 4) + '-' + n.slice(4);
-  if (n.length === 9) return n.slice(0, 5) + '-' + n.slice(5);
-  if (n.length === 10 || n.length === 11) return `+55-${n.slice(0, 2)}-${n.slice(2)}`;
-  return raw;
-};
+  if (rawMap.size === 0) return null;
+
+  // Combine campos com sufixo "Pre" apenas quando o campo base existir (ex: entiTel1Pre + entiTel1).
+  // NÃO aceitar campo "Pre" isolado — isso evita capturar códigos administrativos.
+  const combinedCandidates = new Map(); // canonicalKey -> combined string
+  Array.from(rawMap.keys()).forEach((k) => {
+    const preMatch = k.match(/(.+)(Pre)$/i);
+    if (preMatch) {
+      const base = preMatch[1];
+      if (rawMap.has(base)) {
+        const preVal = rawMap.get(k);
+        const baseVal = rawMap.get(base);
+        if (preVal != null && baseVal != null) {
+          const combined = String(preVal).replace(/\D/g, '') + String(baseVal).replace(/\D/g, '');
+          if (/\d{8,}/.test(combined) && combined.length < 60) {
+            combinedCandidates.set(base, combined);
+          }
+        }
+      }
+      // se não existir base, IGNORAR o campo Pre (não usar isoladamente)
+    } else {
+      const v = rawMap.get(k);
+      combinedCandidates.set(k, String(v).replace(/\D/g, ''));
+    }
+  });
+
+  // Construir lista de candidatos normalizados com metadados
+  const normalized = Array.from(combinedCandidates.entries())
+    .map(([key, digitsStr]) => {
+      const norm = normalizeNumber(digitsStr || '');
+      if (!norm) return null;
+      const clean = norm.replace(/^0+/, '');
+      const e164 = clean.startsWith('55') ? `+${clean}` : `+55${clean}`;
+      return {
+        key,
+        raw: digitsStr,
+        digits: clean,
+        e164,
+      };
+    })
+    .filter(Boolean);
+
+  if (normalized.length === 0) return null;
+
+  // 1) Priorizar campos cujo nome contenha 'cel' ou 'celular'
+  const celPref = normalized.find((x) => /cel|celular|mobile/i.test(x.key));
+  if (celPref) return celPref.e164;
+
+  // 2) Priorizar números móveis por heurística: 11 dígitos com '9' como primeiro dígito do local (posição index 2)
+  const mobileHeu = normalized.find((x) => {
+    const d = x.digits;
+    return d.length === 11 && d.charAt(2) === '9';
+  });
+  if (mobileHeu) return mobileHeu.e164;
+
+  // 3) Preferir qualquer com 10 ou 11 dígitos (DDD + número local)
+  const lenPref =
+    normalized.find((x) => x.digits.length === 11) ||
+    normalized.find((x) => x.digits.length === 10);
+  if (lenPref) return lenPref.e164;
+
+  // 4) Fallback: primeiro candidato válido
+  return normalized[0].e164 || null;
+}
+
+// Exemplo de uso e caso de teste sugerido:
+// Exemplo:
+// const phone = extractPatientPhone(usuarioServico);
+// Esperado: "+55149991447768" ou null
+//
+// Caso de teste sugerido:
+// - informar um objeto com usuarioServico.entidadeFisica.entidade.entiTelCelular = "(14) 99914-47768"
+//   => deve retornar "+55149991447768"
+// - garantir que usuarioServico.unidadeSaude.entiTel1 não seja considerado.

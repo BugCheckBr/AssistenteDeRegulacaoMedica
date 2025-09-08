@@ -15,11 +15,21 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - **🔧 exames**: normalização e visualização de resultado funcionando
 - Exames: normalização e visualização de resultado funcionando
 
+
 ### 🧹 Removed
 
+- Removidos arquivos proibidos dos pacotes de distribuição: `EDGE_TESTING_GUIDE.md`, `journals/2025_08_13.md`, `journals/2025_08_29.md`, `journals/2025_09_08.md`
+- Pacotes ZIP validados e limpos para produção (Chrome, Edge, Firefox)
+- Padronização da mensagem WhatsApp centralizada em `ui/whatsapp-utils.js` com anonimização e saudação dinâmica
+- Ajuste de formatação e extração de telefones para evitar captação de números administrativos
 - Remoção completa dos arquivos de teste (`test/`, arquivos soltos e mocks)
 - Limpeza de variáveis não utilizadas e correção de todos erros de lint
 - Projeto preparado para commit e produção sem artefatos de teste
+
+
+### 🔧 Maintenance
+
+- **🔧 release**: limpa pacotes, remove arquivos proibidos e padroniza mensagem WhatsApp
 
 ## [4.0.4] - 2025-08-07
 

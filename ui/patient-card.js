@@ -4,6 +4,7 @@
 import { store } from '../store.js';
 import * as Utils from '../utils.js';
 import { extractPhoneMap, formatDisplayNumber, gatherPhoneValues } from './phone-utils.js';
+import { buildWhatsAppMessage, DEFAULT_WHATSAPP_MESSAGE } from './whatsapp-utils.js';
 
 let patientDetailsSection,
   patientMainInfoDiv,
@@ -18,10 +19,9 @@ const options = {
   suffixLength: 8,
   showFullPhones: true,
   debugPhones: false,
-  whatsAppMessage: `Boa tarde! Aqui é da Secretaria da Saúde de Farroupilha
-Tenho esse telefone como contato para "NOME DO PACIENTE"
-Ligar com URGÊNCIA no telefone 2131-5303 - opção 4
-Assunto: Agendamento de CONSULTA/EXAME`,
+  // Mensagem padrão pode ser sobrescrita via callbacks.options.whatsAppMessage.
+  // Por padrão usamos o DEFAULT_WHATSAPP_MESSAGE centralizado em ui/whatsapp-utils.js
+  whatsAppMessage: DEFAULT_WHATSAPP_MESSAGE,
 };
 
 /**
@@ -41,18 +41,6 @@ function render(patientData) {
 
   // Extrair nome do paciente para gerar anonimização (mascaramento com asteriscos)
   const patientFullName = Utils.getNestedValue(ficha, 'entidadeFisica.entidade.entiNome') || '';
-  const computeMaskedName = (name) => {
-    if (!name) return '***';
-    const parts = String(name).trim().split(/\s+/).filter(Boolean);
-    if (parts.length === 0) return '***';
-    // primeiro nome completo
-    const firstName = parts[0];
-    if (parts.length === 1) return firstName;
-    // para as demais partes, mascarar como 'X***'
-    const restMasked = parts.slice(1).map((s) => (s && s[0] ? s[0].toUpperCase() + '***' : '***'));
-    return `${firstName} ${restMasked.join(' ')}`;
-  };
-  const patientMaskedName = computeMaskedName(patientFullName);
 
   const getLocalValue = (field, data) => {
     if (typeof field.key === 'function') return field.key(data);
@@ -93,7 +81,9 @@ function render(patientData) {
   // use gatherPhoneValues and extractPhoneMap from ui/phone-utils.js
 
   // Conjuntos globais de telefones combinados (ficha + cadsus)
-  const fichaPhoneValues = gatherPhoneValues(ficha);
+  // Limitar a varredura APENAS à entidade do paciente para evitar captar telefones administrativos
+  const entidadePaciente = Utils.getNestedValue(ficha, 'entidadeFisica.entidade') || {};
+  const fichaPhoneValues = gatherPhoneValues(entidadePaciente);
   const cadsusPhoneValues = gatherPhoneValues(cadsus);
   const fichaPhoneMapGlobal = extractPhoneMap(fichaPhoneValues, options.suffixLength);
   const cadsusPhoneMapGlobal = extractPhoneMap(cadsusPhoneValues, options.suffixLength);
@@ -149,8 +139,11 @@ function render(patientData) {
     let localValue = getLocalValue(field, ficha);
     if (field.formatter) localValue = field.formatter(localValue);
 
-    let cadsusValue = getCadsusValue(field, cadsus);
-    if (field.formatter) cadsusValue = field.formatter(cadsusValue);
+    // Para preservar o valor bruto vindo do CADSUS (evitar perda de DDI/DDD por formatters locais),
+    // NÃO aplicar o formatter do campo ao valor retornado pelo CADSUS. O formatter é apenas
+    // para exibição do dado local (MV). A formatação de exibição do CADSUS é feita depois via
+    // formatDisplayNumber/canonicalFromMap.
+    const cadsusValue = getCadsusValue(field, cadsus);
 
     const v1 = String(localValue || '').trim();
     const v2 = String(cadsusValue || '').trim();
@@ -313,23 +306,11 @@ function render(patientData) {
               // adicionar botão de WhatsApp que reutiliza aba se possível
               const waData = '+' + String(n).replace(/\D/g, '');
               // incluir mensagem padrão como atributo data-wa-msg (anonimizando o nome do paciente)
-              const waMsgTemplate = options.whatsAppMessage || '';
-              // calcular saudação baseada no período do dia local
-              const computeGreeting = () => {
-                const h = new Date().getHours();
-                // 05:00-11:59 => Bom dia
-                if (h >= 5 && h < 12) return 'Bom dia!';
-                // 12:00-17:59 => Boa tarde
-                if (h >= 12 && h < 18) return 'Boa tarde!';
-                // 18:00-04:59 => Boa noite
-                return 'Boa noite!';
-              };
-              // substituir saudação inicial do template (se houver) pelo valor calculado
-              const waMsgWithGreeting = waMsgTemplate.replace(
-                /^\s*(Bom[oa]\s+(dia|tarde|noite)!?\s*)/i,
-                computeGreeting() + ' '
+              const waMsgRaw = buildWhatsAppMessage(
+                options.whatsAppMessage || DEFAULT_WHATSAPP_MESSAGE,
+                patientFullName,
+                new Date()
               );
-              const waMsgRaw = waMsgWithGreeting.replace(/NOME DO PACIENTE/g, patientMaskedName);
               const waMsg = waMsgRaw.replace(/"/g, '&quot;');
               return `<div class="phone-item"><a class="phone-link" href="${href}">${display}</a> <button type="button" class="phone-copy-btn" data-copy="${copyVal}" title="Copiar">📋</button> <button type="button" class="phone-wa-btn" data-wa="${waData}" data-wa-msg="${waMsg}" title="Abrir WhatsApp">💬</button></div>`;
             })
