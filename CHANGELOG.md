@@ -9,6 +9,10 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ### 🐞 Fixed
 
+- **Timeline**: exibe corretamente Agendamento e Atendimento nos eventos de consulta, igual à sessão de consultas SIGSS
+- **Timeline**: subdetalhes de consulta agora mostram todos os campos relevantes (unidade, profissional, status, descrição, etc.)
+- **Build**: script `build:all` agora funciona em Windows, Linux e macOS usando `npm-run-all` (multiplataforma)
+
 - **🔧 exames**: normalização e visualização de resultado funcionando
 - **🔧 exames**: normalização e visualização de resultado funcionando
 - **🔧 exames**: normalização e visualização de resultado funcionando

@@ -109,41 +109,27 @@ export function clearMessage() {
 export function parseDate(dateString) {
   if (!dateString || typeof dateString !== 'string') return null;
 
-  // Tenta extrair o primeiro padrão de data válido da string.
-  const dateMatch = dateString.match(/(\d{4}-\d{2}-\d{2})|(\d{2}\/\d{2}\/\d{2,4})/);
-  if (!dateMatch) return null;
-
-  const matchedDate = dateMatch[0];
-  let year, month, day;
-
-  // Tenta o formato YYYY-MM-DD
-  if (matchedDate.includes('-')) {
-    [year, month, day] = matchedDate.split('-').map(Number);
-  } else if (matchedDate.includes('/')) {
-    // Tenta o formato DD/MM/YYYY
-    [day, month, year] = matchedDate.split('/').map(Number);
-  }
-
-  // Valida se os números são válidos e se a data é real
+  // Tenta extrair data e hora juntos
+  const dateTimeMatch = dateString.match(/(\d{2}\/\d{2}\/\d{4})[ T]?(\d{2}:\d{2}:\d{2})?/);
+  if (!dateTimeMatch) return null;
+  const datePart = dateTimeMatch[1];
+  const timePart = dateTimeMatch[2];
+  const [day, month, rawYear] = datePart.split('/').map(Number);
+  let year = rawYear;
   if (isNaN(year) || isNaN(month) || isNaN(day)) return null;
-
-  // Lida com anos de 2 dígitos (ex: '24' -> 2024)
-  if (year >= 0 && year < 100) {
-    year += 2000;
+  if (year >= 0 && year < 100) year += 2000;
+  let hours = 0,
+    minutes = 0,
+    seconds = 0;
+  if (timePart) {
+    [hours, minutes, seconds] = timePart.split(':').map(Number);
   }
-
-  const date = new Date(Date.UTC(year, month - 1, day));
-
-  // Confirma que a data não "rolou" para o mês seguinte (ex: 31 de Abril -> 1 de Maio)
-  if (
-    date.getUTCFullYear() === year &&
-    date.getUTCMonth() === month - 1 &&
-    date.getUTCDate() === day
-  ) {
+  // Cria data local (não UTC)
+  const date = new Date(year, month - 1, day, hours, minutes, seconds);
+  if (date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day) {
     return date;
   }
-
-  return null; // Retorna nulo se a data for inválida (ex: 31/02/2024)
+  return null;
 }
 
 /**
@@ -363,6 +349,9 @@ export function setupTabs(container) {
  */
 export function normalizeTimelineData(apiData) {
   const events = [];
+  // DEBUG: Exibe dados brutos recebidos
+  console.log('DEBUG apiData.consultations:', apiData.consultations);
+  console.log('DEBUG apiData.appointments:', apiData.appointments);
   // Normalize Exams Completed
   try {
     (apiData.examsCompleted || []).forEach((e) => {
@@ -402,18 +391,56 @@ export function normalizeTimelineData(apiData) {
   // Normalize Consultations
   try {
     (apiData.consultations || []).forEach((c) => {
-      if (!c || !c.date) return;
+      if (!c) return;
+      // Extrai datas de agendamento e atendimento
+      let agendamentoDate = null;
+      let atendimentoDateTime = null;
+      if (typeof c.date === 'string') {
+        // Exemplo: "Ag 06/08/2025\nAt 06/08/2025 13:41:20"
+        const agMatch = c.date.match(/Ag (\d{2}\/\d{2}\/\d{4})/);
+        if (agMatch) agendamentoDate = agMatch[1];
+        const atMatch = c.date.match(/At (\d{2}\/\d{2}\/\d{4}) (\d{2}:\d{2}:\d{2})/);
+        if (atMatch) atendimentoDateTime = `${atMatch[1]} ${atMatch[2]}`;
+      }
+      // Se não encontrou, tenta campos alternativos
+      if (!agendamentoDate && c.date) agendamentoDate = c.date;
+      if (!atendimentoDateTime && c.time && c.date) atendimentoDateTime = `${c.date} ${c.time}`;
+      if (!atendimentoDateTime && (c.atendimentoDate || c.dataConsulta))
+        atendimentoDateTime = c.atendimentoDate || c.dataConsulta;
+      if (!atendimentoDateTime && agendamentoDate) atendimentoDateTime = agendamentoDate;
+      if (!atendimentoDateTime) return;
+
       const searchText = normalizeString(
-        [c.specialty, c.professional, c.unit, ...c.details.map((d) => d.value)].join(' ')
+        [
+          c.specialty,
+          c.professional,
+          c.unit,
+          c.status,
+          c.description,
+          ...(c.details ? c.details.map((d) => d.value) : []),
+        ].join(' ')
       );
+      // Monta subDetails idêntico à sessão de consultas
+      const subDetails = [
+        { label: 'Unidade', value: c.unit || '' },
+        { label: 'Especialidade', value: c.specialty || '' },
+        { label: 'Profissional', value: c.professional || '' },
+        { label: 'Prioridade', value: c.priority || '' },
+        { label: 'Status', value: c.status || '' },
+        c.isNoShow ? { label: 'PACIENTE FALTOU', value: 'Sim' } : null,
+        agendamentoDate ? { label: 'Agendamento', value: agendamentoDate } : null,
+        atendimentoDateTime ? { label: 'Atendimento', value: atendimentoDateTime } : null,
+        c.description ? { label: 'Descrição da Consulta', value: c.description } : null,
+        ...(c.details || []),
+      ].filter(Boolean);
       events.push({
         type: 'consultation',
-        date: parseDate(c.date.split('\n')[0]),
-        sortableDate: c.sortableDate || parseDate(c.date),
+        date: parseDate(atendimentoDateTime),
+        sortableDate: c.sortableDate || parseDate(atendimentoDateTime),
         title: `Consulta: ${c.specialty || 'Especialidade não informada'}`,
         summary: `com ${c.professional || 'Profissional não informado'}`,
         details: c,
-        subDetails: c.details || [],
+        subDetails,
         searchText,
       });
     });
