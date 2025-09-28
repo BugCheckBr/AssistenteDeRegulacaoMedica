@@ -1,3 +1,147 @@
+// --- MENU DE ACESSO RÁPIDO ---
+// --- GERENCIAMENTO CENTRALIZADO DE EXPANSÃO DAS SESSÕES ---
+const sectionExpandState = {};
+
+function setSectionExpanded(sectionKey, expanded) {
+  const sectionId =
+    sectionKey === 'patient-details' ? 'patient-details-section' : `${sectionKey}-section`;
+  const section = document.getElementById(sectionId);
+  if (!section) return;
+  sectionExpandState[sectionKey] = expanded;
+  // Para cada .collapse-section dentro da sessão
+  const collapses = section.querySelectorAll('.collapse-section');
+  collapses.forEach((el) => {
+    if (expanded) {
+      el.classList.add('show');
+    } else {
+      el.classList.remove('show');
+    }
+  });
+  // Ajusta botões extras (ex: paciente)
+  if (sectionKey === 'patient-details') {
+    const btn = section.querySelector('#toggle-details-btn');
+    const extra = section.querySelector('#patient-additional-info');
+    if (btn && extra) {
+      btn.style.display = expanded ? '' : 'none';
+    }
+  }
+  // Troca texto do botão de expandir/recolher da sessão, se existir
+  const toggleBtn = section.querySelector(`#toggle-${sectionKey}-list-btn`);
+  if (toggleBtn) {
+    toggleBtn.textContent = expanded ? 'Recolher' : 'Expandir';
+  }
+}
+
+function injectQuickAccessMenu() {
+  // Inicializa estado de expansão (padrão: expandido)
+  const sectionKeys = Object.keys(sectionIcons);
+  sectionKeys.forEach((key) => (sectionExpandState[key] = true));
+
+  // Adiciona toggle no header da sessão de dados do paciente e das demais sessões
+  setTimeout(() => {
+    sectionKeys.forEach((sectionKey) => {
+      const sectionId =
+        sectionKey === 'patient-details' ? 'patient-details-section' : `${sectionKey}-section`;
+      const section = document.getElementById(sectionId);
+      if (section) {
+        const header = section.querySelector('.section-header');
+        if (header) {
+          header.style.cursor = 'pointer';
+          // Remove listeners duplicados
+          header.onclick = null;
+          header.onmousedown = null;
+          header.ondblclick = null;
+          // Só expande/recolhe com duplo clique
+          header.addEventListener('dblclick', (e) => {
+            e.preventDefault();
+            setSectionExpanded(sectionKey, !sectionExpandState[sectionKey]);
+          });
+        }
+      }
+    });
+    // Garante estado inicial expandido
+    sectionKeys.forEach((sectionKey) => setSectionExpanded(sectionKey, true));
+    // Adiciona listeners nos botões de expandir/recolher das sessões
+    sectionKeys.forEach((sectionKey) => {
+      const sectionId =
+        sectionKey === 'patient-details' ? 'patient-details-section' : `${sectionKey}-section`;
+      const section = document.getElementById(sectionId);
+      if (!section) return;
+      const toggleBtn = section.querySelector(`#toggle-${sectionKey}-list-btn`);
+      if (toggleBtn) {
+        toggleBtn.onclick = (e) => {
+          e.preventDefault();
+          setSectionExpanded(sectionKey, !sectionExpandState[sectionKey]);
+        };
+        // Inicializa texto correto
+        toggleBtn.textContent = sectionExpandState[sectionKey] ? 'Recolher' : 'Expandir';
+      }
+    });
+  }, 0);
+
+  // --- MENU DE ACESSO RÁPIDO E BOTÃO GLOBAL ---
+  const menu = document.createElement('nav');
+  // Botão de expandir/recolher tudo
+  const toggleBtn = document.createElement('button');
+  toggleBtn.className =
+    'quick-access-btn w-8 h-8 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-300 transition-colors';
+  toggleBtn.title = 'Expandir/Recolher todas as sessões';
+  let allCollapsed = false;
+  // Ícone: setas para cima/baixo
+  const iconExpand =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>';
+  const iconCollapse =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 15l-6-6-6 6"/></svg>';
+  toggleBtn.innerHTML = iconCollapse;
+  toggleBtn.addEventListener('click', () => {
+    allCollapsed = !allCollapsed;
+    toggleBtn.innerHTML = allCollapsed ? iconExpand : iconCollapse;
+    // Se recolher tudo, todas as sessões ficam recolhidas (false)
+    // Se expandir tudo, todas ficam expandidas (true)
+    sectionKeys.forEach((sectionKey) => {
+      setSectionExpanded(sectionKey, !allCollapsed);
+    });
+    // O estado global não bloqueia a expansão individual: o header sempre alterna o próprio estado
+  });
+  menu.appendChild(toggleBtn);
+  menu.id = 'quick-access-menu';
+  menu.className =
+    'flex flex-row flex-nowrap gap-1 mb-2 px-1 py-1 bg-white/80 sticky top-0 z-30 border-b border-slate-200';
+  sectionKeys.forEach((sectionKey) => {
+    const sectionId =
+      sectionKey === 'patient-details' ? 'patient-details-section' : `${sectionKey}-section`;
+    const btn = document.createElement('button');
+    btn.className =
+      'quick-access-btn w-8 h-8 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-300 transition-colors';
+    btn.title = `Ir para ${sectionKey.replace(/-/g, ' ')}`;
+    btn.innerHTML = sectionIcons[sectionKey];
+    btn.addEventListener('click', () => {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+    // Duplo clique: expande/recolhe a sessão
+    btn.addEventListener('dblclick', (e) => {
+      e.preventDefault();
+      setSectionExpanded(sectionKey, true);
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+    menu.appendChild(btn);
+  });
+  // Insere o menu no header principal da extensão
+  const header = document.querySelector('header');
+  if (header) {
+    header.appendChild(menu);
+  } else {
+    // fallback: topo da sidebar
+    const sidebar = document.getElementById('main-content') || document.body;
+    sidebar.insertBefore(menu, sidebar.firstChild);
+  }
+}
 /**
  * 🏥 ASSISTENTE DE REGULAÇÃO MÉDICA - MAIN UI
  *
@@ -265,6 +409,79 @@ const sectionConfigurations = {
     filterLogic: documentFilterLogic,
   },
 };
+// --- LINK DIRETO PARA SIGSS/MV ---
+/**
+ * Gera a URL de atalho para a tela original do SIGSS/MV para cada seção.
+ * Usa o baseUrl e os dados do paciente/regulação disponíveis no store.
+ */
+async function getSectionSigssUrl(sectionKey) {
+  const baseUrl = await API.getBaseUrl();
+  const patient = store.getPatient();
+  if (!baseUrl || !patient || !patient.ficha) return null;
+  const ficha = patient.ficha;
+  const isenPK = ficha.isenPK || {};
+  const idp = isenPK.idp;
+  const ids = isenPK.ids;
+  if (!idp || !ids) return null;
+
+  switch (sectionKey) {
+    case 'regulations':
+      // Regulação
+      return `${baseUrl}/sigss/regulacaoRegulador.jsp`;
+    case 'consultations':
+      // Consulta
+      return `${baseUrl}/sigss/atendimentoConsultaAgenda2.jsp`;
+    case 'exams':
+      // Exame
+      return `${baseUrl}/sigss/agendamentoExame.jsp`;
+    case 'timeline':
+      // Linha do tempo
+      return `${baseUrl}/sigss/relatorioProntuario.jsp`;
+    case 'appointments':
+      // Agendamentos
+      return `${baseUrl}/sigss/resumoCompromisso.jsp`;
+    case 'patient-details':
+      // Ficha do paciente (corrigido para cadastroPaciente.jsp)
+      return `${baseUrl}/sigss/cadastroPaciente.jsp`;
+    case 'documents':
+      // Documentos anexados (mantém original)
+      return `${baseUrl}/sigss/documentoPaciente/lista?isenPK.idp=${idp}&isenPK.ids=${ids}`;
+    default:
+      return null;
+  }
+}
+
+/**
+ * Adiciona o botão de atalho para o SIGSS/MV ao header de cada seção.
+ */
+function injectSectionShortcutLinks() {
+  const sectionKeys = Object.keys(sectionIcons);
+  sectionKeys.forEach(async (sectionKey) => {
+    const sectionId =
+      sectionKey === 'patient-details' ? 'patient-details-section' : `${sectionKey}-section`;
+    const sectionElement = document.getElementById(sectionId);
+    if (!sectionElement) return;
+    const header = sectionElement.querySelector('.section-header h2');
+    if (!header || header.querySelector('.section-sigss-link')) return;
+
+    // Cria o botão/link
+    const linkBtn = document.createElement('a');
+    linkBtn.className = 'section-sigss-link ml-1';
+    linkBtn.title = 'Abrir tela original do SIGSS/MV';
+    linkBtn.target = '_blank';
+    linkBtn.rel = 'noopener noreferrer';
+    linkBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 3h7v7m0-7L10 14m-4 7h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2z"/></svg>`;
+    linkBtn.style.cursor = 'pointer';
+    linkBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const url = await getSectionSigssUrl(sectionKey);
+      if (url && api && api.tabs && typeof api.tabs.create === 'function') {
+        api.tabs.create({ url });
+      }
+    });
+    header.appendChild(linkBtn);
+  });
+}
 
 // --- FUNÇÕES DE ESTILO E ÍCONES ---
 
@@ -351,6 +568,7 @@ async function selectPatient(patientInfo, forceRefresh = false) {
     });
     store.setPatient(ficha, cadsus);
     await updateRecentPatients(store.getPatient());
+    injectSectionShortcutLinks();
   } catch (error) {
     Utils.showMessage(error.message, 'error');
     logError(
@@ -1177,7 +1395,12 @@ function cleanupEventListeners() {
 }
 
 // Initialize with removable listener
-globalListeners.onDOMContentLoaded = init;
+
+// Inicialização customizada para incluir o menu de acesso rápido
+globalListeners.onDOMContentLoaded = function () {
+  injectQuickAccessMenu();
+  init();
+};
 document.addEventListener('DOMContentLoaded', globalListeners.onDOMContentLoaded);
 
 // Adiciona o listener de limpeza para quando a página da sidebar for descarregada
