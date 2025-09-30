@@ -11,7 +11,7 @@ const devConfig = {
     ...baseConfig,
     mode: 'development',
     devtool: 'cheap-module-source-map',
-    
+
     entry: {
         background: path.resolve(__dirname, '../../background.js'),
         'content-script': path.resolve(__dirname, '../../content-script.js'),
@@ -19,31 +19,31 @@ const devConfig = {
         options: path.resolve(__dirname, '../../options.js'),
         help: path.resolve(__dirname, '../../help.js'),
         styles: path.resolve(__dirname, '../../src/input.css'),
-        
+
         // Development-specific entries
         'dev-reload': path.resolve(__dirname, './dev-reload.js')
     },
-    
+
     output: {
         path: path.resolve(__dirname, '../../dist/dev'),
         filename: '[name].js',
         clean: true
     },
-    
+
     plugins: [
         ...baseConfig.plugins,
-        
+
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('development'),
             '__DEV__': true,
             '__PROD__': false,
             'BROWSER_TARGET': JSON.stringify(process.env.BUILD_TARGET || 'chrome')
         }),
-        
+
         // Hot reload plugin para development
         new webpack.HotModuleReplacementPlugin()
     ],
-    
+
     optimization: {
         minimize: false,
         splitChunks: {
@@ -57,7 +57,7 @@ const devConfig = {
             }
         }
     },
-    
+
     // Watch options para development
     watch: true,
     watchOptions: {
@@ -69,7 +69,7 @@ const devConfig = {
             /\.git/
         ]
     },
-    
+
     // Development server configuration
     devServer: {
         contentBase: path.resolve(__dirname, '../../dist/dev'),
@@ -81,7 +81,7 @@ const devConfig = {
             errors: true
         }
     },
-    
+
     stats: {
         colors: true,
         modules: false,
