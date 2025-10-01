@@ -250,7 +250,7 @@ const TECHNICAL_FIELDS = [
 **📁 ARQUIVO(S):** `manifest.json`, `background.js`
 **🌐 BROWSERS:** Chrome, Firefox, Edge
 
-#### **📋 Problema Identificado**
+#### **📋 Problema Identificado (Crítico)**
 
 [Descrição técnica específica do problema crítico]
 
@@ -262,16 +262,17 @@ const TECHNICAL_FIELDS = [
 // Linha: [número]
 [código com problema]
 ```
-````
 
-#### **⚡ Correção Obrigatória**
+````bash
+
+### **⚡ Correção Obrigatória**
 
 ```javascript
 // Correção necessária
 [código corrigido]
-```
+````
 
-#### **✅ Plano de Validação**
+#### **✅ Plano de Validação Crítica**
 
 - [ ] Extensão instala sem erros no Chrome
 - [ ] Service worker registra corretamente
@@ -294,7 +295,7 @@ const TECHNICAL_FIELDS = [
 **📁 ARQUIVO(S):** `content-script.js`, `api.js`
 **🌐 BROWSERS:** [Especificar browsers afetados]
 
-#### **📋 Problema Identificado**
+#### **📋 Problema Identificado (Alto)**
 
 [Descrição do problema que afeta workflows médicos]
 
@@ -357,7 +358,7 @@ graph TD
 
 #### **🔢 Sequenciamento Crítico**
 
-**BLOCO 1 - Fundação (CRÍTICO - 2h)**
+### BLOCO 1 - Fundação (CRÍTICO - 2h)
 
 1. `TASK-C-001` → `TASK-C-002` (manifest → service worker)
 2. Validação: Extensão instala e carrega
@@ -498,7 +499,6 @@ web-ext lint               # Firefox validation
 ---
 
 **🏥 NOTA MÉDICA:** Esta auditoria foi executada considerando o contexto crítico de ambiente hospitalar, onde falhas da extensão podem impactar workflows médicos essenciais. Todas as correções devem ser testadas em ambiente simulado antes de deploy em produção médica.
-
 ````
 
 ---
@@ -506,6 +506,7 @@ web-ext lint               # Firefox validation
 ## ⚡ COMANDOS DE EXECUÇÃO
 
 ### **🚀 Comando Principal**
+
 ```bash
 "Execute auditoria funcional COMPLETA desta extensão médica:
 
@@ -539,7 +540,7 @@ CONTEXTO MÉDICO:
 - Dados sensíveis: CPF, CNS, nomes (NUNCA devem aparecer em logs)
 - APIs essenciais: SIGSS, CADSUS integration
 - Compliance: LGPD, HIPAA medical privacy"
-````
+```
 
 ### **✅ Critérios de Sucesso**
 

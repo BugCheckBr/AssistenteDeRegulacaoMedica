@@ -1,6 +1,79 @@
+// Inicializa listeners e ícones do menu de acesso rápido estático
+function initQuickAccessMenu() {
+  // Renderiza ícones SVG nos botões
+  const sectionIconsMap = {
+    'patient-details': 'icon-patient-details',
+    timeline: 'icon-timeline',
+    regulations: 'icon-regulations',
+    consultations: 'icon-consultations',
+    exams: 'icon-exams',
+    appointments: 'icon-appointments',
+    documents: 'icon-documents',
+  };
+  Object.entries(sectionIconsMap).forEach(([key, spanId]) => {
+    const span = document.getElementById(spanId);
+    if (span) span.innerHTML = sectionIcons[key];
+  });
+
+  // Botão global expandir/recolher
+  const toggleAllBtn = document.getElementById('toggle-all-sections-btn');
+  const toggleAllIcon = document.getElementById('toggle-all-icon');
+  let allCollapsed = false;
+  const iconExpand =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>';
+  const iconCollapse =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 15l-6-6-6 6"/></svg>';
+  if (toggleAllIcon) toggleAllIcon.innerHTML = iconCollapse;
+  if (toggleAllBtn) {
+    const globalToggleListener = () => {
+      allCollapsed = !allCollapsed;
+      if (toggleAllIcon) toggleAllIcon.innerHTML = allCollapsed ? iconExpand : iconCollapse;
+      Object.keys(sectionIconsMap).forEach((sectionKey) => {
+        setSectionExpanded(sectionKey, !allCollapsed);
+      });
+    };
+    toggleAllBtn.addEventListener('click', globalToggleListener);
+    dynamicListeners.push({ el: toggleAllBtn, type: 'click', fn: globalToggleListener });
+  }
+
+  // Botões de acesso rápido para cada sessão
+  Object.entries(sectionIconsMap).forEach(([sectionKey]) => {
+    const btn = document.getElementById('quick-access-' + sectionKey);
+    if (btn) {
+      const clickListener = () => {
+        const sectionId =
+          sectionKey === 'patient-details' ? 'patient-details-section' : `${sectionKey}-section`;
+        const el = document.getElementById(sectionId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      };
+      btn.addEventListener('click', clickListener);
+      dynamicListeners.push({ el: btn, type: 'click', fn: clickListener });
+      // Duplo clique: expande a sessão
+      const dblClickListener = (e) => {
+        e.preventDefault();
+        setSectionExpanded(sectionKey, true);
+        const sectionId =
+          sectionKey === 'patient-details' ? 'patient-details-section' : `${sectionKey}-section`;
+        const el = document.getElementById(sectionId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      };
+      btn.addEventListener('dblclick', dblClickListener);
+      dynamicListeners.push({ el: btn, type: 'dblclick', fn: dblClickListener });
+    }
+  });
+  // Inicializa estado expandido
+  Object.keys(sectionIconsMap).forEach((sectionKey) => setSectionExpanded(sectionKey, true));
+}
 // --- MENU DE ACESSO RÁPIDO ---
 // --- GERENCIAMENTO CENTRALIZADO DE EXPANSÃO DAS SESSÕES ---
 const sectionExpandState = {};
+
+// Gerenciamento de listeners dinâmicos
+const dynamicListeners = [];
 
 function setSectionExpanded(sectionKey, expanded) {
   const sectionId =
@@ -31,117 +104,7 @@ function setSectionExpanded(sectionKey, expanded) {
     toggleBtn.textContent = expanded ? 'Recolher' : 'Expandir';
   }
 }
-
-function injectQuickAccessMenu() {
-  // Inicializa estado de expansão (padrão: expandido)
-  const sectionKeys = Object.keys(sectionIcons);
-  sectionKeys.forEach((key) => (sectionExpandState[key] = true));
-
-  // Adiciona toggle no header da sessão de dados do paciente e das demais sessões
-  setTimeout(() => {
-    sectionKeys.forEach((sectionKey) => {
-      const sectionId =
-        sectionKey === 'patient-details' ? 'patient-details-section' : `${sectionKey}-section`;
-      const section = document.getElementById(sectionId);
-      if (section) {
-        const header = section.querySelector('.section-header');
-        if (header) {
-          header.style.cursor = 'pointer';
-          // Remove listeners duplicados
-          header.onclick = null;
-          header.onmousedown = null;
-          header.ondblclick = null;
-          // Só expande/recolhe com duplo clique
-          header.addEventListener('dblclick', (e) => {
-            e.preventDefault();
-            setSectionExpanded(sectionKey, !sectionExpandState[sectionKey]);
-          });
-        }
-      }
-    });
-    // Garante estado inicial expandido
-    sectionKeys.forEach((sectionKey) => setSectionExpanded(sectionKey, true));
-    // Adiciona listeners nos botões de expandir/recolher das sessões
-    sectionKeys.forEach((sectionKey) => {
-      const sectionId =
-        sectionKey === 'patient-details' ? 'patient-details-section' : `${sectionKey}-section`;
-      const section = document.getElementById(sectionId);
-      if (!section) return;
-      const toggleBtn = section.querySelector(`#toggle-${sectionKey}-list-btn`);
-      if (toggleBtn) {
-        toggleBtn.onclick = (e) => {
-          e.preventDefault();
-          setSectionExpanded(sectionKey, !sectionExpandState[sectionKey]);
-        };
-        // Inicializa texto correto
-        toggleBtn.textContent = sectionExpandState[sectionKey] ? 'Recolher' : 'Expandir';
-      }
-    });
-  }, 0);
-
-  // --- MENU DE ACESSO RÁPIDO E BOTÃO GLOBAL ---
-  const menu = document.createElement('nav');
-  // Botão de expandir/recolher tudo
-  const toggleBtn = document.createElement('button');
-  toggleBtn.className =
-    'quick-access-btn w-8 h-8 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-300 transition-colors';
-  toggleBtn.title = 'Expandir/Recolher todas as sessões';
-  let allCollapsed = false;
-  // Ícone: setas para cima/baixo
-  const iconExpand =
-    '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>';
-  const iconCollapse =
-    '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 15l-6-6-6 6"/></svg>';
-  toggleBtn.innerHTML = iconCollapse;
-  toggleBtn.addEventListener('click', () => {
-    allCollapsed = !allCollapsed;
-    toggleBtn.innerHTML = allCollapsed ? iconExpand : iconCollapse;
-    // Se recolher tudo, todas as sessões ficam recolhidas (false)
-    // Se expandir tudo, todas ficam expandidas (true)
-    sectionKeys.forEach((sectionKey) => {
-      setSectionExpanded(sectionKey, !allCollapsed);
-    });
-    // O estado global não bloqueia a expansão individual: o header sempre alterna o próprio estado
-  });
-  menu.appendChild(toggleBtn);
-  menu.id = 'quick-access-menu';
-  menu.className =
-    'flex flex-row flex-nowrap gap-1 mb-2 px-1 py-1 bg-white/80 sticky top-0 z-30 border-b border-slate-200';
-  sectionKeys.forEach((sectionKey) => {
-    const sectionId =
-      sectionKey === 'patient-details' ? 'patient-details-section' : `${sectionKey}-section`;
-    const btn = document.createElement('button');
-    btn.className =
-      'quick-access-btn w-8 h-8 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-300 transition-colors';
-    btn.title = `Ir para ${sectionKey.replace(/-/g, ' ')}`;
-    btn.innerHTML = sectionIcons[sectionKey];
-    btn.addEventListener('click', () => {
-      const el = document.getElementById(sectionId);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-    // Duplo clique: expande/recolhe a sessão
-    btn.addEventListener('dblclick', (e) => {
-      e.preventDefault();
-      setSectionExpanded(sectionKey, true);
-      const el = document.getElementById(sectionId);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-    menu.appendChild(btn);
-  });
-  // Insere o menu no header principal da extensão
-  const header = document.querySelector('header');
-  if (header) {
-    header.appendChild(menu);
-  } else {
-    // fallback: topo da sidebar
-    const sidebar = document.getElementById('main-content') || document.body;
-    sidebar.insertBefore(menu, sidebar.firstChild);
-  }
-}
+/**
 /**
  * 🏥 ASSISTENTE DE REGULAÇÃO MÉDICA - MAIN UI
  *
@@ -472,13 +435,15 @@ function injectSectionShortcutLinks() {
     linkBtn.rel = 'noopener noreferrer';
     linkBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 3h7v7m0-7L10 14m-4 7h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2z"/></svg>`;
     linkBtn.style.cursor = 'pointer';
-    linkBtn.addEventListener('click', async (e) => {
+    const linkClickListener = async (e) => {
       e.preventDefault();
       const url = await getSectionSigssUrl(sectionKey);
       if (url && api && api.tabs && typeof api.tabs.create === 'function') {
         api.tabs.create({ url });
       }
-    });
+    };
+    linkBtn.addEventListener('click', linkClickListener);
+    dynamicListeners.push({ el: linkBtn, type: 'click', fn: linkClickListener });
     header.appendChild(linkBtn);
   });
 }
@@ -1188,7 +1153,8 @@ function createDetailRow(label, value) {
 function formatRegulationDetailsForModal(data) {
   if (!data) return '<p>Dados da regulação não encontrados.</p>';
   let content = '';
-  content += createDetailRow('Status', data.reguStatus);
+  content += createDetailRow('Status (Normalizado)', data.status || '');
+  content += createDetailRow('Status (Bruto)', data.reguStatus || '');
   content += createDetailRow('Tipo', data.reguTipo === 'ENC' ? 'Consulta' : 'Exame');
   content += createDetailRow('Data Solicitação', data.reguDataStr);
   content += createDetailRow('Procedimento', data.prciNome);
@@ -1212,13 +1178,17 @@ function formatRegulationDetailsForModal(data) {
 function formatAppointmentDetailsForModal(data) {
   if (!data) return '<p>Dados do agendamento não encontrados.</p>';
 
-  let status = 'Agendado';
-  if (data.agcoIsCancelado === 't') status = 'Cancelado';
-  else if (data.agcoIsFaltante === 't') status = 'Faltou';
-  else if (data.agcoIsAtendido === 't') status = 'Atendido';
-
   let content = '';
-  content += createDetailRow('Status', status);
+  content += createDetailRow('Status (Normalizado)', data.status || '');
+  const statusBruto = [];
+  if (data.agcoIsCancelado === 't') statusBruto.push('Cancelado');
+  if (data.agcoIsFaltante === 't') statusBruto.push('Faltante');
+  if (data.agcoIsAtendido === 't') statusBruto.push('Atendido');
+  if (data.agcoIsDesmarcado === 't') statusBruto.push('Desmarcado');
+  content += createDetailRow(
+    'Status (Bruto)',
+    statusBruto.length ? statusBruto.join(', ') : 'Nenhum'
+  );
   content += createDetailRow('Data', `${data.agcoData} às ${data.agcoHoraPrevista}`);
   content += createDetailRow('Local', data.unidadeSaudeDestino?.entidade?.entiNome);
   content += createDetailRow(
@@ -1383,6 +1353,14 @@ function cleanupEventListeners() {
   if (reloadSidebar && globalListeners.onReloadSidebarClick)
     reloadSidebar.removeEventListener('click', globalListeners.onReloadSidebarClick);
 
+  // Remover listeners dinâmicos (headers e botões rápidos)
+  dynamicListeners.forEach(({ el, type, fn }) => {
+    if (el && typeof el.removeEventListener === 'function') {
+      el.removeEventListener(type, fn);
+    }
+  });
+  dynamicListeners.length = 0;
+
   // Remover listener do documento
   if (globalListeners.onDOMContentLoaded) {
     document.removeEventListener('DOMContentLoaded', globalListeners.onDOMContentLoaded);
@@ -1398,7 +1376,7 @@ function cleanupEventListeners() {
 
 // Inicialização customizada para incluir o menu de acesso rápido
 globalListeners.onDOMContentLoaded = function () {
-  injectQuickAccessMenu();
+  initQuickAccessMenu();
   init();
 };
 document.addEventListener('DOMContentLoaded', globalListeners.onDOMContentLoaded);

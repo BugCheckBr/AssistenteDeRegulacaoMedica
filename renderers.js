@@ -51,6 +51,25 @@ export function renderConsultations(consultations, sortState) {
                     : `
                 <p class="text-sm text-slate-500 mt-1">${c.unit}</p>
                 <div class="mt-3 pt-3 border-t border-slate-200 space-y-2">
+                    <p class="text-xs font-semibold text-slate-500 uppercase">Status (Normalizado)</p>
+                    <p class="text-sm text-slate-700 whitespace-pre-wrap">${c.status || ''}</p>
+                    <p class="text-xs font-semibold text-slate-500 uppercase">Status (Bruto)</p>
+                    <p class="text-sm text-slate-700 whitespace-pre-wrap">${(() => {
+                      const statusBruto = [];
+                      if (c.agcoIsCancelado === 't') statusBruto.push('Cancelado');
+                      if (c.agcoIsFaltante === 't') statusBruto.push('Faltante');
+                      if (c.agcoIsAtendido === 't') statusBruto.push('Atendido');
+                      if (c.agcoIsDesmarcado === 't') statusBruto.push('Desmarcado');
+                      // Se não há flags, tenta usar os campos normalizados
+                      if (statusBruto.length === 0) {
+                        if (c.Atendido === 'SIM') statusBruto.push('Atendido');
+                        if (c.Faltante === 'SIM') statusBruto.push('Faltante');
+                        if (c.Cancelado === 'SIM') statusBruto.push('Cancelado');
+                        if (c.Desmarcado === 'SIM') statusBruto.push('Desmarcado');
+                        if (c['Primeira Consulta'] === 'SIM') statusBruto.push('Primeira Consulta');
+                      }
+                      return statusBruto.length ? statusBruto.join(', ') : 'Nenhum';
+                    })()}</p>
                     ${c.details
                       .map(
                         (d) =>

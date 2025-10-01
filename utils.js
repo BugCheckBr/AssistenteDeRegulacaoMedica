@@ -1,4 +1,21 @@
-import { ERROR_CATEGORIES, logError, logWarning } from './ErrorHandler.js';
+import { logError, logWarning, logInfo, ERROR_CATEGORIES } from './ErrorHandler.js';
+// Extrai o valor real de um campo HTML tipo <label><font color='...'>SIM|NÃO</font></label>
+function extractLabelValue(labelHtml) {
+  if (typeof labelHtml !== 'string') return labelHtml;
+  // Remove todas as tags HTML
+  let value = labelHtml.replace(/<[^>]+>/g, '').trim();
+  // Remove quebras de linha e espaços extras
+  value = value.replace(/\s+/g, ' ');
+  // Normaliza para maiúsculas
+  value = value.toUpperCase();
+  // Se vier algo como 'SIM', 'NÃO', 'NÃO CONSTA', retorna direto
+  if (value === 'SIM' || value === 'NÃO' || value === 'NÃO CONSTA') return value;
+  // Se vier algo como 'LABEL SIM', 'LABEL NÃO', pega só o final
+  if (value.endsWith('SIM')) return 'SIM';
+  if (value.endsWith('NÃO')) return 'NÃO';
+  if (value.endsWith('NÃO CONSTA')) return 'NÃO CONSTA';
+  return value;
+}
 
 /**
  * Exibe um modal customizado de confirmação.
@@ -349,9 +366,39 @@ export function setupTabs(container) {
  */
 export function normalizeTimelineData(apiData) {
   const events = [];
-  // DEBUG: Exibe dados brutos recebidos
-  console.log('DEBUG apiData.consultations:', apiData.consultations);
-  console.log('DEBUG apiData.appointments:', apiData.appointments);
+  // DEBUG seguro: Auditoria dos dados recebidos (sem dados sensíveis)
+  logInfo(
+    'AUDIT_CONSULTATIONS',
+    {
+      count: Array.isArray(apiData.consultations) ? apiData.consultations.length : 0,
+      statusValues: Array.isArray(apiData.consultations)
+        ? apiData.consultations.map((c) => ({
+            Atendido: c?.Atendido,
+            Faltante: c?.Faltante,
+            Cancelado: c?.Cancelado,
+            Desmarcado: c?.Desmarcado,
+            PrimeiraConsulta: c?.['Primeira Consulta'],
+          }))
+        : [],
+    },
+    ERROR_CATEGORIES.TIMELINE_NORMALIZATION
+  );
+  logInfo(
+    'AUDIT_APPOINTMENTS',
+    {
+      count: Array.isArray(apiData.appointments) ? apiData.appointments.length : 0,
+      statusValues: Array.isArray(apiData.appointments)
+        ? apiData.appointments.map((a) => ({
+            Atendido: a?.Atendido,
+            Faltante: a?.Faltante,
+            Cancelado: a?.Cancelado,
+            Desmarcado: a?.Desmarcado,
+            PrimeiraConsulta: a?.['Primeira Consulta'],
+          }))
+        : [],
+    },
+    ERROR_CATEGORIES.TIMELINE_NORMALIZATION
+  );
   // Normalize Exams Completed
   try {
     (apiData.examsCompleted || []).forEach((e) => {
@@ -410,6 +457,26 @@ export function normalizeTimelineData(apiData) {
       if (!atendimentoDateTime && agendamentoDate) atendimentoDateTime = agendamentoDate;
       if (!atendimentoDateTime) return;
 
+      // --- Mapeamento de status ---
+      let status = 'AGENDADO';
+      if (c.Atendido === 'SIM') status = 'PRESENTE';
+      else if (c.Faltante === 'SIM') status = 'FALTOU';
+      else if (c.Cancelado === 'SIM') status = 'CANCELADO';
+      else if (c.Desmarcado === 'SIM') status = 'DESMARCADO';
+      else if (c['Primeira Consulta'] === 'SIM') status = 'PRIMEIRA CONSULTA';
+      c.status = status;
+
+      // --- Mapeamento do profissional ---
+      let profissional = '';
+      if (c.Procedimento && c.Procedimento.startsWith('0301010064')) {
+        profissional = 'MÉDICO CLÍNICO (225125)';
+      } else if (c.Procedimento && c.Procedimento.startsWith('0301010030')) {
+        profissional = 'ENFERMEIRO (223505)';
+      } else {
+        profissional = c.professional || '';
+      }
+      c.professional = profissional;
+
       const searchText = normalizeString(
         [
           c.specialty,
@@ -438,7 +505,7 @@ export function normalizeTimelineData(apiData) {
         date: parseDate(atendimentoDateTime),
         sortableDate: c.sortableDate || parseDate(atendimentoDateTime),
         title: `Consulta: ${c.specialty || 'Especialidade não informada'}`,
-        summary: `com ${c.professional || 'Profissional não informado'}`,
+        summary: `Profissional: ${profissional ? profissional : 'Profissional não informado'}\nStatus: ${status}`,
         details: c,
         subDetails,
         searchText,
@@ -460,6 +527,20 @@ export function normalizeTimelineData(apiData) {
     (apiData.exams || []).forEach((e) => {
       const eventDate = parseDate(e.date);
       if (!e || !eventDate) return;
+
+      // Mapeamento de status usando extractLabelValue
+      const atendido = extractLabelValue(e.Atendido);
+      const cancelado = extractLabelValue(e.Cancelado);
+      const desmarcado = extractLabelValue(e.Desmarcado);
+      const faltante = extractLabelValue(e.Faltante);
+      const primeiraConsulta = extractLabelValue(e['Primeira Consulta']);
+      let status = 'AGENDADO';
+      if (atendido === 'SIM') status = 'ATENDIDO';
+      else if (faltante === 'SIM') status = 'FALTANTE';
+      else if (cancelado === 'SIM') status = 'CANCELADO';
+      else if (desmarcado === 'SIM') status = 'DESMARCADO';
+      else if (primeiraConsulta === 'SIM') status = 'PRIMEIRA CONSULTA';
+      e.status = status;
       const searchText = normalizeString(
         [e.examName, e.professional, e.specialty].filter(Boolean).join(' ')
       );
@@ -497,20 +578,53 @@ export function normalizeTimelineData(apiData) {
   try {
     (apiData.appointments || []).forEach((a) => {
       if (!a || !a.date) return;
+
+      // Mapeamento de status
+      let status = 'AGENDADO';
+      if (a.Atendido === 'SIM') status = 'ATENDIDO';
+      else if (a.Faltante === 'SIM') status = 'FALTANTE';
+      else if (a.Cancelado === 'SIM') status = 'CANCELADO';
+      else if (a.Desmarcado === 'SIM') status = 'DESMARCADO';
+      else if (a['Primeira Consulta'] === 'SIM') status = 'PRIMEIRA CONSULTA';
+      a.status = status;
+
+      // Mapeamento do profissional
+      let profissional = '';
+      if (a.Procedimento && a.Procedimento.startsWith('0301010064')) {
+        profissional = 'MÉDICO CLÍNICO (225125)';
+      } else if (a.Procedimento && a.Procedimento.startsWith('0301010030')) {
+        profissional = 'ENFERMEIRO (223505)';
+      } else {
+        profissional = a.professional || '';
+      }
+      a.professional = profissional;
+
       const searchText = normalizeString(
-        [a.specialty, a.description, a.location, a.professional].join(' ')
+        [a.specialty, profissional, a.location, status, a.Procedimento, a.description].join(' ')
       );
+
+      // Monta subDetails igual à tabela original
+      const subDetails = [
+        { label: 'Unidade', value: a.location || '' },
+        { label: 'Profissional', value: profissional },
+        { label: 'Procedimento', value: a.Procedimento || '' },
+        { label: 'Atendido', value: a.Atendido || 'NÃO' },
+        { label: 'Cancelado', value: a.Cancelado || 'NÃO' },
+        { label: 'Desmarcado', value: a.Desmarcado || 'NÃO' },
+        { label: 'Faltante', value: a.Faltante || 'NÃO' },
+        { label: 'Primeira Consulta', value: a['Primeira Consulta'] || 'NÃO' },
+        { label: 'Status', value: status },
+        { label: 'Hora', value: a.time || 'N/A' },
+      ];
+
       events.push({
         type: 'appointment',
         date: parseDate(a.date),
         sortableDate: parseDate(a.date),
         title: `Agendamento: ${a.specialty || a.description || 'Não descrito'}`,
-        summary: a.location || 'Local não informado',
+        summary: `Unidade: ${a.location || ''}\nProfissional: ${profissional}\nProcedimento: ${a.Procedimento || ''}\nStatus: ${status}`,
         details: a,
-        subDetails: [
-          { label: 'Status', value: a.status || 'N/A' },
-          { label: 'Hora', value: a.time || 'N/A' },
-        ],
+        subDetails,
         searchText,
       });
     });
