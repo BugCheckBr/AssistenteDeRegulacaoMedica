@@ -5,9 +5,9 @@
   "type": "module",
   "main": "sidebar.js",
   "scripts": {
-    "build:chrome": "powershell -Command \"$env:NODE_ENV='production'; npx webpack --config config/webpack/webpack.chrome.cjs\" && node scripts/build/fix-css-link.cjs",
-    "build:firefox": "powershell -Command \"$env:NODE_ENV='production'; npx webpack --config config/webpack/webpack.firefox.cjs\" && node scripts/build/fix-css-link.cjs",
-    "build:edge": "powershell -Command \"$env:NODE_ENV='production'; npx webpack --config config/webpack/webpack.edge.cjs\" && node scripts/build/fix-css-link.cjs",
+    "build:chrome": "cross-env NODE_ENV=production npx webpack --config config/webpack/webpack.chrome.cjs && node scripts/build/fix-css-link.cjs",
+    "build:firefox": "cross-env NODE_ENV=production npx webpack --config config/webpack/webpack.firefox.cjs && node scripts/build/fix-css-link.cjs",
+    "build:edge": "cross-env NODE_ENV=production npx webpack --config config/webpack/webpack.edge.cjs && node scripts/build/fix-css-link.cjs",
     "build:css": "tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
     "build:all": "npm-run-all --sequential build:chrome build:firefox build:edge",
     "build:prod": "npm run build:all",
